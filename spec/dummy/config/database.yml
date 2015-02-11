@@ -1,0 +1,13 @@
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  pool: 5
+  host: localhost
+
+development:
+  <<: *default
+  database: rad_core_development
+
+test:
+  <<: *default
+  database: rad_core_test
