@@ -1,0 +1,12 @@
+language: ruby
+sudo: false
+cache:
+  bundler: true
+rvm:
+  - 2.2.0
+before_script:
+  - cp spec/dummy/config/database.example.yml spec/dummy/config/database.yml
+  - psql -c "create database rad_core_test;" -U postgres
+  - bundle exec rake db:migrate
+script:
+  - bundle exec rspec
