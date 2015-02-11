@@ -86,6 +86,28 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
+  geocoded_by :full_street_address
+
+  after_validation :geocode_if_needed
+
+  def geocode_if_needed
+    if full_street_address.present? && full_street_address_changed?
+      if geocode.present?
+        Stats.increment('radsignup.geocode.firm.success')
+      else
+        Stats.increment('radsignup.geocode.firm.failed')
+      end
+    end
+  end
+
+  def full_street_address
+    [address_line_one, address_line_two, address_postcode].delete_if(&:blank?).join(', ')
+  end
+
+  def full_street_address_changed?
+    address_line_one_changed? || address_line_two_changed? || address_postcode_changed?
+  end
+
   def in_person_advice?
     in_person_advice_methods.present?
   end

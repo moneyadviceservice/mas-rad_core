@@ -185,4 +185,107 @@ RSpec.describe Firm do
       end
     end
   end
+
+  describe '#full_street_address' do
+    subject { firm.full_street_address }
+
+    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}"}
+
+    context 'when line two is nil' do
+      before { firm.address_line_two = nil }
+
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}"}
+    end
+
+    context 'when line two is an empty string' do
+      before { firm.address_line_two = '' }
+
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}"}
+    end
+  end
+
+  describe '#full_street_address_changed?' do
+    context 'with an existing firm' do
+      before { subject.save }
+
+      it { is_expected.to_not be_full_street_address_changed }
+
+      context 'when the first line of the address has changed' do
+        before { firm.address_line_one = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+
+      context 'when the second line of the address has changed' do
+        before { firm.address_line_two = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+
+      context 'when the address postcode has changed' do
+        before { firm.address_postcode = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+    end
+  end
+
+  describe '#geocode_if_needed' do
+    context 'with a firm that has no address' do
+      subject(:firm) do
+        build :firm, address_line_one: nil,
+              address_line_two: nil,
+              address_town: nil,
+              address_county: nil,
+              address_postcode: nil
+      end
+
+      it 'does not call the geocode method' do
+        expect(firm).not_to receive(:geocode)
+        firm.geocode_if_needed
+      end
+
+      context 'when I assign an address' do
+        before do
+          firm.address_line_one = Faker::Address.street_address
+          firm.address_town = Faker::Address.city
+          firm.address_county = Faker::Address.state
+          firm.address_postcode = 'EC1N 2TD'
+        end
+
+        it 'calls the geocode method' do
+          expect(firm).to receive(:geocode)
+          firm.geocode_if_needed
+        end
+
+        context 'then after saving' do
+          before { firm.save! }
+
+          context 'when the address is changed' do
+            before { firm.address_line_one = Faker::Address.street_address }
+
+            it 'calls the geocode method' do
+              expect(firm).to receive(:geocode)
+              firm.geocode_if_needed
+            end
+          end
+        end
+      end
+    end
+
+    context 'when the geocode is successful' do
+      before { allow(firm).to receive(:geocode) { [double] } }
+
+      it 'logs a success to statsd' do
+        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.success')
+        firm.geocode_if_needed
+      end
+    end
+
+    context 'when the geocode is unsuccessful' do
+      before { allow(firm).to receive(:geocode) { [] } }
+
+      it 'logs a failure to statsd' do
+        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.failed')
+        firm.geocode_if_needed
+      end
+    end
+  end
 end
