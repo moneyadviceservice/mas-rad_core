@@ -1,3 +1,5 @@
+require 'statsd'
+
 module RadCore
   class Engine < ::Rails::Engine
     initializer :append_migrations do |app|
