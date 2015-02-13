@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rad_core (0.0.1)
+    mas-rad_core (0.0.1)
       pg
       rails (~> 4.2.0)
       statsd-ruby
@@ -150,8 +150,8 @@ PLATFORMS
 DEPENDENCIES
   factory_girl_rails
   faker
+  mas-rad_core!
   pry-rails
-  rad_core!
   rspec-collection_matchers
   rspec-rails
   timecop

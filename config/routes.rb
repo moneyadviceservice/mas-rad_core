@@ -1,2 +1,2 @@
-RadCore::Engine.routes.draw do
+MAS::RadCore::Engine.routes.draw do
 end
