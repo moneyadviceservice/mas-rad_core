@@ -1,6 +1,6 @@
 require 'statsd'
 
-module RadCore
+module MAS::RadCore
   class Engine < ::Rails::Engine
     config.autoload_paths << root.join('lib')
 

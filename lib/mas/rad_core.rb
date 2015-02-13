@@ -1,4 +1,4 @@
 require "rad_core/engine"
 
-module RadCore
+module MAS::RadCore
 end
