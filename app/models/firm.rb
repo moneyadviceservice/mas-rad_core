@@ -1,4 +1,14 @@
 class Firm < ActiveRecord::Base
+  PERCENTAGE_ATTRIBUTES = [
+    :retirement_income_products_percent,
+    :pension_transfer_percent,
+    :long_term_care_percent,
+    :equity_release_percent,
+    :inheritance_tax_and_estate_planning_percent,
+    :wills_and_probate_percent,
+    :other_percent
+  ]
+
   scope :registered, -> { where.not(email_address: nil) }
 
   has_and_belongs_to_many :in_person_advice_methods
@@ -69,13 +79,7 @@ class Firm < ActiveRecord::Base
 
   validate :sum_of_percentages_equals_one_hundred
 
-  validates :retirement_income_products_percent,
-    :pension_transfer_percent,
-    :long_term_care_percent,
-    :equity_release_percent,
-    :inheritance_tax_and_estate_planning_percent,
-    :wills_and_probate_percent,
-    :other_percent,
+  validates *PERCENTAGE_ATTRIBUTES,
     presence: true,
     numericality: { only_integer: true }
 
@@ -107,13 +111,7 @@ class Firm < ActiveRecord::Base
       :allowed_payment_methods,
       :minimum_fixed_fee,
       :percent_total,
-      :retirement_income_products_percent,
-      :pension_transfer_percent,
-      :long_term_care_percent,
-      :equity_release_percent,
-      :inheritance_tax_and_estate_planning_percent,
-      :wills_and_probate_percent,
-      :other_percent,
+      *PERCENTAGE_ATTRIBUTES,
       :investment_sizes
     ]
   end
@@ -125,18 +123,12 @@ class Firm < ActiveRecord::Base
   end
 
   def sum_of_percentages_equals_one_hundred
-    total = retirement_income_products_percent.to_i \
-      + pension_transfer_percent.to_i \
-      + long_term_care_percent.to_i \
-      + equity_release_percent.to_i \
-      + inheritance_tax_and_estate_planning_percent.to_i \
-      + wills_and_probate_percent.to_i \
-      + other_percent.to_i
+    total = PERCENTAGE_ATTRIBUTES.sum { |a| read_attribute(a).to_i }
 
     unless total == 100
       errors.add(
-          :percent_total,
-          I18n.t('questionnaire.retirement_advice.percent_total.not_one_hundred')
+        :percent_total,
+        I18n.t('questionnaire.retirement_advice.percent_total.not_one_hundred')
       )
     end
   end
