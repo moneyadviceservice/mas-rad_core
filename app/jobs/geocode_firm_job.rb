@@ -6,7 +6,7 @@ class GeocodeFirmJob < ActiveJob::Base
       Stats.increment('radsignup.geocode.firm.success')
 
       firm.latitude = results.first.latitude
-      firm.longitude = results.first.latitude
+      firm.longitude = results.first.longitude
       firm.save(callbacks: false)
     else
       Stats.increment('radsignup.geocode.firm.failed')
