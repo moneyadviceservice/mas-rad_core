@@ -267,6 +267,33 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#geocode!' do
+    let(:firm) { create(:firm) }
+    let(:latitude) { Faker::Address.latitude.to_f.round(6) }
+    let(:longitude) { Faker::Address.longitude.to_f.round(6) }
+
+    it 'does not schedule the firm for geocoding' do
+      expect(GeocodeFirmJob).not_to receive(:perform_later)
+      firm.geocode!(latitude, longitude)
+    end
+
+    context 'after the geocode is complete' do
+      before do
+        firm.geocode!(latitude, longitude)
+        firm.reload
+      end
+
+      it 'the firm is persisted' do
+        expect(firm).to be_persisted
+      end
+
+      it 'the latitude and longitude attributes are updated' do
+        expect(firm.latitude).to eql(latitude)
+        expect(firm.longitude).to eql(longitude)
+      end
+    end
+  end
+
   describe 'geocoding' do
     context 'when the address is present' do
       it 'the firm is scheduled for geocoding' do
