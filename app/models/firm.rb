@@ -86,8 +86,7 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_save :geocode_if_needed,
-    unless: :geocode_in_progress?
+  after_save :geocode_if_needed
 
   def full_street_address
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
@@ -107,13 +106,10 @@ class Firm < ActiveRecord::Base
     write_attribute(:longitude, value)
   end
 
-  def geocode!(latitude, longitude)
-    begin
-      @geocode_in_progress = true
-      update!(latitude: latitude, longitude: longitude)
-    ensure
-      @geocode_in_progress = false
-    end
+  def geocode!(latitude = nil, longitude = nil)
+    self.latitude = latitude
+    self.longitude = longitude
+    save!(callbacks: false)
   end
 
   def in_person_advice?
@@ -147,10 +143,6 @@ class Firm < ActiveRecord::Base
   end
 
   private
-
-  def geocode_in_progress?
-    @geocode_in_progress
-  end
 
   def geocode_if_needed
     if full_street_address.present? && full_street_address_changed?
