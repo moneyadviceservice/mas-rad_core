@@ -88,12 +88,6 @@ class Firm < ActiveRecord::Base
 
   after_save :geocode_if_needed
 
-  def geocode_if_needed
-    if full_street_address.present? && full_street_address_changed?
-      GeocodeFirmJob.perform_later(self)
-    end
-  end
-
   def full_street_address
     [address_line_one, address_line_two, address_postcode].delete_if(&:blank?).join(', ')
   end
@@ -133,6 +127,12 @@ class Firm < ActiveRecord::Base
   end
 
   private
+
+  def geocode_if_needed
+    if full_street_address.present? && full_street_address_changed?
+      GeocodeFirmJob.perform_later(self)
+    end
+  end
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?

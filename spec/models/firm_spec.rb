@@ -229,46 +229,24 @@ RSpec.describe Firm do
     end
   end
 
-  describe '#geocode_if_needed' do
-    context 'with a firm that has no address' do
-      subject(:firm) do
-        build :firm, address_line_one: nil,
-              address_line_two: nil,
-              address_town: nil,
-              address_county: nil,
-              address_postcode: nil
+  describe 'geocoding' do
+    context 'when the address is present' do
+      it 'the firm is scheduled for geocoding' do
+        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
+        firm.save!
+      end
+    end
+
+    context 'when the address has changed' do
+      let(:firm) do
+        create(:firm).tap do |f|
+          f.address_postcode = 'ABCD 123'
+        end
       end
 
-      it 'does not call the geocode method' do
-        expect(GeocodeFirmJob).not_to receive(:perform_later)
-        firm.geocode_if_needed
-      end
-
-      context 'when I assign an address' do
-        before do
-          firm.address_line_one = Faker::Address.street_address
-          firm.address_town = Faker::Address.city
-          firm.address_county = Faker::Address.state
-          firm.address_postcode = 'EC1N 2TD'
-        end
-
-        it 'calls the geocode method' do
-          expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-          firm.geocode_if_needed
-        end
-
-        context 'then after saving' do
-          before { firm.save! }
-
-          context 'when the address is changed' do
-            before { firm.address_line_one = Faker::Address.street_address }
-
-            it 'calls the geocode method' do
-              expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-              firm.geocode_if_needed
-            end
-          end
-        end
+      it 'the firm is scheduled for geocoding' do
+        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
+        firm.save!
       end
     end
   end
