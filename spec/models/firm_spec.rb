@@ -269,8 +269,8 @@ RSpec.describe Firm do
 
   describe '#geocode!' do
     let(:firm) { create(:firm) }
-    let(:latitude) { Faker::Address.latitude.to_f.round(6) }
-    let(:longitude) { Faker::Address.longitude.to_f.round(6) }
+    let(:latitude) { Faker::Address.latitude }
+    let(:longitude) { Faker::Address.longitude }
 
     it 'does not schedule the firm for geocoding' do
       expect(GeocodeFirmJob).not_to receive(:perform_later)
@@ -288,8 +288,8 @@ RSpec.describe Firm do
       end
 
       it 'the latitude and longitude attributes are updated' do
-        expect(firm.latitude).to eql(latitude)
-        expect(firm.longitude).to eql(longitude)
+        expect(firm.latitude).to eql(latitude.to_f.round(6))
+        expect(firm.longitude).to eql(longitude.to_f.round(6))
       end
     end
   end
