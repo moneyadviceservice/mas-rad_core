@@ -96,6 +96,16 @@ class Firm < ActiveRecord::Base
     address_line_one_changed? || address_line_two_changed? || address_postcode_changed?
   end
 
+  def latitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:latitude, value)
+  end
+
+  def longitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:longitude, value)
+  end
+
   def in_person_advice?
     in_person_advice_methods.present?
   end

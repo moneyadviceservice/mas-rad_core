@@ -229,6 +229,44 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#latitude=' do
+    let(:firm) { create(:firm) }
+    let(:latitude) { Faker::Address.latitude }
+
+    before { firm.latitude = latitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(firm.latitude).to eql(latitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:latitude) { nil }
+
+      it 'does not cast the value' do
+        expect(firm.latitude).to be_nil
+      end
+    end
+  end
+
+  describe '#longitude=' do
+    let(:firm) { create(:firm) }
+    let(:longitude) { Faker::Address.longitude }
+
+    before { firm.longitude = longitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(firm.longitude).to eql(longitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:longitude) { nil }
+
+      it 'does not cast the value' do
+        expect(firm.longitude).to be_nil
+      end
+    end
+  end
+
   describe 'geocoding' do
     context 'when the address is present' do
       it 'the firm is scheduled for geocoding' do

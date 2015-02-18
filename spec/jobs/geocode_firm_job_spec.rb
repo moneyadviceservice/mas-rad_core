@@ -24,11 +24,11 @@ RSpec.describe GeocodeFirmJob do
       end
 
       it 'the firm is populated with the latitude' do
-        expect(firm.latitude).to eql(51.5180697)
+        expect(firm.latitude).to eql(51.51807)
       end
 
       it 'the firm is populated with the longitude' do
-        expect(firm.longitude).to eql(-0.1085203)
+        expect(firm.longitude).to eql(-0.10852)
       end
     end
 
