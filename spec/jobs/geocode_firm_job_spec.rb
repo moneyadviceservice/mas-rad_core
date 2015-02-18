@@ -3,30 +3,32 @@ require 'geocoder'
 RSpec.describe GeocodeFirmJob do
   let(:job) { GeocodeFirmJob.new }
 
-  subject(:firm) { create :firm }
+  subject(:firm) do
+    create(:firm,
+      address_line_one: address_line_one,
+      address_line_two: address_line_two,
+      address_postcode: address_postcode
+    )
+  end
 
   describe '#perform' do
     context 'when the geocode is successful' do
-      let(:latitude) { Faker::Address.latitude.to_f.round(13) }
-      let(:longitude) { Faker::Address.latitude.to_f.round(13) }
-      let(:result) { double(latitude: latitude, longitude: longitude) }
+      let(:address_line_one) { '120 Holborn' }
+      let(:address_line_two) { 'London' }
+      let(:address_postcode) { 'EC1N 2TD' }
 
-      before { allow(Geocoder).to receive(:search) { [result] } }
-
-      it 'logs a success to statsd' do
-        firm
-        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.success')
-        job.perform(firm)
+      before do
+        VCR.use_cassette('geocode-one-result') do
+          job.perform(firm)
+        end
       end
-    end
 
-    context 'when the geocode is unsuccessful' do
-      before { allow(Geocoder).to receive(:search) { [] } }
+      it 'the firm is populated with the latitude' do
+        expect(firm.latitude).to eql(51.5180697)
+      end
 
-      it 'logs a failure to statsd' do
-        firm
-        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.failed')
-        job.perform(firm)
+      it 'the firm is populated with the longitude' do
+        expect(firm.longitude).to eql(-0.1085203)
       end
     end
   end
