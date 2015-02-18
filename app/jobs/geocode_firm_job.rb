@@ -3,10 +3,10 @@ class GeocodeFirmJob < ActiveJob::Base
     results = Geocoder.search(firm.full_street_address)
 
     if results.any?
-      Stats.increment(:success)
+      stat :success
       firm.geocode!(results.first.latitude, results.first.longitude)
     else
-      Stats.increment(:failed)
+      stat :failed
       firm.geocode!
     end
   end
