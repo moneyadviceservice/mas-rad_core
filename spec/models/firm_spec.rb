@@ -303,11 +303,9 @@ RSpec.describe Firm do
     end
 
     context 'when the address has changed' do
-      let(:firm) do
-        create(:firm).tap do |f|
-          f.address_postcode = 'ABCD 123'
-        end
-      end
+      let(:firm) { create(:firm) }
+
+      before { firm.address_postcode = 'ABCD 123' }
 
       it 'the firm is scheduled for geocoding' do
         expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
