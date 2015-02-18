@@ -191,18 +191,18 @@ RSpec.describe Firm do
   describe '#full_street_address' do
     subject { firm.full_street_address }
 
-    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}"}
+    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}, United Kingdom"}
 
     context 'when line two is nil' do
       before { firm.address_line_two = nil }
 
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}"}
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
     end
 
     context 'when line two is an empty string' do
       before { firm.address_line_two = '' }
 
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}"}
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
     end
   end
 

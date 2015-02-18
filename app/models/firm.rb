@@ -89,7 +89,7 @@ class Firm < ActiveRecord::Base
   after_save :geocode_if_needed
 
   def full_street_address
-    [address_line_one, address_line_two, address_postcode].delete_if(&:blank?).join(', ')
+    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
 
   def full_street_address_changed?
