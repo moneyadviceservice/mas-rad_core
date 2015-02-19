@@ -1,3 +1,4 @@
+require 'geocoder'
 require 'statsd'
 
 module MAS
