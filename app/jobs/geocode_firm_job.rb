@@ -1,3 +1,5 @@
+require 'geocoder'
+
 class GeocodeFirmJob < ActiveJob::Base
   def perform(firm)
     results = Geocoder.search(firm.full_street_address)
