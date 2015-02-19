@@ -1,6 +1,8 @@
 RSpec.describe Firm do
   subject(:firm) { build(:firm) }
 
+  before { allow(GeocodeFirmJob).to receive(:perform_later) }
+
   describe '#in_person_advice?' do
     context 'when the firm offers in person advice' do
       it 'is true' do
@@ -182,6 +184,132 @@ RSpec.describe Firm do
         before { firm.investment_sizes = [] }
 
         it { is_expected.not_to be_valid }
+      end
+    end
+  end
+
+  describe '#full_street_address' do
+    subject { firm.full_street_address }
+
+    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}, United Kingdom"}
+
+    context 'when line two is nil' do
+      before { firm.address_line_two = nil }
+
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
+    end
+
+    context 'when line two is an empty string' do
+      before { firm.address_line_two = '' }
+
+      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
+    end
+  end
+
+  describe '#full_street_address_changed?' do
+    context 'with an existing firm' do
+      before { subject.save }
+
+      it { is_expected.to_not be_full_street_address_changed }
+
+      context 'when the first line of the address has changed' do
+        before { firm.address_line_one = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+
+      context 'when the second line of the address has changed' do
+        before { firm.address_line_two = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+
+      context 'when the address postcode has changed' do
+        before { firm.address_postcode = 'changed' }
+        it { is_expected.to be_full_street_address_changed }
+      end
+    end
+  end
+
+  describe '#latitude=' do
+    let(:firm) { create(:firm) }
+    let(:latitude) { Faker::Address.latitude }
+
+    before { firm.latitude = latitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(firm.latitude).to eql(latitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:latitude) { nil }
+
+      it 'does not cast the value' do
+        expect(firm.latitude).to be_nil
+      end
+    end
+  end
+
+  describe '#longitude=' do
+    let(:firm) { create(:firm) }
+    let(:longitude) { Faker::Address.longitude }
+
+    before { firm.longitude = longitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(firm.longitude).to eql(longitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:longitude) { nil }
+
+      it 'does not cast the value' do
+        expect(firm.longitude).to be_nil
+      end
+    end
+  end
+
+  describe '#geocode!' do
+    let(:firm) { create(:firm) }
+    let(:latitude) { Faker::Address.latitude }
+    let(:longitude) { Faker::Address.longitude }
+
+    it 'does not schedule the firm for geocoding' do
+      expect(GeocodeFirmJob).not_to receive(:perform_later)
+      firm.geocode!(latitude, longitude)
+    end
+
+    context 'after the geocode is complete' do
+      before do
+        firm.geocode!(latitude, longitude)
+        firm.reload
+      end
+
+      it 'the firm is persisted' do
+        expect(firm).to be_persisted
+      end
+
+      it 'the latitude and longitude attributes are updated' do
+        expect(firm.latitude).to eql(latitude.to_f.round(6))
+        expect(firm.longitude).to eql(longitude.to_f.round(6))
+      end
+    end
+  end
+
+  describe 'geocoding' do
+    context 'when the address is present' do
+      it 'the firm is scheduled for geocoding' do
+        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
+        firm.save!
+      end
+    end
+
+    context 'when the address has changed' do
+      let(:firm) { create(:firm) }
+
+      before { firm.address_postcode = 'ABCD 123' }
+
+      it 'the firm is scheduled for geocoding' do
+        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
+        firm.save!
       end
     end
   end

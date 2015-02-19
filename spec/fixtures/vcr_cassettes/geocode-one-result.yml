@@ -1,0 +1,114 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://maps.googleapis.com/maps/api/geocode/json?address=120%20Holborn,%20London,%20EC1N%202TD,%20United%20Kingdom&language=en&sensor=false
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Date:
+      - Wed, 18 Feb 2015 13:23:38 GMT
+      Expires:
+      - Thu, 19 Feb 2015 13:23:38 GMT
+      Cache-Control:
+      - public, max-age=86400
+      Access-Control-Allow-Origin:
+      - "*"
+      Server:
+      - mafe
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      Alternate-Protocol:
+      - 80:quic,p=0.08
+      Accept-Ranges:
+      - none
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+           "results" : [
+              {
+                 "address_components" : [
+                    {
+                       "long_name" : "120",
+                       "short_name" : "120",
+                       "types" : [ "street_number" ]
+                    },
+                    {
+                       "long_name" : "Holborn",
+                       "short_name" : "Holborn",
+                       "types" : [ "route" ]
+                    },
+                    {
+                       "long_name" : "London",
+                       "short_name" : "London",
+                       "types" : [ "locality", "political" ]
+                    },
+                    {
+                       "long_name" : "London",
+                       "short_name" : "London",
+                       "types" : [ "postal_town" ]
+                    },
+                    {
+                       "long_name" : "Greater London",
+                       "short_name" : "Gt Lon",
+                       "types" : [ "administrative_area_level_2", "political" ]
+                    },
+                    {
+                       "long_name" : "United Kingdom",
+                       "short_name" : "GB",
+                       "types" : [ "country", "political" ]
+                    },
+                    {
+                       "long_name" : "EC1N 2TD",
+                       "short_name" : "EC1N 2TD",
+                       "types" : [ "postal_code" ]
+                    }
+                 ],
+                 "formatted_address" : "120 Holborn, London EC1N 2TD, UK",
+                 "geometry" : {
+                    "location" : {
+                       "lat" : 51.5180697,
+                       "lng" : -0.1085203
+                    },
+                    "location_type" : "ROOFTOP",
+                    "viewport" : {
+                       "northeast" : {
+                          "lat" : 51.51941868029149,
+                          "lng" : -0.107171319708498
+                       },
+                       "southwest" : {
+                          "lat" : 51.51672071970849,
+                          "lng" : -0.109869280291502
+                       }
+                    }
+                 },
+                 "place_id" : "ChIJ1y3irE0bdkgRz3w__Q4S9sI",
+                 "types" : [ "street_address" ]
+              }
+           ],
+           "status" : "OK"
+        }
+    http_version: 
+  recorded_at: Wed, 18 Feb 2015 13:23:38 GMT
+recorded_with: VCR 2.9.3

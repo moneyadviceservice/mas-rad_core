@@ -27,6 +27,12 @@ FactoryGirl.define do
     wills_and_probate_percent 15
     other_percent 10
 
+    latitude { Faker::Address.latitude.to_f.round(6) }
+    longitude { Faker::Address.longitude.to_f.round(6) }
+
+    before(:create) { |f| f.class.skip_callback(:save, :after, :geocode_if_needed) }
+    after(:create) { |f| f.class.set_callback(:save, :after, :geocode_if_needed) }
+
     factory :subsidiary do
       parent factory: Firm
     end

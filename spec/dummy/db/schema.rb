@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150209144836) do
+ActiveRecord::Schema.define(version: 20150210113610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
   create_table "accreditations", force: :cascade do |t|
     t.string   "name",                   null: false
@@ -99,6 +100,8 @@ ActiveRecord::Schema.define(version: 20150209144836) do
     t.integer  "wills_and_probate_percent"
     t.integer  "other_percent"
     t.integer  "parent_id"
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree

@@ -86,6 +86,32 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
+  after_save :geocode_if_needed
+
+  def full_street_address
+    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
+  end
+
+  def full_street_address_changed?
+    address_line_one_changed? || address_line_two_changed? || address_postcode_changed?
+  end
+
+  def latitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:latitude, value)
+  end
+
+  def longitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:longitude, value)
+  end
+
+  def geocode!(latitude = nil, longitude = nil)
+    self.latitude = latitude
+    self.longitude = longitude
+    save!(callbacks: false)
+  end
+
   def in_person_advice?
     in_person_advice_methods.present?
   end
@@ -117,6 +143,12 @@ class Firm < ActiveRecord::Base
   end
 
   private
+
+  def geocode_if_needed
+    if full_street_address.present? && full_street_address_changed?
+      GeocodeFirmJob.perform_later(self)
+    end
+  end
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
