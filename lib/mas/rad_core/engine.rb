@@ -1,3 +1,4 @@
+require 'active_job'
 require 'geocoder'
 require 'statsd'
 

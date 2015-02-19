@@ -1,6 +1,8 @@
 RSpec.describe Firm do
   subject(:firm) { build(:firm) }
 
+  before { allow(GeocodeFirmJob).to receive(:perform_later) }
+
   describe '#in_person_advice?' do
     context 'when the firm offers in person advice' do
       it 'is true' do
@@ -238,7 +240,7 @@ RSpec.describe Firm do
       end
 
       it 'does not call the geocode method' do
-        expect(firm).not_to receive(:geocode)
+        expect(GeocodeFirmJob).not_to receive(:perform_later)
         firm.geocode_if_needed
       end
 
@@ -251,7 +253,7 @@ RSpec.describe Firm do
         end
 
         it 'calls the geocode method' do
-          expect(firm).to receive(:geocode)
+          expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
           firm.geocode_if_needed
         end
 
@@ -262,29 +264,11 @@ RSpec.describe Firm do
             before { firm.address_line_one = Faker::Address.street_address }
 
             it 'calls the geocode method' do
-              expect(firm).to receive(:geocode)
+              expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
               firm.geocode_if_needed
             end
           end
         end
-      end
-    end
-
-    context 'when the geocode is successful' do
-      before { allow(firm).to receive(:geocode) { [double] } }
-
-      it 'logs a success to statsd' do
-        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.success')
-        firm.geocode_if_needed
-      end
-    end
-
-    context 'when the geocode is unsuccessful' do
-      before { allow(firm).to receive(:geocode) { [] } }
-
-      it 'logs a failure to statsd' do
-        expect(Stats).to receive(:increment).with('radsignup.geocode.firm.failed')
-        firm.geocode_if_needed
       end
     end
   end

@@ -86,17 +86,11 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  geocoded_by :full_street_address
-
-  after_validation :geocode_if_needed
+  after_save :geocode_if_needed
 
   def geocode_if_needed
     if full_street_address.present? && full_street_address_changed?
-      if geocode.present?
-        Stats.increment('radsignup.geocode.firm.success')
-      else
-        Stats.increment('radsignup.geocode.firm.failed')
-      end
+      GeocodeFirmJob.perform_later(self)
     end
   end
 
