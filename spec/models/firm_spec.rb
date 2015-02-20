@@ -302,6 +302,15 @@ RSpec.describe Firm do
       end
     end
 
+    context 'when the firm is not valid' do
+      before { firm.address_line_one = nil }
+
+      it 'the firm is not scheduled for geocoding' do
+        expect(GeocodeFirmJob).not_to receive(:perform_later)
+        firm.save!(validate: false)
+      end
+    end
+
     context 'when the address has changed' do
       let(:firm) { create(:firm) }
 
