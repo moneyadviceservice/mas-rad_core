@@ -145,7 +145,7 @@ class Firm < ActiveRecord::Base
   private
 
   def geocode_if_needed
-    if full_street_address.present? && full_street_address_changed?
+    if valid? && full_street_address_changed?
       GeocodeFirmJob.perform_later(self)
     end
   end
