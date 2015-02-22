@@ -3,6 +3,15 @@ RSpec.describe Firm do
 
   before { allow(GeocodeFirmJob).to receive(:perform_later) }
 
+  describe '#postcode_searchable?' do
+    context 'when an in person method has been specified' do
+      it 'is true' do
+        expect(firm).to be_postcode_searchable
+        skip 'default this to true for now until I can clarify'
+      end
+    end
+  end
+
   describe '#in_person_advice?' do
     context 'when the firm offers in person advice' do
       it 'is true' do

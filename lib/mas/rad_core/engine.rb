@@ -1,4 +1,5 @@
 require 'active_job'
+require 'active_model_serializers'
 require 'geocoder'
 require 'statsd'
 
