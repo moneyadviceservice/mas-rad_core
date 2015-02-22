@@ -37,6 +37,10 @@ class Adviser < ActiveRecord::Base
     "#{postcode}, United Kingdom"
   end
 
+  def geocoded?
+    latitude.present? && longitude.present?
+  end
+
   def field_order
     [
       :reference_number,
