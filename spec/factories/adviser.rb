@@ -6,6 +6,8 @@ FactoryGirl.define do
     name 'Ben Lovell'
     postcode 'RG1 1NN'
     travel_distance '50'
+    latitude  { Faker::Address.latitude.to_f.round(6) }
+    longitude { Faker::Address.longitude.to_f.round(6) }
     confirmed_disclaimer true
     firm
 
