@@ -1,0 +1,24 @@
+RSpec.describe AdviserSerializer do
+  let(:adviser) { create(:adviser) }
+
+  describe 'the serialized json' do
+    subject { described_class.new(adviser).as_json }
+
+    it 'exposes `_id`' do
+      expect(subject[:_id]).to eql(adviser.id)
+    end
+
+    it 'exposes `name`' do
+      expect(subject[:name]).to eql(adviser.name)
+    end
+
+    it 'exposes `range`' do
+      expect(subject[:range]).to eql(adviser.travel_distance)
+    end
+
+    it 'exposes `location`' do
+      expect(subject[:location][:lat]).to eql(adviser.latitude)
+      expect(subject[:location][:lon]).to eql(adviser.longitude)
+    end
+  end
+end
