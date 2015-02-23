@@ -29,6 +29,8 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
+  after_save :geocode_if_needed
+
   def full_street_address
     [postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
@@ -43,6 +45,12 @@ class Adviser < ActiveRecord::Base
   end
 
   private
+
+  def geocode_if_needed
+    if valid? && postcode_changed?
+      GeocodeAdviserJob.perform_later(self)
+    end
+  end
 
   def upcase_postcode
     postcode.upcase! if postcode.present?
