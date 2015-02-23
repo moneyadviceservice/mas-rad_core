@@ -98,6 +98,44 @@ RSpec.describe Adviser do
     it { is_expected.to eql "#{adviser.postcode}, United Kingdom"}
   end
 
+  describe '#latitude=' do
+    let(:adviser) { create(:adviser) }
+    let(:latitude) { Faker::Address.latitude }
+
+    before { adviser.latitude = latitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(adviser.latitude).to eql(latitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:latitude) { nil }
+
+      it 'does not cast the value' do
+        expect(adviser.latitude).to be_nil
+      end
+    end
+  end
+
+  describe '#longitude=' do
+    let(:adviser) { create(:adviser) }
+    let(:longitude) { Faker::Address.longitude }
+
+    before { adviser.longitude = longitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(adviser.longitude).to eql(longitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:longitude) { nil }
+
+      it 'does not cast the value' do
+        expect(adviser.longitude).to be_nil
+      end
+    end
+  end
+
   describe 'after save' do
     let(:adviser) { build(:adviser) }
 

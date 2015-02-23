@@ -35,6 +35,16 @@ class Adviser < ActiveRecord::Base
     [postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
 
+  def latitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:latitude, value)
+  end
+
+  def longitude=(value)
+    value = value.to_f.round(6) unless value.nil?
+    write_attribute(:longitude, value)
+  end
+
   def field_order
     [
       :reference_number,
