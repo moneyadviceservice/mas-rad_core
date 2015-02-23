@@ -136,6 +136,43 @@ RSpec.describe Adviser do
     end
   end
 
+  describe '#geocode!' do
+    let(:adviser) { create(:adviser) }
+    let(:coordinate) { [Faker::Address.latitude, Faker::Address.longitude] }
+
+    before do
+      expect(GeocodeFirmJob).not_to receive(:perform_later)
+      adviser.geocode!(coordinate)
+      adviser.reload
+    end
+
+    it 'the adviser is persisted' do
+      expect(adviser).to be_persisted
+    end
+
+    context 'with a valid coordinate' do
+      it 'the adviser latitude is updated' do
+        expect(adviser.latitude).to eql(coordinate.first.to_f.round(6))
+      end
+
+      it 'the adviser longitude is updated' do
+        expect(adviser.longitude).to eql(coordinate.last.to_f.round(6))
+      end
+    end
+
+    context 'with no coordinate' do
+      let(:coordinate) { nil }
+
+      it 'the adviser latitude is updated' do
+        expect(adviser.latitude).to be_nil
+      end
+
+      it 'the adviser longitude is updated' do
+        expect(adviser.longitude).to be_nil
+      end
+    end
+  end
+
   describe 'after save' do
     let(:adviser) { build(:adviser) }
 

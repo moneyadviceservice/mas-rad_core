@@ -45,6 +45,11 @@ class Adviser < ActiveRecord::Base
     write_attribute(:longitude, value)
   end
 
+  def geocode!(coordinate)
+    self.latitude, self.longitude = coordinate
+    save!(callbacks: false)
+  end
+
   def field_order
     [
       :reference_number,
