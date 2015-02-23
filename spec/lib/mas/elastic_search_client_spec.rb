@@ -24,6 +24,12 @@ RSpec.describe ElasticSearchClient do
   end
 
   describe '#store' do
-    it 'WIP'
+    context 'when successful' do
+      it 'returns truthily' do
+        VCR.use_cassette(:store_firm_1) do
+          expect(described_class.new.store('firms/1', {})).to be_truthy
+        end
+      end
+    end
   end
 end

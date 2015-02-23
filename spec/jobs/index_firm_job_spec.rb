@@ -1,9 +1,14 @@
 RSpec.describe IndexFirmJob, '#perform' do
-  subject { described_class.new }
+  let(:firm) { create(:adviser).firm }
+  let(:repository) { instance_double(FirmRepository) }
 
-  it 'indexes the firm' do
-    skip
-    adviser = create(:adviser)
-    subject.perform(adviser.firm)
+  before do
+    allow(FirmRepository).to receive(:new).and_return(repository)
+  end
+
+  it 'delegates to the firm repository' do
+    expect(repository).to receive(:store).with(firm)
+
+    described_class.new.perform(firm)
   end
 end

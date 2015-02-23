@@ -1,5 +1,5 @@
 class IndexFirmJob < ActiveJob::Base
   def perform(firm)
-    data = FirmSerializer.new(firm)
+    FirmRepository.new.store(firm)
   end
 end
