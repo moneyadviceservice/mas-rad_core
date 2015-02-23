@@ -29,6 +29,10 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
+  def full_street_address
+    [postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
+  end
+
   def field_order
     [
       :reference_number,

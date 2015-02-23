@@ -90,4 +90,11 @@ RSpec.describe Adviser do
       end
     end
   end
+
+  describe '#full_street_address' do
+    let(:adviser) { create(:adviser) }
+    subject { adviser.full_street_address }
+
+    it { is_expected.to eql "#{adviser.postcode}, United Kingdom"}
+  end
 end
