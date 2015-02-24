@@ -10,6 +10,6 @@ class GeocodeAdviserJob < ActiveJob::Base
   private
 
   def stat(key)
-    Stats.increment("radsignup.geocode_adviser.#{key}")
+    Stats.increment("radsignup.geocode.adviser.#{key}")
   end
 end
