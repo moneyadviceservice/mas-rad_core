@@ -32,7 +32,7 @@ class Adviser < ActiveRecord::Base
   after_save :geocode_if_needed
 
   def full_street_address
-    [postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
+    "#{postcode}, United Kingdom"
   end
 
   def latitude=(value)
