@@ -45,8 +45,8 @@ class Adviser < ActiveRecord::Base
     write_attribute(:longitude, value)
   end
 
-  def geocode!(coordinate)
-    self.latitude, self.longitude = coordinate
+  def geocode!(coordinates)
+    self.latitude, self.longitude = coordinates
     save!(callbacks: false)
   end
 

@@ -138,11 +138,11 @@ RSpec.describe Adviser do
 
   describe '#geocode!' do
     let(:adviser) { create(:adviser) }
-    let(:coordinate) { [Faker::Address.latitude, Faker::Address.longitude] }
+    let(:coordinates) { [Faker::Address.latitude, Faker::Address.longitude] }
 
     before do
       expect(GeocodeFirmJob).not_to receive(:perform_later)
-      adviser.geocode!(coordinate)
+      adviser.geocode!(coordinates)
       adviser.reload
     end
 
@@ -150,18 +150,18 @@ RSpec.describe Adviser do
       expect(adviser).to be_persisted
     end
 
-    context 'with a valid coordinate' do
+    context 'with valid coordinates' do
       it 'the adviser latitude is updated' do
-        expect(adviser.latitude).to eql(coordinate.first.to_f.round(6))
+        expect(adviser.latitude).to eql(coordinates.first.to_f.round(6))
       end
 
       it 'the adviser longitude is updated' do
-        expect(adviser.longitude).to eql(coordinate.last.to_f.round(6))
+        expect(adviser.longitude).to eql(coordinates.last.to_f.round(6))
       end
     end
 
-    context 'with no coordinate' do
-      let(:coordinate) { nil }
+    context 'with no coordinates' do
+      let(:coordinates) { nil }
 
       it 'the adviser latitude is updated' do
         expect(adviser.latitude).to be_nil
