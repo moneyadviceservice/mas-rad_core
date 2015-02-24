@@ -1,5 +1,3 @@
-require 'geocoder'
-
 class GeocodeAdviserJob < ActiveJob::Base
   def perform(adviser)
     coordinates = Geocoder.coordinates(adviser.full_street_address)

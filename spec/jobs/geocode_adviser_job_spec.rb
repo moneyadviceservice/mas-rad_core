@@ -1,5 +1,3 @@
-require 'geocoder'
-
 RSpec.describe GeocodeAdviserJob do
   let(:job) { GeocodeAdviserJob.new }
 
