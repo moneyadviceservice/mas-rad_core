@@ -1,4 +1,6 @@
 class Adviser < ActiveRecord::Base
+  include Geocode
+
   belongs_to :firm
 
   has_and_belongs_to_many :qualifications
@@ -33,21 +35,6 @@ class Adviser < ActiveRecord::Base
 
   def full_street_address
     "#{postcode}, United Kingdom"
-  end
-
-  def latitude=(value)
-    value = value.to_f.round(6) unless value.nil?
-    write_attribute(:latitude, value)
-  end
-
-  def longitude=(value)
-    value = value.to_f.round(6) unless value.nil?
-    write_attribute(:longitude, value)
-  end
-
-  def geocode!(coordinates)
-    self.latitude, self.longitude = coordinates
-    save!(callbacks: false)
   end
 
   def field_order
