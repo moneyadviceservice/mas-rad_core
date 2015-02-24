@@ -1,4 +1,4 @@
-module Geocode
+module Geocodable
   def latitude=(value)
     value = value.to_f.round(6) unless value.nil?
     write_attribute(:latitude, value)

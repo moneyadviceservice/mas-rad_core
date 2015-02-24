@@ -1,5 +1,5 @@
 class Adviser < ActiveRecord::Base
-  include Geocode
+  include Geocodable
 
   belongs_to :firm
 
