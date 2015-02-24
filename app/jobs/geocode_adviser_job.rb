@@ -2,9 +2,9 @@ require 'geocoder'
 
 class GeocodeAdviserJob < ActiveJob::Base
   def perform(adviser)
-    point = Geocoder.coordinates(adviser.full_street_address)
-    point ? stat(:success) : stat(:failed)
-    adviser.geocode!(point)
+    coordinates = Geocoder.coordinates(adviser.full_street_address)
+    coordinates ? stat(:success) : stat(:failed)
+    adviser.geocode!(coordinates)
   end
 
   private
