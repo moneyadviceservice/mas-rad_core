@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mas-rad_core (0.0.5)
+    mas-rad_core (0.0.6)
       geocoder
       pg
       rails (~> 4.2.0)
