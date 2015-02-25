@@ -8,6 +8,7 @@ require 'faker'
 require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support', '**', '*.rb')].each { |f| require f }
+Dir[File.join(File.dirname(__FILE__), '**', '*_examples.rb')].each { |f| require f }
 
 ActiveRecord::Migrator.migrations_paths.tap do |paths|
   paths << File.expand_path('../../spec/dummy/db/migrate', __FILE__)
