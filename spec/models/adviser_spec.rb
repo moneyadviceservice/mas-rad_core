@@ -90,4 +90,117 @@ RSpec.describe Adviser do
       end
     end
   end
+
+  describe '#full_street_address' do
+    let(:adviser) { create(:adviser) }
+    subject { adviser.full_street_address }
+
+    it { is_expected.to eql "#{adviser.postcode}, United Kingdom"}
+  end
+
+  describe '#latitude=' do
+    let(:adviser) { create(:adviser) }
+    let(:latitude) { Faker::Address.latitude }
+
+    before { adviser.latitude = latitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(adviser.latitude).to eql(latitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:latitude) { nil }
+
+      it 'does not cast the value' do
+        expect(adviser.latitude).to be_nil
+      end
+    end
+  end
+
+  describe '#longitude=' do
+    let(:adviser) { create(:adviser) }
+    let(:longitude) { Faker::Address.longitude }
+
+    before { adviser.longitude = longitude }
+
+    it 'casts the value to a float rounded to six decimal places' do
+      expect(adviser.longitude).to eql(longitude.to_f.round(6))
+    end
+
+    context 'when the value is nil' do
+      let(:longitude) { nil }
+
+      it 'does not cast the value' do
+        expect(adviser.longitude).to be_nil
+      end
+    end
+  end
+
+  describe '#geocode!' do
+    let(:adviser) { create(:adviser) }
+    let(:coordinates) { [Faker::Address.latitude, Faker::Address.longitude] }
+
+    before do
+      expect(GeocodeFirmJob).not_to receive(:perform_later)
+      adviser.geocode!(coordinates)
+      adviser.reload
+    end
+
+    it 'the adviser is persisted' do
+      expect(adviser).to be_persisted
+    end
+
+    context 'with valid coordinates' do
+      it 'the adviser latitude is updated' do
+        expect(adviser.latitude).to eql(coordinates.first.to_f.round(6))
+      end
+
+      it 'the adviser longitude is updated' do
+        expect(adviser.longitude).to eql(coordinates.last.to_f.round(6))
+      end
+    end
+
+    context 'with no coordinates' do
+      let(:coordinates) { nil }
+
+      it 'the adviser latitude is updated' do
+        expect(adviser.latitude).to be_nil
+      end
+
+      it 'the adviser longitude is updated' do
+        expect(adviser.longitude).to be_nil
+      end
+    end
+  end
+
+  describe 'after save' do
+    let(:adviser) { build(:adviser) }
+
+    context 'when the postcode is present' do
+      it 'the adviser is scheduled for geocoding' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(adviser)
+        adviser.save!
+      end
+    end
+
+    context 'when the adviser is not valid' do
+      before { adviser.postcode = 'not-valid' }
+
+      it 'the adviser is not scheduled for geocoding' do
+        expect(GeocodeAdviserJob).not_to receive(:perform_later)
+        adviser.save!(validate: false)
+      end
+    end
+
+    context 'when the postcode has changed' do
+      let(:adviser) { create(:adviser) }
+
+      before { adviser.postcode = 'ABCD 123' }
+
+      it 'the adviser is scheduled for geocoding' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(adviser)
+        adviser.save!
+      end
+    end
+  end
 end

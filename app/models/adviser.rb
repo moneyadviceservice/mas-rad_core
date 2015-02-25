@@ -1,4 +1,6 @@
 class Adviser < ActiveRecord::Base
+  include Geocodable
+
   belongs_to :firm
 
   has_and_belongs_to_many :qualifications
@@ -29,6 +31,12 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
+  after_save :geocode_if_needed
+
+  def full_street_address
+    "#{postcode}, United Kingdom"
+  end
+
   def field_order
     [
       :reference_number,
@@ -39,6 +47,12 @@ class Adviser < ActiveRecord::Base
   end
 
   private
+
+  def geocode_if_needed
+    if valid? && postcode_changed?
+      GeocodeAdviserJob.perform_later(self)
+    end
+  end
 
   def upcase_postcode
     postcode.upcase! if postcode.present?
