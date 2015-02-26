@@ -32,4 +32,14 @@ RSpec.describe ElasticSearchClient do
       end
     end
   end
+
+  describe '#search' do
+    context 'when successful' do
+      it 'returns the resulting `SearchResult` object' do
+        VCR.use_cassette(:search_firms) do
+          expect(described_class.new.search('firms/_search')).to be_a(SearchResult)
+        end
+      end
+    end
+  end
 end

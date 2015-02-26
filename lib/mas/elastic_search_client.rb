@@ -7,9 +7,18 @@ class ElasticSearchClient
   end
 
   def store(path, json)
-    uri = "#{server}/#{index}/#{path}"
-    res = HTTP.put(uri, json: json)
-
+    res = HTTP.put(uri_for(path), json: json)
     res.status.ok?
+  end
+
+  def search(path, json = {})
+    res = HTTP.post(uri_for(path), json: json)
+    SearchResult.new(res)
+  end
+
+  private
+
+  def uri_for(path)
+    "#{server}/#{index}/#{path}"
   end
 end
