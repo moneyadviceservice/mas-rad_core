@@ -11,8 +11,8 @@ class ElasticSearchClient
     res.status.ok?
   end
 
-  def search(path, json = {})
-    res = HTTP.post(uri_for(path), json: json)
+  def search(path, json = '')
+    res = HTTP.post(uri_for(path), body: json)
     SearchResult.new(res)
   end
 

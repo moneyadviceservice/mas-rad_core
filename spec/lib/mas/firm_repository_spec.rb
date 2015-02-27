@@ -29,7 +29,7 @@ RSpec.describe FirmRepository do
       it 'delegates to the configured client' do
         expect(client).to receive(:search).with(/.*/, {})
 
-        described_class.new(client_class).search(double(as_json: {}))
+        described_class.new(client_class).search({})
       end
     end
   end

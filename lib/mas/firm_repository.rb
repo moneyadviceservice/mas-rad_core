@@ -14,6 +14,6 @@ class FirmRepository
   end
 
   def search(query)
-    client.search('firms/_search', query.as_json)
+    client.search('firms/_search', query)
   end
 end
