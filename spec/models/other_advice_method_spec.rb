@@ -1,3 +1,4 @@
 RSpec.describe OtherAdviceMethod do
   it_behaves_like 'reference data'
+  it_behaves_like 'translatable'
 end
