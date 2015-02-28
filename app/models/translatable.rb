@@ -1,7 +1,5 @@
 module Translatable
-  def en_name
-    self.name
-  end
+  alias_attribute :en_name, :name
 
   def localized_name
     case I18n.locale
