@@ -6,7 +6,6 @@ RSpec.describe SearchResult do
   end
 
   describe '#firms' do
-
     context 'when the response is not `ok?`' do
       let(:response) { double(status: double(ok?: false)) }
 
@@ -16,8 +15,15 @@ RSpec.describe SearchResult do
     end
 
     context 'when the response is `ok?`' do
+      let(:response) { double(status: double(ok?: true), body: body) }
+
       context 'with results' do
-        it 'is pending'
+        let(:json) { IO.read(Rails.root.join('..', 'fixtures', 'search_results.json')) }
+        let(:body) { double(to_s: json) }
+
+        it 'returns 3 deserialized results' do
+          expect(described_class.new(response).firms.length).to eq(3)
+        end
       end
     end
   end

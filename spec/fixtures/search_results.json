@@ -1,0 +1,91 @@
+{
+  "took": 3,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "failed": 0
+  },
+  "hits": {
+    "total": 3,
+    "max_score": null,
+    "hits": [
+    {
+      "_index": "rad_test",
+      "_type": "firms",
+      "_id": "1",
+      "_score": null,
+      "_source": {
+        "_id": 1,
+        "registered_name": "Financial Advice 1 Ltd.",
+        "postcode_searchable": true,
+        "advisers": [
+        {
+          "_id": 1,
+          "name": "Ben Lovell",
+          "range": 50,
+          "location": {
+            "lat": 51.428473,
+            "lon": -0.943616
+          }
+        }
+        ]
+      },
+      "sort": [
+        0.7794549719530739
+        ]
+    },
+    {
+      "_index": "rad_test",
+      "_type": "firms",
+      "_id": "2",
+      "_score": null,
+      "_source": {
+        "_id": 2,
+        "registered_name": "Financial Advice 2 Ltd.",
+        "postcode_searchable": true,
+        "advisers": [
+        {
+          "_id": 2,
+          "name": "Ben Lovell",
+          "range": 50,
+          "location": {
+            "lat": 52.633013,
+            "lon": -1.131257
+          }
+        }
+        ]
+      },
+      "sort": [
+        84.20095125261956
+        ]
+    },
+    {
+      "_index": "rad_test",
+      "_type": "firms",
+      "_id": "3",
+      "_score": null,
+      "_source": {
+        "_id": 3,
+        "registered_name": "Financial Advice 3 Ltd.",
+        "postcode_searchable": true,
+        "advisers": [
+        {
+          "_id": 3,
+          "name": "Ben Lovell",
+          "range": 50,
+          "location": {
+            "lat": 55.856191,
+            "lon": -4.247082
+          }
+        }
+        ]
+      },
+      "sort": [
+        334.59761250497326
+        ]
+    }
+    ]
+  }
+}
+
