@@ -3,10 +3,10 @@ module Translatable
 
   def localized_name
     case I18n.locale
-      when :en
-        en_name
-      when :cy
-        cy_name
-    end || name
+    when :en
+      en_name
+    when :cy
+      cy_name
+    end
   end
 end

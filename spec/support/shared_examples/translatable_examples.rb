@@ -14,18 +14,8 @@ RSpec.shared_examples 'translatable' do
         I18n.with_locale(:cy) { example.run }
       end
 
-      context 'and a value for cy_name is present' do
-        it 'returns the value for cy_name' do
-          expect(model.localized_name).to eql(model.cy_name)
-        end
-      end
-
-      context 'and a value for cy_name is not present' do
-        before { model.cy_name = nil }
-
-        it 'returns the value for name' do
-          expect(model.localized_name).to eql(model.name)
-        end
+      it 'returns the value for cy_name' do
+        expect(model.localized_name).to eql(model.cy_name)
       end
     end
 
