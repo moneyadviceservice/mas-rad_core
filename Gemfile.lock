@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mas-rad_core (0.0.8)
+    mas-rad_core (0.0.9)
       active_model_serializers
       geocoder
       http
@@ -64,7 +64,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.4.3)
       i18n (~> 0.5)
-    form_data (0.1.0)
+    form_data (0.1.2)
+      http-form_data
     geocoder (1.2.7)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
@@ -72,6 +73,7 @@ GEM
     http (0.7.1)
       form_data (~> 0.1.0)
       http_parser.rb (~> 0.6.0)
+    http-form_data (1.0.0)
     http_parser.rb (0.6.0)
     i18n (0.7.0)
     json (1.8.2)

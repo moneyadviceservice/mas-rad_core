@@ -7,16 +7,32 @@ class ElasticSearchClient
   end
 
   def store(path, json)
-    res = HTTP.put(uri_for(path), json: json)
+    res = http.put(uri_for(path), json: json)
     res.status.ok?
   end
 
   def search(path, json = '')
-    res = HTTP.post(uri_for(path), body: json)
+    res = http.post(uri_for(path), body: json)
     SearchResult.new(res)
   end
 
   private
+
+  def http
+    authenticate? ? HTTP.basic_auth(user: username, pass: password) : HTTP
+  end
+
+  def authenticate?
+    username && password
+  end
+
+  def username
+    ENV['BONSAI_USERNAME']
+  end
+
+  def password
+    ENV['BONSAI_PASSWORD']
+  end
 
   def uri_for(path)
     "#{server}/#{index}/#{path}"
