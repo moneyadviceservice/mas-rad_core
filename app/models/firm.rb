@@ -90,10 +90,6 @@ class Firm < ActiveRecord::Base
 
   after_save :geocode_if_needed
 
-  def postcode_searchable?
-    true
-  end
-
   def full_street_address
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
@@ -105,6 +101,7 @@ class Firm < ActiveRecord::Base
   def in_person_advice?
     in_person_advice_methods.present?
   end
+  alias :postcode_searchable? :in_person_advice?
 
   def subsidiary?
     parent.present?
