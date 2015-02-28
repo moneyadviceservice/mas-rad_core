@@ -101,6 +101,7 @@ class Firm < ActiveRecord::Base
   def in_person_advice?
     in_person_advice_methods.present?
   end
+  alias :postcode_searchable? :in_person_advice?
 
   def subsidiary?
     parent.present?

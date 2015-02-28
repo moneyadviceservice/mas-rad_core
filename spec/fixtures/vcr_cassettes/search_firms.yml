@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:9200/rad_test/firms/_search
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Host:
+      - localhost:9200
+      User-Agent:
+      - RubyHTTPGem/0.7.1
+  response:
+    status:
+      code: !ruby/marshalable:HTTP::Response::Status
+        :__v2__:
+        - :@code
+        ? - 200
+        : 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '873'
+    body:
+      encoding: UTF-8
+      string: '{"took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":3,"max_score":1.0,"hits":[{"_index":"rad_test","_type":"firms","_id":"1","_score":1.0,"_source":{"_id":1,"registered_name":"Financial
+        Advice 1 Ltd.","postcode_searchable":true,"advisers":[{"_id":1,"name":"Ben
+        Lovell","range":50,"location":{"lat":51.428473,"lon":-0.943616}}]}},{"_index":"rad_test","_type":"firms","_id":"2","_score":1.0,"_source":{"_id":2,"registered_name":"Financial
+        Advice 2 Ltd.","postcode_searchable":true,"advisers":[{"_id":2,"name":"Ben
+        Lovell","range":50,"location":{"lat":52.633013,"lon":-1.131257}}]}},{"_index":"rad_test","_type":"firms","_id":"3","_score":1.0,"_source":{"_id":3,"registered_name":"Financial
+        Advice 3 Ltd.","postcode_searchable":true,"advisers":[{"_id":3,"name":"Ben
+        Lovell","range":50,"location":{"lat":55.856191,"lon":-4.247082}}]}}]}}'
+    http_version: 
+  recorded_at: Fri, 27 Feb 2015 19:45:05 GMT
+recorded_with: VCR 2.9.3

@@ -17,7 +17,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '~> 4.2.0'
 
+  s.add_dependency 'active_model_serializers'
   s.add_dependency 'geocoder'
+  s.add_dependency 'http'
   s.add_dependency 'pg'
   s.add_dependency 'statsd-ruby'
 

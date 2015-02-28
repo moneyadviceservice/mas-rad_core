@@ -1,5 +1,7 @@
 require 'active_job'
+require 'active_model_serializers'
 require 'geocoder'
+require 'http'
 require 'statsd'
 
 module MAS
