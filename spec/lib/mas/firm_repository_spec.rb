@@ -27,9 +27,15 @@ RSpec.describe FirmRepository do
 
     describe '#search' do
       it 'delegates to the configured client' do
-        expect(client).to receive(:search).with(/.*/, {})
+        expect(client).to receive(:search).with('firms/_search?from=91', {})
 
-        described_class.new(client_class).search({})
+        described_class.new(client_class).search({}, page: 10)
+      end
+
+      it 'returns the `SearchResult`' do
+        allow(client).to receive(:search)
+
+        expect(described_class.new(client_class).search({})).to be_a(SearchResult)
       end
     end
   end

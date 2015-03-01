@@ -1,4 +1,6 @@
 class FirmRepository
+  FROM_OFFSET = 1
+
   attr_reader :client, :serializer
 
   def initialize(client = ElasticSearchClient, serializer = FirmSerializer)
@@ -13,7 +15,16 @@ class FirmRepository
     client.store(path, json)
   end
 
-  def search(query)
-    client.search('firms/_search', query)
+  def search(query, page: 1)
+    response = client.search("firms/_search?from=#{from_for(page)}", query)
+    SearchResult.new(response, page: page)
+  end
+
+  private
+
+  def from_for(page)
+    return 0 if page == 1
+
+    ((page - 1) * MAS::RadCore::PAGE_SIZE) + FROM_OFFSET
   end
 end

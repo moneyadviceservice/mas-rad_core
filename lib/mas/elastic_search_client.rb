@@ -12,8 +12,7 @@ class ElasticSearchClient
   end
 
   def search(path, json = '')
-    res = http.post(uri_for(path), body: json)
-    SearchResult.new(res)
+    http.post(uri_for(path), body: json)
   end
 
   private
