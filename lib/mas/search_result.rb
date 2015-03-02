@@ -1,8 +1,11 @@
 class SearchResult
-  attr_reader :raw_response
+  include Paginateable
 
-  def initialize(response)
+  attr_reader :raw_response, :current_page
+
+  def initialize(response, page: 1)
     @raw_response = response
+    @current_page = page
   end
 
   def firms
@@ -13,13 +16,11 @@ class SearchResult
 
   private
 
-  def hits
-    json = JSON.parse(raw_response.body.to_s)
+  def json
+    @json ||= JSON.parse(raw_response.body.to_s)
+  end
 
-    if json['hits'] && json['hits']['hits']
-      json['hits']['hits']
-    else
-      []
-    end
+  def hits
+    json['hits']['hits']
   end
 end

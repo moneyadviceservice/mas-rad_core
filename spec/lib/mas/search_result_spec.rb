@@ -21,8 +21,40 @@ RSpec.describe SearchResult do
         let(:json) { IO.read(Rails.root.join('..', 'fixtures', 'search_results.json')) }
         let(:body) { double(to_s: json) }
 
+        subject { described_class.new(response) }
+
         it 'returns 3 deserialized results' do
-          expect(described_class.new(response).firms.length).to eq(3)
+          expect(subject.firms.length).to eq(3)
+        end
+
+        describe 'pagination' do
+          it 'has a #current_page' do
+            expect(subject.current_page).to eq(1)
+          end
+
+          it 'has #total_records' do
+            expect(subject.total_records).to eq(3)
+          end
+
+          it 'has #total_pages' do
+            expect(subject.total_pages).to eq(1)
+          end
+
+          it 'has a #first_record' do
+            expect(subject.first_record).to eq(1)
+          end
+
+          it 'has a #last_record' do
+            expect(subject.last_record).to eq(3)
+          end
+
+          it 'has a #page_size' do
+            expect(subject.page_size).to eq(MAS::RadCore::PAGE_SIZE)
+          end
+
+          it 'has a #limit_value' do
+            expect(subject.page_size).to eq(subject.limit_value)
+          end
         end
       end
     end
