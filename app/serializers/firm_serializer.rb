@@ -7,7 +7,8 @@ class FirmSerializer < ActiveModel::Serializer
     :options_when_paying_for_care,
     :equity_release,
     :inheritance_tax_planning,
-    :wills_and_probate
+    :wills_and_probate,
+    :other_advice_methods
 
   has_many :advisers
 
@@ -33,5 +34,9 @@ class FirmSerializer < ActiveModel::Serializer
 
   def _id
     object.id
+  end
+
+  def other_advice_methods
+    object.other_advice_method_ids
   end
 end
