@@ -35,5 +35,10 @@ RSpec.describe FirmSerializer do
     it 'exposes `wills_and_probate`' do
       expect(subject[:wills_and_probate]).to be
     end
+
+    it 'exposes names of `other_advice_methods`' do
+      expect(subject[:other_advice_methods]).
+        to eql(firm.other_advice_method_ids)
+    end
   end
 end
