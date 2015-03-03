@@ -11,6 +11,18 @@ RSpec.describe FirmRepository do
     end
   end
 
+  describe '#from_for' do
+    subject { described_class.new }
+
+    it 'returns 0 for page 1' do
+      expect(subject.from_for(1)).to eq(0)
+    end
+
+    it 'returns 10 for page 2' do
+      expect(subject.from_for(2)).to eq(10)
+    end
+  end
+
   describe 'searching and retrieving' do
     let(:client) { double }
     let(:client_class) { double(new: client) }
@@ -27,7 +39,7 @@ RSpec.describe FirmRepository do
 
     describe '#search' do
       it 'delegates to the configured client' do
-        expect(client).to receive(:search).with('firms/_search?from=91', {})
+        expect(client).to receive(:search).with('firms/_search?from=90', {})
 
         described_class.new(client_class).search({}, page: 10)
       end

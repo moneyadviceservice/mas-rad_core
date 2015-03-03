@@ -1,6 +1,4 @@
 class FirmRepository
-  FROM_OFFSET = 1
-
   attr_reader :client, :serializer
 
   def initialize(client = ElasticSearchClient, serializer = FirmSerializer)
@@ -20,11 +18,9 @@ class FirmRepository
     SearchResult.new(response, page: page)
   end
 
-  private
-
   def from_for(page)
     return 0 if page == 1
 
-    ((page - 1) * MAS::RadCore::PAGE_SIZE) + FROM_OFFSET
+    ((page - 1) * MAS::RadCore::PAGE_SIZE)
   end
 end
