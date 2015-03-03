@@ -19,5 +19,21 @@ RSpec.describe FirmSerializer do
     it 'exposes the `advisers` association' do
       expect(subject[:advisers]).to be
     end
+
+    it 'exposes `options_when_paying_for_care`' do
+      expect(subject[:options_when_paying_for_care]).to be
+    end
+
+    it 'exposes `equity_release`' do
+      expect(subject[:equity_release]).to be
+    end
+
+    it 'exposes `inheritance_tax_planning`' do
+      expect(subject[:inheritance_tax_planning]).to be
+    end
+
+    it 'exposes `wills_and_probate`' do
+      expect(subject[:wills_and_probate]).to be
+    end
   end
 end

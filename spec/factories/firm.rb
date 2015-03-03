@@ -36,5 +36,15 @@ FactoryGirl.define do
     factory :subsidiary do
       parent factory: Firm
     end
+
+    factory :firm_with_no_business_split do
+      retirement_income_products_percent 0
+      pension_transfer_percent 0
+      long_term_care_percent 0
+      equity_release_percent 0
+      inheritance_tax_and_estate_planning_percent 0
+      wills_and_probate_percent 0
+      other_percent 0
+    end
   end
 end
