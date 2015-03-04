@@ -7,11 +7,20 @@ RSpec.describe GeocodeAdviserJob do
     context 'when the adviser postcode can be geocoded' do
       let(:postcode) { 'EC1N 2TD' }
 
-      it 'the adviser is geocoded with the coordinates' do
+      subject do
         VCR.use_cassette('postcode-one-result') do
-          expect(adviser).to receive(:geocode!).with([51.5180697, -0.1085203])
           job.perform(adviser)
         end
+      end
+
+      it 'the adviser is geocoded with the coordinates' do
+        subject
+
+        expect(adviser.coordinates).to contain_exactly(51.51807, -0.10852)
+      end
+
+      it 'schedules the indexing' do
+        expect { subject }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.size }.by(1)
       end
     end
 
@@ -20,8 +29,9 @@ RSpec.describe GeocodeAdviserJob do
 
       it 'the latitude and longitude are set to nil' do
         VCR.use_cassette('postcode-no-results') do
-          expect(adviser).to receive(:geocode!).with(nil)
           job.perform(adviser)
+
+          expect(adviser.coordinates).to contain_exactly(nil, nil)
         end
       end
     end

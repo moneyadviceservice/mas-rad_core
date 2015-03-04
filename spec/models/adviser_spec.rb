@@ -13,24 +13,6 @@ RSpec.describe Adviser do
     end
   end
 
-  describe 'scheduling the parent firm for indexing' do
-    context 'when the adviser has not been geocoded' do
-      it 'does not schedule the job' do
-        expect do
-          create(:adviser, latitude: nil, longitude: nil)
-        end.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs.size }
-      end
-    end
-
-    context 'when the adviser has been geocoded' do
-      it 'schedules the job' do
-        expect do
-          create(:adviser)
-        end.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.size }.by(1)
-      end
-    end
-  end
-
   describe 'before validation' do
     context 'when a reference number is present' do
       let(:attributes) { attributes_for(:adviser) }

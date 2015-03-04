@@ -12,6 +12,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   has_many :advisers
 
+  def advisers
+    object.advisers.geocoded
+  end
+
   def postcode_searchable
     object.postcode_searchable?
   end

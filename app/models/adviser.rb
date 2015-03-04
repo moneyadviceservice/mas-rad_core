@@ -12,8 +12,6 @@ class Adviser < ActiveRecord::Base
 
   before_validation :upcase_postcode
 
-  after_save :schedule_indexing, if: -> { valid? && geocoded? }
-
   validates_acceptance_of :confirmed_disclaimer, accept: true
 
   validates :travel_distance,
@@ -40,7 +38,11 @@ class Adviser < ActiveRecord::Base
   end
 
   def geocoded?
-    latitude.present? && longitude.present?
+    coordinates.compact.present?
+  end
+
+  def coordinates
+    [latitude, longitude]
   end
 
   def field_order
@@ -58,10 +60,6 @@ class Adviser < ActiveRecord::Base
     if valid? && postcode_changed?
       GeocodeAdviserJob.perform_later(self)
     end
-  end
-
-  def schedule_indexing
-    IndexFirmJob.perform_later(firm)
   end
 
   def upcase_postcode
