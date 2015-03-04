@@ -16,10 +16,6 @@ RSpec.describe FirmSerializer do
       expect(subject[:postcode_searchable]).to eql(firm.postcode_searchable?)
     end
 
-    it 'exposes the `advisers` association' do
-      expect(subject[:advisers]).to be
-    end
-
     it 'exposes `options_when_paying_for_care`' do
       expect(subject[:options_when_paying_for_care]).to be
     end
@@ -39,6 +35,14 @@ RSpec.describe FirmSerializer do
     it 'exposes names of `other_advice_methods`' do
       expect(subject[:other_advice_methods]).
         to eql(firm.other_advice_method_ids)
+    end
+
+    describe 'advisers' do
+      before { create(:adviser, firm: firm, latitude: nil, longitude: nil) }
+
+      it 'only includes geocoded records' do
+        expect(subject[:advisers].count).to eq(1)
+      end
     end
   end
 end
