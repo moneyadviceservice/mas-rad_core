@@ -1,4 +1,6 @@
 class InvestmentSize < ActiveRecord::Base
+  include Translatable
+
   has_and_belongs_to_many :firms
 
   validates_presence_of :name
