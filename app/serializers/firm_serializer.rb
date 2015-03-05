@@ -8,7 +8,8 @@ class FirmSerializer < ActiveModel::Serializer
     :equity_release,
     :inheritance_tax_planning,
     :wills_and_probate,
-    :other_advice_methods
+    :other_advice_methods,
+    :investment_sizes
 
   has_many :advisers
 
@@ -42,5 +43,9 @@ class FirmSerializer < ActiveModel::Serializer
 
   def other_advice_methods
     object.other_advice_method_ids
+  end
+
+  def investment_sizes
+    object.investment_size_ids
   end
 end
