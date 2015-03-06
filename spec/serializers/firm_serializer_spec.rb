@@ -17,19 +17,19 @@ RSpec.describe FirmSerializer do
     end
 
     it 'exposes `options_when_paying_for_care`' do
-      expect(subject[:options_when_paying_for_care]).to be
+      expect(subject[:options_when_paying_for_care]).to eq(firm.long_term_care_percent)
     end
 
     it 'exposes `equity_release`' do
-      expect(subject[:equity_release]).to be
+      expect(subject[:equity_release]).to eq(firm.equity_release_percent)
     end
 
     it 'exposes `inheritance_tax_planning`' do
-      expect(subject[:inheritance_tax_planning]).to be
+      expect(subject[:inheritance_tax_planning]).to eq(firm.inheritance_tax_and_estate_planning_percent)
     end
 
     it 'exposes `wills_and_probate`' do
-      expect(subject[:wills_and_probate]).to be
+      expect(subject[:wills_and_probate]).to eq(firm.wills_and_probate_percent)
     end
 
     it 'exposes `other_advice_method_ids`' do
