@@ -22,19 +22,19 @@ class FirmSerializer < ActiveModel::Serializer
   end
 
   def options_when_paying_for_care
-    object.long_term_care_percent.to_i > 0
+    object.long_term_care_percent
   end
 
   def equity_release
-    object.equity_release_percent.to_i > 0
+    object.equity_release_percent
   end
 
   def inheritance_tax_planning
-    object.inheritance_tax_and_estate_planning_percent.to_i > 0
+    object.inheritance_tax_and_estate_planning_percent
   end
 
   def wills_and_probate
-    object.wills_and_probate_percent.to_i > 0
+    object.wills_and_probate_percent
   end
 
   def _id
