@@ -1,6 +1,12 @@
 module Paginateable
   def total_pages
-    (total_records / page_size) + 1
+    if total_records < page_size
+      1
+    elsif (total_records % page_size).zero?
+      total_records / page_size
+    else
+      (total_records / page_size) + 1
+    end
   end
 
   def total_records

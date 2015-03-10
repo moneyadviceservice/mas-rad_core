@@ -18,8 +18,12 @@ RSpec.describe SearchResult do
       let(:response) { double(status: double(ok?: true), body: body) }
 
       context 'with results' do
-        let(:json) { IO.read(Rails.root.join('..', 'fixtures', 'search_results.json')) }
-        let(:body) { double(to_s: json) }
+        let(:json) do
+          JSON.parse(
+            IO.read(Rails.root.join('..', 'fixtures', 'search_results.json'))
+          )
+        end
+        let(:body) { double(to_s: JSON.dump(json)) }
 
         subject { described_class.new(response) }
 
@@ -36,10 +40,6 @@ RSpec.describe SearchResult do
             expect(subject.total_records).to eq(3)
           end
 
-          it 'has #total_pages' do
-            expect(subject.total_pages).to eq(1)
-          end
-
           it 'has a #first_record' do
             expect(subject.first_record).to eq(1)
           end
@@ -54,6 +54,28 @@ RSpec.describe SearchResult do
 
           it 'has a #limit_value' do
             expect(subject.page_size).to eq(subject.limit_value)
+          end
+
+          context 'with 3 records' do
+            it '#total_pages is 1' do
+              expect(subject.total_pages).to eq(1)
+            end
+          end
+
+          context 'with 30 records' do
+            before { json['hits']['total'] = 30 }
+
+            it '#total_pages is 3' do
+              expect(subject.total_pages).to eq(3)
+            end
+          end
+
+          context 'with 31 records' do
+            before { json['hits']['total'] = 31 }
+
+            it '#total_pages is 4' do
+              expect(subject.total_pages).to eq(4)
+            end
           end
         end
       end
