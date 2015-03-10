@@ -9,6 +9,6 @@ class FirmResult
     @id    = source['_id']
     @name  = source['registered_name']
     @total_advisers  = source['advisers'].count
-    @closest_adviser = data['sort'].first
+    @closest_adviser = data['sort'].last
   end
 end
