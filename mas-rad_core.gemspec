@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'geocoder'
   s.add_dependency 'http'
   s.add_dependency 'pg'
+  s.add_dependency 'redis'
   s.add_dependency 'statsd-ruby'
 
   s.add_development_dependency 'factory_girl_rails'
