@@ -10,7 +10,8 @@ class FirmSerializer < ActiveModel::Serializer
     :wills_and_probate,
     :other_advice_methods,
     :advises_on_investments,
-    :investment_sizes
+    :investment_sizes,
+    :investment_transfers
 
   has_many :advisers
 
@@ -52,5 +53,9 @@ class FirmSerializer < ActiveModel::Serializer
 
   def investment_sizes
     object.investment_size_ids
+  end
+
+  def investment_transfers
+    object.pension_transfer_percent > 0
   end
 end

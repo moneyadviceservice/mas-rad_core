@@ -40,6 +40,10 @@ RSpec.describe FirmSerializer do
       expect(subject[:investment_sizes]).to eql(firm.investment_size_ids)
     end
 
+    it 'exposes `investment_transfers`' do
+      expect(subject[:investment_transfers]).to be
+    end
+
     describe 'advisers' do
       before { create(:adviser, firm: firm, latitude: nil, longitude: nil) }
 
