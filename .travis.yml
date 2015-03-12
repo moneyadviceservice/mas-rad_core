@@ -3,7 +3,7 @@ sudo: false
 cache:
   bundler: true
 rvm:
-  - 2.2.0
+  - 2.2.1
 before_script:
   - cp spec/dummy/config/database.example.yml spec/dummy/config/database.yml
   - psql -c "create database rad_core_test;" -U postgres
