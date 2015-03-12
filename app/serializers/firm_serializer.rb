@@ -56,6 +56,6 @@ class FirmSerializer < ActiveModel::Serializer
   end
 
   def investment_transfers
-    object.pension_transfer_percent > 0
+    object.pension_transfer_percent.to_i > 0
   end
 end
