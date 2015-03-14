@@ -4,6 +4,7 @@ class FirmSerializer < ActiveModel::Serializer
   attributes :_id,
     :registered_name,
     :postcode_searchable,
+    :pension_transfer,
     :options_when_paying_for_care,
     :equity_release,
     :inheritance_tax_planning,
@@ -21,6 +22,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   def postcode_searchable
     object.postcode_searchable?
+  end
+
+  def pension_transfer
+    object.pension_transfer_percent
   end
 
   def options_when_paying_for_care
