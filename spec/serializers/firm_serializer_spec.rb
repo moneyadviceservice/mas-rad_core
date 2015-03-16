@@ -16,6 +16,10 @@ RSpec.describe FirmSerializer do
       expect(subject[:postcode_searchable]).to eql(firm.postcode_searchable?)
     end
 
+    it 'exposes `retirement_income_products`' do
+      expect(subject[:retirement_income_products]).to eq(firm.retirement_income_products_percent)
+    end
+
     it 'exposes `pension_transfer`' do
       expect(subject[:pension_transfer]).to eq(firm.pension_transfer_percent)
     end
