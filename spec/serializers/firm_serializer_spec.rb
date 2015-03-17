@@ -1,5 +1,7 @@
 RSpec.describe FirmSerializer do
-  let(:firm) { create(:adviser).firm }
+  let(:firm) do
+    create(:firm, principal: create(:principal)) { |f| create(:adviser, firm: f) }
+  end
 
   describe 'the serialized json' do
     subject { described_class.new(firm).as_json }
@@ -14,6 +16,42 @@ RSpec.describe FirmSerializer do
 
     it 'exposes `postcode_searchable`' do
       expect(subject[:postcode_searchable]).to eql(firm.postcode_searchable?)
+    end
+
+    it 'exposes `address_line_one`' do
+      expect(subject[:address_line_one]).to eql(firm.address_line_one)
+    end
+
+    it 'exposes `address_town`' do
+      expect(subject[:address_town]).to eql(firm.address_town)
+    end
+
+    it 'exposes `address_county`' do
+      expect(subject[:address_county]).to eql(firm.address_county)
+    end
+
+    it 'exposes `address_postcode`' do
+      expect(subject[:address_postcode]).to eql(firm.address_postcode)
+    end
+
+    it 'exposes `telephone_number`' do
+      expect(subject[:telephone_number]).to eql(firm.telephone_number)
+    end
+
+    it 'exposes `website_address`' do
+      expect(subject[:website_address]).to eql(firm.principal.website_address)
+    end
+
+    it 'exposes `email_address`' do
+      expect(subject[:email_address]).to eql(firm.email_address)
+    end
+
+    it 'exposes `free_initial_meeting`' do
+      expect(subject[:free_initial_meeting]).to eql(firm.free_initial_meeting)
+    end
+
+    it 'exposes `minimum_fixed_fee`' do
+      expect(subject[:minimum_fixed_fee]).to eql(firm.minimum_fixed_fee)
     end
 
     it 'exposes `retirement_income_products`' do

@@ -4,6 +4,15 @@ class FirmSerializer < ActiveModel::Serializer
   attributes :_id,
     :registered_name,
     :postcode_searchable,
+    :address_line_one,
+    :address_town,
+    :address_county,
+    :address_postcode,
+    :telephone_number,
+    :website_address,
+    :email_address,
+    :free_initial_meeting,
+    :minimum_fixed_fee,
     :retirement_income_products,
     :pension_transfer,
     :options_when_paying_for_care,
@@ -21,6 +30,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   def postcode_searchable
     object.postcode_searchable?
+  end
+
+  def website_address
+    object.principal.try(:website_address)
   end
 
   def retirement_income_products
