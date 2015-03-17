@@ -4,15 +4,14 @@ class FirmSerializer < ActiveModel::Serializer
   attributes :_id,
     :registered_name,
     :postcode_searchable,
+    :retirement_income_products,
     :pension_transfer,
     :options_when_paying_for_care,
     :equity_release,
     :inheritance_tax_planning,
     :wills_and_probate,
     :other_advice_methods,
-    :advises_on_investments,
-    :investment_sizes,
-    :investment_transfers
+    :investment_sizes
 
   has_many :advisers
 
@@ -22,6 +21,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   def postcode_searchable
     object.postcode_searchable?
+  end
+
+  def retirement_income_products
+    object.retirement_income_products_percent
   end
 
   def pension_transfer
@@ -52,15 +55,7 @@ class FirmSerializer < ActiveModel::Serializer
     object.other_advice_method_ids
   end
 
-  def advises_on_investments
-    object.investment_size_ids.any?
-  end
-
   def investment_sizes
     object.investment_size_ids
-  end
-
-  def investment_transfers
-    object.pension_transfer_percent.to_i > 0
   end
 end

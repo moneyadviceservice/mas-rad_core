@@ -16,6 +16,10 @@ RSpec.describe FirmSerializer do
       expect(subject[:postcode_searchable]).to eql(firm.postcode_searchable?)
     end
 
+    it 'exposes `retirement_income_products`' do
+      expect(subject[:retirement_income_products]).to eq(firm.retirement_income_products_percent)
+    end
+
     it 'exposes `pension_transfer`' do
       expect(subject[:pension_transfer]).to eq(firm.pension_transfer_percent)
     end
@@ -42,24 +46,6 @@ RSpec.describe FirmSerializer do
 
     it 'exposes `investment_size_ids`' do
       expect(subject[:investment_sizes]).to eql(firm.investment_size_ids)
-    end
-
-    it 'exposes `advises_on_investments`' do
-      expect(subject[:advises_on_investments]).to be
-    end
-
-    context 'when pension transfer percent is more than zero' do
-      it 'exposes `investment_transfers` as true' do
-        expect(subject[:investment_transfers]).to be
-      end
-    end
-
-    context 'when pension transfer percent is not present' do
-      before { firm.pension_transfer_percent = nil }
-
-      it 'exposes `investment_transfers` as false' do
-        expect(subject[:investment_transfers]).to be false
-      end
     end
 
     describe 'advisers' do
