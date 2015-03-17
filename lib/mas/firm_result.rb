@@ -1,8 +1,21 @@
 class FirmResult
+  DIRECTLY_MAPPED_FIELDS = [
+    :address_line_one,
+    :address_town,
+    :address_county,
+    :address_postcode,
+    :telephone_number,
+    :website_address,
+    :email_address,
+    :free_initial_meeting,
+    :minimum_fixed_fee
+  ]
+
   attr_reader :id,
     :name,
     :closest_adviser,
-    :total_advisers
+    :total_advisers,
+    *DIRECTLY_MAPPED_FIELDS
 
   def initialize(data)
     source = data['_source']
@@ -10,5 +23,9 @@ class FirmResult
     @name  = source['registered_name']
     @total_advisers  = source['advisers'].count
     @closest_adviser = data['sort'].last
+
+    DIRECTLY_MAPPED_FIELDS.each do |field|
+      instance_variable_set("@#{field}", source[field.to_s])
+    end
   end
 end
