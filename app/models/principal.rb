@@ -27,7 +27,8 @@ class Principal < ActiveRecord::Base
 
   validates :website_address,
     allow_blank: true,
-    length: { maximum: 100 }
+    length: { maximum: 100 },
+    format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
 
   validates_acceptance_of :confirmed_disclaimer, accept: true
 

@@ -160,6 +160,14 @@ RSpec.describe Principal do
         it 'must not exceed 100 characters' do
           expect(build(:principal, website_address: "#{'a' * 100}.com")).not_to be_valid
         end
+
+        it 'must include the protocol segment' do
+          expect(build(:principal, website_address: 'www.google.com')).not_to be_valid
+        end
+
+        it 'must be a reasonably valid URL' do
+          expect(build(:principal, website_address: 'http://a')).not_to be_valid
+        end
       end
     end
   end
