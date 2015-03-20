@@ -18,6 +18,8 @@ RSpec.describe FirmResult do
         'email_address' => 'someone@example.com',
         'free_initial_meeting' => true,
         'minimum_fixed_fee' => 999,
+        'other_advice_methods' => [1, 2, 3],
+        'in_person_advice_methods' => [1, 2, 3],
         'advisers' => [
           {
             '_id'      => 1,
@@ -76,6 +78,14 @@ RSpec.describe FirmResult do
 
     it 'maps the `minimum_fixed_fee`' do
       expect(subject.minimum_fixed_fee).to eq(999)
+    end
+
+    it 'maps the `other_advice_methods`' do
+      expect(subject.other_advice_methods).to eq([1, 2, 3])
+    end
+
+    it 'maps the `in_person_advice_methods`' do
+      expect(subject.in_person_advice_methods).to eq([1, 2, 3])
     end
 
     it 'maps the `total_advisers`' do

@@ -8,7 +8,9 @@ class FirmResult
     :website_address,
     :email_address,
     :free_initial_meeting,
-    :minimum_fixed_fee
+    :minimum_fixed_fee,
+    :other_advice_methods,
+    :in_person_advice_methods
   ]
 
   attr_reader :id,
