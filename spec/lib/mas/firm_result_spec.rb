@@ -20,6 +20,12 @@ RSpec.describe FirmResult do
         'minimum_fixed_fee' => 999,
         'other_advice_methods' => [1, 2, 3],
         'in_person_advice_methods' => [1, 2, 3],
+        'retirement_income_products' => 10,
+        'pension_transfer' => 10,
+        'options_when_paying_for_care' => 10,
+        'equity_release' => 10,
+        'inheritance_tax_planning' => 10,
+        'wills_and_probate' => 0,
         'advisers' => [
           {
             '_id'      => 1,
@@ -94,6 +100,12 @@ RSpec.describe FirmResult do
 
     it 'maps the `closest_adviser`' do
       expect(subject.closest_adviser).to eq(0.7794549719530739)
+    end
+
+    it 'maps the `types_of_advice` that are greater than 0 percent' do
+      expect(subject.types_of_advice).to eq(
+        FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
+      )
     end
 
     context 'when sorted by types of advice first' do
