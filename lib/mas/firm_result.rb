@@ -48,4 +48,6 @@ class FirmResult
   def minimum_fixed_fee?
     minimum_fixed_fee.present?
   end
+
+  alias :free_initial_meeting? :free_initial_meeting
 end
