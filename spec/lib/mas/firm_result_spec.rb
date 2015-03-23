@@ -108,6 +108,10 @@ RSpec.describe FirmResult do
       )
     end
 
+    it 'has a #minimum_fixed_fee?' do
+      expect(subject).to be_minimum_fixed_fee
+    end
+
     context 'when sorted by types of advice first' do
       before { data['sort'].unshift(123) }
 

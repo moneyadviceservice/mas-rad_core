@@ -44,4 +44,8 @@ class FirmResult
   def types_of_advice
     TYPES_OF_ADVICE_FIELDS.select { |field| public_send(field).nonzero? }
   end
+
+  def minimum_fixed_fee?
+    minimum_fixed_fee.present?
+  end
 end
