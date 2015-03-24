@@ -26,6 +26,8 @@ class Firm < ActiveRecord::Base
 
   has_many :advisers
   has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id
+  has_many :qualifications, -> { reorder('').uniq }, through: :advisers
+  has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
   attr_accessor :percent_total
 

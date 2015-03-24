@@ -21,9 +21,19 @@ class FirmSerializer < ActiveModel::Serializer
     :wills_and_probate,
     :other_advice_methods,
     :investment_sizes,
-    :in_person_advice_methods
+    :in_person_advice_methods,
+    :adviser_qualification_ids,
+    :adviser_accreditation_ids
 
   has_many :advisers
+
+  def adviser_accreditation_ids
+    object.accreditation_ids
+  end
+
+  def adviser_qualification_ids
+    object.qualification_ids
+  end
 
   def advisers
     object.advisers.geocoded

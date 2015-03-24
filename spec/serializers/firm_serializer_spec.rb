@@ -90,6 +90,14 @@ RSpec.describe FirmSerializer do
       expect(subject[:in_person_advice_methods]).to eql(firm.in_person_advice_method_ids)
     end
 
+    it 'exposes `adviser_qualification_ids`' do
+      expect(subject[:adviser_qualification_ids]).to eql(firm.qualification_ids)
+    end
+
+    it 'exposes `adviser_creditation_ids`' do
+      expect(subject[:adviser_accreditation_ids]).to eql(firm.accreditation_ids)
+    end
+
     describe 'advisers' do
       before { create(:adviser, firm: firm, latitude: nil, longitude: nil) }
 
