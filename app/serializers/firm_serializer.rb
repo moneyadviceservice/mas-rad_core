@@ -4,6 +4,15 @@ class FirmSerializer < ActiveModel::Serializer
   attributes :_id,
     :registered_name,
     :postcode_searchable,
+    :address_line_one,
+    :address_town,
+    :address_county,
+    :address_postcode,
+    :telephone_number,
+    :website_address,
+    :email_address,
+    :free_initial_meeting,
+    :minimum_fixed_fee,
     :retirement_income_products,
     :pension_transfer,
     :options_when_paying_for_care,
@@ -11,9 +20,20 @@ class FirmSerializer < ActiveModel::Serializer
     :inheritance_tax_planning,
     :wills_and_probate,
     :other_advice_methods,
-    :investment_sizes
+    :investment_sizes,
+    :in_person_advice_methods,
+    :adviser_qualification_ids,
+    :adviser_accreditation_ids
 
   has_many :advisers
+
+  def adviser_accreditation_ids
+    object.accreditation_ids
+  end
+
+  def adviser_qualification_ids
+    object.qualification_ids
+  end
 
   def advisers
     object.advisers.geocoded
@@ -21,6 +41,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   def postcode_searchable
     object.postcode_searchable?
+  end
+
+  def website_address
+    object.principal.try(:website_address)
   end
 
   def retirement_income_products
@@ -53,6 +77,10 @@ class FirmSerializer < ActiveModel::Serializer
 
   def other_advice_methods
     object.other_advice_method_ids
+  end
+
+  def in_person_advice_methods
+    object.in_person_advice_method_ids
   end
 
   def investment_sizes

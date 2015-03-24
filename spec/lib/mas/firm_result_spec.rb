@@ -9,6 +9,26 @@ RSpec.describe FirmResult do
         '_id' => 1,
         'registered_name' => 'Financial Advice 1 Ltd.',
         'postcode_searchable' => true,
+        'address_line_one' => '64 Somewhere',
+        'address_town' => 'Romford',
+        'address_county' => 'Essex',
+        'address_postcode' => 'RM1 1AL',
+        'telephone_number' => '0208 595 2346',
+        'website_address' => 'http://www.example.com',
+        'email_address' => 'someone@example.com',
+        'free_initial_meeting' => true,
+        'minimum_fixed_fee' => 999,
+        'other_advice_methods' => [1, 2, 3],
+        'in_person_advice_methods' => [1, 2, 3],
+        'retirement_income_products' => 10,
+        'pension_transfer' => 10,
+        'options_when_paying_for_care' => 10,
+        'equity_release' => 10,
+        'inheritance_tax_planning' => 10,
+        'wills_and_probate' => 0,
+        'investment_sizes' => [1, 2],
+        'adviser_accreditation_ids' => [5],
+        'adviser_qualification_ids' => [3],
         'advisers' => [
           {
             '_id'      => 1,
@@ -33,12 +53,82 @@ RSpec.describe FirmResult do
       expect(subject.name).to eq('Financial Advice 1 Ltd.')
     end
 
+    it 'maps the `address_line_one`' do
+      expect(subject.address_line_one).to eq('64 Somewhere')
+    end
+
+    it 'maps the `address_town`' do
+      expect(subject.address_town).to eq('Romford')
+    end
+
+    it 'maps the `address_county`' do
+      expect(subject.address_county).to eq('Essex')
+    end
+
+    it 'maps the `address_postcode`' do
+      expect(subject.address_postcode).to eq('RM1 1AL')
+    end
+
+    it 'maps the `telephone_number`' do
+      expect(subject.telephone_number).to eq('0208 595 2346')
+    end
+
+    it 'maps the `website_address`' do
+      expect(subject.website_address).to eq('http://www.example.com')
+    end
+
+    it 'maps the `email_address`' do
+      expect(subject.email_address).to eq('someone@example.com')
+    end
+
+    it 'maps the `free_initial_meeting`' do
+      expect(subject.free_initial_meeting).to eq(true)
+    end
+
+    it 'maps the `minimum_fixed_fee`' do
+      expect(subject.minimum_fixed_fee).to eq(999)
+    end
+
+    it 'maps the `other_advice_methods`' do
+      expect(subject.other_advice_methods).to eq([1, 2, 3])
+    end
+
+    it 'maps the `in_person_advice_methods`' do
+      expect(subject.in_person_advice_methods).to eq([1, 2, 3])
+    end
+
     it 'maps the `total_advisers`' do
       expect(subject.total_advisers).to eq(1)
     end
 
     it 'maps the `closest_adviser`' do
       expect(subject.closest_adviser).to eq(0.7794549719530739)
+    end
+
+    it 'maps the `types_of_advice` that are greater than 0 percent' do
+      expect(subject.types_of_advice).to eq(
+        FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
+      )
+    end
+
+    it 'maps the `minimum_pot_size_id`' do
+      expect(subject.minimum_pot_size_id).to eq(1)
+    end
+
+    it 'has a #minimum_fixed_fee?' do
+      expect(subject).to be_minimum_fixed_fee
+    end
+
+    it 'has a #free_initial_meeting?' do
+      expect(subject).to be_free_initial_meeting
+    end
+
+    it 'exposes `adviser_accreditation_ids`' do
+      expect(subject.adviser_accreditation_ids).to eq([5])
+    end
+
+    it 'exposes `adviser_qualification_ids`' do
+      expect(subject.adviser_qualification_ids).to eq([3])
     end
 
     context 'when sorted by types of advice first' do

@@ -1,5 +1,6 @@
 class OtherAdviceMethod < ActiveRecord::Base
   include Translatable
+  include FriendlyNamable
 
   has_and_belongs_to_many :firms
 
