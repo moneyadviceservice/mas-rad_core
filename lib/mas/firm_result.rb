@@ -10,7 +10,8 @@ class FirmResult
     :free_initial_meeting,
     :minimum_fixed_fee,
     :other_advice_methods,
-    :in_person_advice_methods
+    :in_person_advice_methods,
+    :investment_sizes
   ]
 
   TYPES_OF_ADVICE_FIELDS = [
@@ -47,6 +48,10 @@ class FirmResult
 
   def minimum_fixed_fee?
     minimum_fixed_fee.present?
+  end
+
+  def minimum_pot_size_id
+    investment_sizes.first
   end
 
   alias :free_initial_meeting? :free_initial_meeting

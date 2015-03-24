@@ -26,6 +26,7 @@ RSpec.describe FirmResult do
         'equity_release' => 10,
         'inheritance_tax_planning' => 10,
         'wills_and_probate' => 0,
+        'investment_sizes' => [1, 2],
         'advisers' => [
           {
             '_id'      => 1,
@@ -106,6 +107,10 @@ RSpec.describe FirmResult do
       expect(subject.types_of_advice).to eq(
         FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
       )
+    end
+
+    it 'maps the `minimum_pot_size_id`' do
+      expect(subject.minimum_pot_size_id).to eq(1)
     end
 
     it 'has a #minimum_fixed_fee?' do
