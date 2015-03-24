@@ -27,6 +27,8 @@ RSpec.describe FirmResult do
         'inheritance_tax_planning' => 10,
         'wills_and_probate' => 0,
         'investment_sizes' => [1, 2],
+        'adviser_accreditation_ids' => [5],
+        'adviser_qualification_ids' => [3],
         'advisers' => [
           {
             '_id'      => 1,
@@ -119,6 +121,14 @@ RSpec.describe FirmResult do
 
     it 'has a #free_initial_meeting?' do
       expect(subject).to be_free_initial_meeting
+    end
+
+    it 'exposes `adviser_accreditation_ids`' do
+      expect(subject.adviser_accreditation_ids).to eq([5])
+    end
+
+    it 'exposes `adviser_qualification_ids`' do
+      expect(subject.adviser_qualification_ids).to eq([3])
     end
 
     context 'when sorted by types of advice first' do

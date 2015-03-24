@@ -11,7 +11,9 @@ class FirmResult
     :minimum_fixed_fee,
     :other_advice_methods,
     :in_person_advice_methods,
-    :investment_sizes
+    :investment_sizes,
+    :adviser_accreditation_ids,
+    :adviser_qualification_ids
   ]
 
   TYPES_OF_ADVICE_FIELDS = [
