@@ -21,14 +21,11 @@ class Firm < ActiveRecord::Base
   has_and_belongs_to_many :investment_sizes
 
   belongs_to :initial_meeting_duration
-
   belongs_to :principal, primary_key: :fca_number, foreign_key: :fca_number
+  belongs_to :parent, class_name: 'Firm'
 
   has_many :advisers
-
   has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id
-
-  belongs_to :parent, class_name: 'Firm'
 
   attr_accessor :percent_total
 
