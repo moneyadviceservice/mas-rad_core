@@ -44,7 +44,7 @@ class FirmSerializer < ActiveModel::Serializer
   end
 
   def website_address
-    object.principal.try(:website_address)
+    object.principal.try(:website_address) unless object.subsidiary?
   end
 
   def retirement_income_products
