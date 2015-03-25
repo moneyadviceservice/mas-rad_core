@@ -20,5 +20,10 @@ RSpec.describe AdviserSerializer do
       expect(subject[:location][:lat]).to eql(adviser.latitude)
       expect(subject[:location][:lon]).to eql(adviser.longitude)
     end
+
+    it 'exposes `range_location`' do
+      expect(subject[:range_location][:coordinates]).to eq([adviser.longitude, adviser.latitude])
+      expect(subject[:range_location][:radius]).to eq('650miles')
+    end
   end
 end
