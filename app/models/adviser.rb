@@ -20,7 +20,7 @@ class Adviser < ActiveRecord::Base
 
   validates :postcode,
     presence: true,
-    format: { with: /\A[A-Z\d]{1,4} [A-Z\d]{1,3}\z/ }
+    format: { with: /\A[A-Z\d]{1,4} ?[A-Z\d]{1,3}\z/ }
 
   validates :reference_number,
     presence: true,
