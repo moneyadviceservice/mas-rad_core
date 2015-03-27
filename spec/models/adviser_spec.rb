@@ -59,7 +59,7 @@ RSpec.describe Adviser do
         end
 
         it 'must be a valid format' do
-          expect(build(:adviser, postcode: '098abc')).to_not be_valid
+          expect(build(:adviser, postcode: 'Z')).to_not be_valid
         end
       end
     end
