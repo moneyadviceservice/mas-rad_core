@@ -1,10 +1,15 @@
-require 'geocoder'
-
 class GeocodeFirmJob < ActiveJob::Base
   def perform(firm)
-    coordinates = Geocoder.coordinates(firm.full_street_address)
-    coordinates ? stat(:success) : stat(:failed)
-    firm.geocode!(coordinates)
+    Geocoder.coordinates(firm.full_street_address).tap do |coordinates|
+      firm.geocode!(coordinates)
+
+      if coordinates
+        IndexFirmJob.perform_later(firm)
+        stat :success
+      else
+        stat :failed
+      end
+    end
   end
 
   private
