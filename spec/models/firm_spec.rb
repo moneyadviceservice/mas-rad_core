@@ -212,29 +212,6 @@ RSpec.describe Firm do
     end
   end
 
-  describe '#full_street_address_changed?' do
-    context 'with an existing firm' do
-      before { subject.save }
-
-      it { is_expected.to_not be_full_street_address_changed }
-
-      context 'when the first line of the address has changed' do
-        before { firm.address_line_one = 'changed' }
-        it { is_expected.to be_full_street_address_changed }
-      end
-
-      context 'when the second line of the address has changed' do
-        before { firm.address_line_two = 'changed' }
-        it { is_expected.to be_full_street_address_changed }
-      end
-
-      context 'when the address postcode has changed' do
-        before { firm.address_postcode = 'changed' }
-        it { is_expected.to be_full_street_address_changed }
-      end
-    end
-  end
-
   it_should_behave_like 'geocodable' do
     subject(:firm) { create(:firm) }
     let(:job_class) { GeocodeFirmJob }

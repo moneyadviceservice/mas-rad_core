@@ -93,10 +93,6 @@ class Firm < ActiveRecord::Base
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
 
-  def full_street_address_changed?
-    address_line_one_changed? || address_line_two_changed? || address_postcode_changed?
-  end
-
   def in_person_advice?
     in_person_advice_methods.present?
   end
