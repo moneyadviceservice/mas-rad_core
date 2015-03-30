@@ -87,7 +87,7 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_save :geocode_if_needed
+  after_save :geocode, if: :valid?
 
   def full_street_address
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
@@ -130,10 +130,8 @@ class Firm < ActiveRecord::Base
 
   private
 
-  def geocode_if_needed
-    if valid? && full_street_address_changed?
-      GeocodeFirmJob.perform_later(self)
-    end
+  def geocode
+    GeocodeFirmJob.perform_later(self)
   end
 
   def upcase_postcode
