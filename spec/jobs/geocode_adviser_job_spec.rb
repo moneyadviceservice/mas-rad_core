@@ -38,6 +38,10 @@ RSpec.describe GeocodeAdviserJob do
 
         expect(adviser.coordinates).to contain_exactly(nil, nil)
       end
+
+      it 'the adviser is not scheduled for indexing' do
+        expect { subject }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs.size }
+      end
     end
   end
 end
