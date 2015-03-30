@@ -13,8 +13,16 @@ module Geocodable
     write_attribute(:longitude, value)
   end
 
+  def geocoded?
+    coordinates.compact.present?
+  end
+
+  def coordinates
+    [latitude, longitude]
+  end
+
   def geocode!(coordinates)
     self.latitude, self.longitude = coordinates
-    save!(callbacks: false)
+    update_columns(latitude: latitude, longitude: longitude)
   end
 end

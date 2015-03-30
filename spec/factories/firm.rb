@@ -2,6 +2,9 @@ FactoryGirl.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
   factory :firm do
+    before(:create) { |f| f.class.skip_callback(:save, :after, :geocode) }
+    after(:create) { |f| f.class.set_callback(:save, :after, :geocode, if: :valid?) }
+
     fca_number
     registered_name
     email_address { Faker::Internet.email }
@@ -26,12 +29,8 @@ FactoryGirl.define do
     inheritance_tax_and_estate_planning_percent 15
     wills_and_probate_percent 15
     other_percent 10
-
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
-
-    before(:create) { |f| f.class.skip_callback(:save, :after, :geocode_if_needed) }
-    after(:create) { |f| f.class.set_callback(:save, :after, :geocode_if_needed) }
 
     factory :subsidiary do
       parent factory: Firm
