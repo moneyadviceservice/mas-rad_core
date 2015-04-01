@@ -5,6 +5,7 @@ class FirmSerializer < ActiveModel::Serializer
     :registered_name,
     :postcode_searchable,
     :address_line_one,
+    :address_line_two,
     :address_town,
     :address_county,
     :address_postcode,

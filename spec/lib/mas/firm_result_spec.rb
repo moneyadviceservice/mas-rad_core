@@ -10,6 +10,7 @@ RSpec.describe FirmResult do
         'registered_name' => 'Financial Advice 1 Ltd.',
         'postcode_searchable' => true,
         'address_line_one' => '64 Somewhere',
+        'address_line_two' => 'At this place',
         'address_town' => 'Romford',
         'address_county' => 'Essex',
         'address_postcode' => 'RM1 1AL',
@@ -55,6 +56,10 @@ RSpec.describe FirmResult do
 
     it 'maps the `address_line_one`' do
       expect(subject.address_line_one).to eq('64 Somewhere')
+    end
+
+    it 'maps the `address_line_two`' do
+      expect(subject.address_line_two).to eq('At this place')
     end
 
     it 'maps the `address_town`' do

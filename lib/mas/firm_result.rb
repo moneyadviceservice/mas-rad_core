@@ -1,6 +1,7 @@
 class FirmResult
   DIRECTLY_MAPPED_FIELDS = [
     :address_line_one,
+    :address_line_two,
     :address_town,
     :address_county,
     :address_postcode,
