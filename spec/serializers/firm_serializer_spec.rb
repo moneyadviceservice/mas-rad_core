@@ -22,6 +22,10 @@ RSpec.describe FirmSerializer do
       expect(subject[:address_line_one]).to eql(firm.address_line_one)
     end
 
+    it 'exposes `address_line_two`' do
+      expect(subject[:address_line_two]).to eql(firm.address_line_two)
+    end
+
     it 'exposes `address_town`' do
       expect(subject[:address_town]).to eql(firm.address_town)
     end
