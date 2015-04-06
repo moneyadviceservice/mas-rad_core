@@ -8,7 +8,7 @@ module Stats
   end
 
   def self.time(*args, &block)
-    client.time(*args, &block) if key
+    key ? client.time(*args, &block) : block.call
   end
 
   def self.client
