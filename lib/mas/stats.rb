@@ -7,6 +7,10 @@ module Stats
     client.gauge(*args) if key
   end
 
+  def self.time(*args, &block)
+    client.time(*args, &block) if key
+  end
+
   def self.client
     $statsd ||= Statsd.new('statsd.hostedgraphite.com', 8125).tap do |n|
       n.namespace = key
