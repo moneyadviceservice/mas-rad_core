@@ -4,7 +4,10 @@ class Principal < ActiveRecord::Base
   before_create :generate_token
   after_create  :associate_firm
 
-  has_one :firm, primary_key: :fca_number, foreign_key: :fca_number
+  has_one :firm,
+    -> { where(parent_id: nil) },
+    primary_key: :fca_number,
+    foreign_key: :fca_number
 
   validates :fca_number,
     presence: true,
