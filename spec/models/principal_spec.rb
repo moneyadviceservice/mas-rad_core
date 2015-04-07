@@ -1,6 +1,14 @@
 RSpec.describe Principal do
   let(:principal) { create(:principal) }
 
+  describe '#firm' do
+    it 'is restricted to the parent firm' do
+      subsidiary = create(:firm, parent: principal.firm, fca_number: principal.fca_number)
+
+      expect(principal.firm).to_not eq(subsidiary)
+    end
+  end
+
   describe '#lookup_firm' do
     it 'returns my associated lookup firm' do
       expect(principal.lookup_firm).to be
