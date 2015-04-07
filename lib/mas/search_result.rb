@@ -9,7 +9,7 @@ class SearchResult
   end
 
   def firms
-    return [] unless raw_response.status.ok?
+    return [] unless raw_response.ok?
 
     @firms ||= hits.map { |hit| FirmResult.new(hit) }
   end
@@ -17,7 +17,7 @@ class SearchResult
   private
 
   def json
-    @json ||= JSON.parse(raw_response.body.to_s)
+    @json ||= JSON.parse(raw_response.body)
   end
 
   def hits

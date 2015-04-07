@@ -7,18 +7,22 @@ class ElasticSearchClient
   end
 
   def store(path, json)
-    res = http.put(uri_for(path), json: json)
-    res.status.ok?
+    res = http.put(uri_for(path), JSON.generate(json))
+    res.ok?
   end
 
   def search(path, json = '')
-    http.post(uri_for(path), body: json)
+    http.post(uri_for(path), json)
   end
 
   private
 
   def http
-    authenticate? ? HTTP.basic_auth(user: username, pass: password) : HTTP
+    @http ||= begin
+      HTTPClient.new.tap do |c|
+        c.set_auth(server, username, password) if authenticate?
+      end
+    end
   end
 
   def authenticate?
