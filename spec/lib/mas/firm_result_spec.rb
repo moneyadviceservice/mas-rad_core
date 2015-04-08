@@ -132,16 +132,6 @@ RSpec.describe FirmResult do
       expect(subject.adviser_qualification_ids).to eq([3])
     end
 
-    context 'when sorted by types of advice first' do
-      before { data['sort'].unshift(123) }
-
-      it 'maps the `closest_adviser`' do
-        pending
-
-        expect(subject.closest_adviser).to eq(0.7794549719530739)
-      end
-    end
-
     describe '#closest_adviser' do
       let(:text) { 'less than a mile away' }
 
