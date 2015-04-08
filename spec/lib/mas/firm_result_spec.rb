@@ -106,10 +106,6 @@ RSpec.describe FirmResult do
       expect(subject.total_advisers).to eq(1)
     end
 
-    it 'maps the `closest_adviser`' do
-      expect(subject.closest_adviser).to eq(0.7794549719530739)
-    end
-
     it 'maps the `types_of_advice` that are greater than 0 percent' do
       expect(subject.types_of_advice).to eq(
         FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
@@ -136,11 +132,26 @@ RSpec.describe FirmResult do
       expect(subject.adviser_qualification_ids).to eq([3])
     end
 
-    context 'when sorted by types of advice first' do
-      before { data['sort'].unshift(123) }
+    describe '#closest_adviser' do
+      let(:text) { 'less than a mile away' }
 
-      it 'maps the `closest_adviser`' do
-        expect(subject.closest_adviser).to eq(0.7794549719530739)
+      before do
+        I18n.backend.store_translations :en,
+          search: { result: { miles_away_alt: text, miles_away: 'miles away' } }
+      end
+
+      context 'when it is less than 1 mile away' do
+        it 'returns `less than a mile away` localised text' do
+          expect(subject.closest_adviser).to eq(text)
+        end
+      end
+
+      context 'when it is a mile away or more' do
+        before { data['sort'] = [1.23456789] }
+
+        it 'returns the formatted distance' do
+          expect(subject.closest_adviser).to eq('1.2 miles away')
+        end
       end
     end
   end
