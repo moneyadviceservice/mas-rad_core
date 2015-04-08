@@ -28,7 +28,6 @@ class FirmResult
 
   attr_reader :id,
     :name,
-    :closest_adviser,
     :total_advisers,
     *DIRECTLY_MAPPED_FIELDS,
     *TYPES_OF_ADVICE_FIELDS
@@ -55,6 +54,14 @@ class FirmResult
 
   def minimum_pot_size_id
     investment_sizes.first
+  end
+
+  def closest_adviser
+    if @closest_adviser < 1
+      I18n.t('search.result.miles_away_alt')
+    else
+      "#{format('%.1f', @closest_adviser)} #{I18n.t('search.result.miles_away')}"
+    end
   end
 
   alias :free_initial_meeting? :free_initial_meeting
