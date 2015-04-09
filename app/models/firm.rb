@@ -87,7 +87,7 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_save :geocode, if: :valid?
+  after_commit :geocode, if: :valid?
 
   def full_street_address
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
