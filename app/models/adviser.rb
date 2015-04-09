@@ -31,7 +31,7 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_commit :geocode, if: :geocode?
+  after_commit :geocode, if: :valid?
 
   def full_street_address
     "#{postcode}, United Kingdom"
@@ -47,10 +47,6 @@ class Adviser < ActiveRecord::Base
   end
 
   private
-
-  def geocode?
-    valid? && postcode_changed?
-  end
 
   def geocode
     GeocodeAdviserJob.perform_later(self)
