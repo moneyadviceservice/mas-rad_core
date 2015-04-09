@@ -31,7 +31,7 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_save :geocode_if_needed
+  after_commit :geocode, if: :geocode?
 
   def full_street_address
     "#{postcode}, United Kingdom"
@@ -48,10 +48,12 @@ class Adviser < ActiveRecord::Base
 
   private
 
-  def geocode_if_needed
-    if valid? && postcode_changed?
-      GeocodeAdviserJob.perform_later(self)
-    end
+  def geocode?
+    valid? && postcode_changed?
+  end
+
+  def geocode
+    GeocodeAdviserJob.perform_later(self)
   end
 
   def upcase_postcode
