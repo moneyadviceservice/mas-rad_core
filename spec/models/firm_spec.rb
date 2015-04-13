@@ -3,6 +3,22 @@ RSpec.describe Firm do
 
   before { allow(GeocodeFirmJob).to receive(:perform_later) }
 
+  describe '#telephone_number' do
+    context 'when `nil`' do
+      it 'returns `nil`' do
+        expect(build(:firm, telephone_number: nil).telephone_number).to be_nil
+      end
+    end
+
+    context 'when provided' do
+      let(:firm) { build(:firm, telephone_number: ' 07715 930 457  ') }
+
+      it 'removes whitespace' do
+        expect(firm.telephone_number).to eq('07715930457')
+      end
+    end
+  end
+
   describe '#postcode_searchable?' do
     it 'delegates to #in_person_advice?' do
       expect(firm).to be_postcode_searchable
