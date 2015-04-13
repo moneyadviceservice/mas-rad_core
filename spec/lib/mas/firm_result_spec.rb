@@ -14,7 +14,7 @@ RSpec.describe FirmResult do
         'address_town' => 'Romford',
         'address_county' => 'Essex',
         'address_postcode' => 'RM1 1AL',
-        'telephone_number' => '0208 595 2346',
+        'telephone_number' => '02085952346',
         'website_address' => 'http://www.example.com',
         'email_address' => 'someone@example.com',
         'free_initial_meeting' => true,
@@ -74,10 +74,6 @@ RSpec.describe FirmResult do
       expect(subject.address_postcode).to eq('RM1 1AL')
     end
 
-    it 'maps the `telephone_number`' do
-      expect(subject.telephone_number).to eq('0208 595 2346')
-    end
-
     it 'maps the `website_address`' do
       expect(subject.website_address).to eq('http://www.example.com')
     end
@@ -130,6 +126,14 @@ RSpec.describe FirmResult do
 
     it 'exposes `adviser_qualification_ids`' do
       expect(subject.adviser_qualification_ids).to eq([3])
+    end
+
+    describe '#telephone_number' do
+      context 'when present' do
+        it 'correctly formatted' do
+          expect(subject.telephone_number).to eq('020 8595 2346')
+        end
+      end
     end
 
     describe '#closest_adviser' do

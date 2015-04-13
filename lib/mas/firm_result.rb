@@ -1,3 +1,5 @@
+require 'uk_phone_numbers'
+
 class FirmResult
   DIRECTLY_MAPPED_FIELDS = [
     :address_line_one,
@@ -5,7 +7,6 @@ class FirmResult
     :address_town,
     :address_county,
     :address_postcode,
-    :telephone_number,
     :website_address,
     :email_address,
     :free_initial_meeting,
@@ -36,8 +37,9 @@ class FirmResult
     source = data['_source']
     @id    = source['_id']
     @name  = source['registered_name']
-    @total_advisers  = source['advisers'].count
-    @closest_adviser = data['sort'].last
+    @total_advisers   = source['advisers'].count
+    @closest_adviser  = data['sort'].last
+    @telephone_number = source['telephone_number']
 
     (DIRECTLY_MAPPED_FIELDS + TYPES_OF_ADVICE_FIELDS).each do |field|
       instance_variable_set("@#{field}", source[field.to_s])
@@ -62,6 +64,12 @@ class FirmResult
     else
       "#{format('%.1f', @closest_adviser)} #{I18n.t('search.result.miles_away')}"
     end
+  end
+
+  def telephone_number
+    return nil unless @telephone_number
+
+    UKPhoneNumbers.format(@telephone_number)
   end
 
   alias :free_initial_meeting? :free_initial_meeting
