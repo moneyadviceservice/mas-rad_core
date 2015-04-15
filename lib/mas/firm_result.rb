@@ -38,7 +38,7 @@ class FirmResult
     @id    = source['_id']
     @name  = source['registered_name']
     @total_advisers   = source['advisers'].count
-    @closest_adviser  = data['sort'].last
+    @closest_adviser  = data['sort'].first
     @telephone_number = source['telephone_number']
 
     (DIRECTLY_MAPPED_FIELDS + TYPES_OF_ADVICE_FIELDS).each do |field|
