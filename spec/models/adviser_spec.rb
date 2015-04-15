@@ -117,33 +117,20 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after save' do
+  describe 'after commit' do
     let(:adviser) { build(:adviser) }
 
     context 'when the postcode is present' do
       it 'the adviser is scheduled for geocoding' do
-        expect(GeocodeAdviserJob).to receive(:perform_later).with(adviser)
-        adviser.save!
+        expect { adviser.save! }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
       end
     end
 
-    context 'when the adviser is not valid' do
+    context 'when the postcode is not valid' do
       before { adviser.postcode = 'not-valid' }
 
       it 'the adviser is not scheduled for geocoding' do
-        expect(GeocodeAdviserJob).not_to receive(:perform_later)
-        adviser.save!(validate: false)
-      end
-    end
-
-    context 'when the postcode has changed' do
-      let(:adviser) { create(:adviser) }
-
-      before { adviser.postcode = 'ABCD 123' }
-
-      it 'the adviser is scheduled for geocoding' do
-        expect(GeocodeAdviserJob).to receive(:perform_later).with(adviser)
-        adviser.save!
+        expect { adviser.save!(validate: false) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
       end
     end
   end
