@@ -51,7 +51,7 @@ class FirmResult
   end
 
   def minimum_fixed_fee?
-    minimum_fixed_fee.present?
+    minimum_fixed_fee && minimum_fixed_fee.nonzero?
   end
 
   def minimum_pot_size_id
