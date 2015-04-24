@@ -2,6 +2,10 @@ FactoryGirl.define do
   sequence(:reference_number, 10000) { |n| "ABC#{n}" }
 
   factory :adviser do
+    transient do
+      create_linked_lookup_advisor true
+    end
+
     reference_number
     name 'Ben Lovell'
     postcode 'RG1 1NN'
@@ -14,8 +18,8 @@ FactoryGirl.define do
     before(:create) { |a| a.class.skip_callback(:save, :after, :geocode) }
     after(:create) { |a| a.class.set_callback(:save, :after, :geocode, if: :valid?) }
 
-    after(:build) do |a|
-      if a.reference_number?
+    after(:build) do |a, evaluator|
+      if a.reference_number? && evaluator.create_linked_lookup_advisor
         Lookup::Adviser.create!(
           reference_number: a.reference_number,
           name: a.name

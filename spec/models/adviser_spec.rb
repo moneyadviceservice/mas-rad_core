@@ -79,7 +79,9 @@ RSpec.describe Adviser do
         %w(badtimes ABCDEFGH 8008135! 12345678).each do |bad|
           Lookup::Adviser.create!(reference_number: bad, name: 'Mr. Derp')
 
-          expect(build(:adviser, reference_number: bad)).to_not be_valid
+          expect(build(:adviser,
+                       reference_number: bad,
+                       create_linked_lookup_advisor: false)).to_not be_valid
         end
       end
 
@@ -99,7 +101,9 @@ RSpec.describe Adviser do
         end
 
         it 'must not be valid' do
-          expect(build(:adviser, reference_number: reference_number)).to_not be_valid
+          expect(build(:adviser,
+                       reference_number: reference_number,
+                       create_linked_lookup_advisor: false)).to_not be_valid
         end
       end
     end
