@@ -1,6 +1,8 @@
 require 'uk_phone_numbers'
 
 class FirmResult
+  LESS_THAN_FIFTY_K_ID = 1
+
   DIRECTLY_MAPPED_FIELDS = [
     :address_line_one,
     :address_line_two,
@@ -56,6 +58,10 @@ class FirmResult
 
   def minimum_pot_size_id
     investment_sizes.first
+  end
+
+  def minimum_pot_size?
+    minimum_pot_size_id > LESS_THAN_FIFTY_K_ID
   end
 
   def closest_adviser
