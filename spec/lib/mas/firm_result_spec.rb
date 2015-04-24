@@ -128,6 +128,14 @@ RSpec.describe FirmResult do
       expect(subject.adviser_qualification_ids).to eq([3])
     end
 
+    describe '#minimum_pot_size?' do
+      context 'when £50k or less' do
+        it 'is false' do
+          expect(subject).to_not be_minimum_pot_size
+        end
+      end
+    end
+
     describe '#telephone_number' do
       context 'when present' do
         it 'correctly formatted' do
