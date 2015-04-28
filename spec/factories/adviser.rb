@@ -15,9 +15,6 @@ FactoryGirl.define do
     confirmed_disclaimer true
     firm
 
-    before(:create) { |a| a.class.skip_callback(:save, :after, :geocode) }
-    after(:create) { |a| a.class.set_callback(:save, :after, :geocode, if: :valid?) }
-
     after(:build) do |a, evaluator|
       if a.reference_number? && evaluator.create_linked_lookup_advisor
         Lookup::Adviser.create!(
