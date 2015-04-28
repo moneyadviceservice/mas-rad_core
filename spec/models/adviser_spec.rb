@@ -124,6 +124,10 @@ RSpec.describe Adviser do
   describe 'after commit' do
     let(:adviser) { create(:adviser) }
 
+    before do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+    end
+
     context 'when the postcode is present' do
       it 'the adviser is scheduled for geocoding' do
         expect { adviser.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
@@ -135,6 +139,27 @@ RSpec.describe Adviser do
 
       it 'the adviser is not scheduled for geocoding' do
         expect { adviser.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+      end
+    end
+
+    context 'when the subject is destroyed' do
+      before do
+        adviser.destroy
+        adviser.run_callbacks(:commit)
+      end
+
+      def queue_contains_a_job_for(job_class)
+        ActiveJob::Base.queue_adapter.enqueued_jobs.any? do |elem|
+          elem[:job] == job_class
+        end
+      end
+
+      it 'the adviser is not scheduled for geocoding' do
+        expect(queue_contains_a_job_for(GeocodeAdviserJob)).to be_falsey
+      end
+
+      it 'the adviser\'s firm is scheduled for geocoding/indexing' do
+        expect(queue_contains_a_job_for(GeocodeFirmJob)).to be_truthy
       end
     end
   end
