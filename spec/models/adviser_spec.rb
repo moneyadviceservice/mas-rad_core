@@ -122,11 +122,11 @@ RSpec.describe Adviser do
   end
 
   describe 'after commit' do
-    let(:adviser) { build(:adviser) }
+    let(:adviser) { create(:adviser) }
 
     context 'when the postcode is present' do
       it 'the adviser is scheduled for geocoding' do
-        expect { adviser.save! }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+        expect { adviser.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Adviser do
       before { adviser.postcode = 'not-valid' }
 
       it 'the adviser is not scheduled for geocoding' do
-        expect { adviser.save!(validate: false) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+        expect { adviser.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
       end
     end
   end
