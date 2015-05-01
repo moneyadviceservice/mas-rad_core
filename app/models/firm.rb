@@ -132,6 +132,7 @@ class Firm < ActiveRecord::Base
   end
 
   def geocode
+    return if destroyed?
     GeocodeFirmJob.perform_later(self)
   end
 
