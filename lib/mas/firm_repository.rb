@@ -13,9 +13,19 @@ class FirmRepository
     client.store(path, json)
   end
 
+  def find(firm)
+    path = "#{firm.model_name.plural}/#{firm.to_param}"
+    JSON.parse(client.find(path).body)
+  end
+
   def search(query, page: 1)
     response = client.search("firms/_search?from=#{from_for(page)}", query)
     SearchResult.new(response, page: page)
+  end
+
+  def all
+    response = client.search('firms/_search?size=10000')
+    JSON.parse(response.body)
   end
 
   def from_for(page)

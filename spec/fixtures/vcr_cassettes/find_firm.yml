@@ -1,0 +1,31 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:9200/rad_test/firms/257
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - HTTPClient/1.0 (2.6.0.1, ruby 2.2.2 (2015-04-13))
+      Accept:
+      - "*/*"
+      Date:
+      - Fri, 01 May 2015 11:47:24 GMT
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Content-Length:
+      - '768'
+    body:
+      encoding: UTF-8
+      string: '{"_index":"rad_test","_type":"firms","_id":"257","_version":1,"found":true,"_source":{"_id":257,"registered_name":"Wealthcare
+        (1985) Ltd","postcode_searchable":false,"address_line_one":null,"address_line_two":null,"address_town":null,"address_county":null,"address_postcode":null,"telephone_number":null,"website_address":"http://www.rutlandwealthcare.co.uk","email_address":null,"free_initial_meeting":null,"minimum_fixed_fee":null,"retirement_income_products":null,"pension_transfer":null,"options_when_paying_for_care":null,"equity_release":null,"inheritance_tax_planning":null,"wills_and_probate":null,"other_advice_methods":[],"investment_sizes":[],"in_person_advice_methods":[],"adviser_qualification_ids":[],"adviser_accreditation_ids":[],"advisers":[]}}'
+    http_version:
+  recorded_at: Fri, 01 May 2015 11:47:24 GMT
+recorded_with: VCR 2.9.3

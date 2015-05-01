@@ -15,6 +15,10 @@ class ElasticSearchClient
     http.post(uri_for(path), json)
   end
 
+  def find(path)
+    http.get(uri_for(path))
+  end
+
   private
 
   def http

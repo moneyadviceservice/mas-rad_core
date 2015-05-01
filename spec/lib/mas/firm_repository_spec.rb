@@ -50,5 +50,26 @@ RSpec.describe FirmRepository do
         expect(described_class.new(client_class).search({})).to be_a(SearchResult)
       end
     end
+
+    describe '#find' do
+      let(:firm) { build(:firm, id: 1) }
+      let(:response_object) { { 'test' => 'works' } }
+      let(:response) { double(body: response_object.to_json) }
+
+      it 'returns the JSON parsed body' do
+        allow(client).to receive(:find).with('firms/1').and_return(response)
+        expect(described_class.new(client_class).find(firm)).to eq(response_object)
+      end
+    end
+
+    describe '#all' do
+      let(:response_object) { { 'test' => 'works' } }
+      let(:response) { double(body: response_object.to_json) }
+
+      it 'returns the JSON parsed body' do
+        expect(client).to receive(:search).with('firms/_search?size=10000').and_return(response)
+        expect(described_class.new(client_class).all).to eq(response_object)
+      end
+    end
   end
 end

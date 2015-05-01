@@ -42,4 +42,14 @@ RSpec.describe ElasticSearchClient do
       end
     end
   end
+
+  describe '#find' do
+    context 'when successful' do
+      it 'returns an OK status' do
+        VCR.use_cassette(:find_firm) do
+          expect(described_class.new.find('firms/257')).to be_ok
+        end
+      end
+    end
+  end
 end
