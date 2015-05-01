@@ -278,4 +278,36 @@ RSpec.describe Firm do
       end
     end
   end
+
+  describe 'destroying' do
+    context 'when the firm has advisers' do
+      let(:firm) { create(:firm_with_advisers) }
+
+      it 'cascades destroy to advisers' do
+        adviser = firm.advisers.first
+        firm.destroy
+        expect(Adviser.where(id: adviser.id)).to be_empty
+      end
+    end
+
+    context 'when the firm has subsidiaries' do
+      let(:firm) { create(:firm_with_subsidiaries) }
+
+      it 'cascades destroy to subsidiaries' do
+        subsidiary = firm.subsidiaries.first
+        firm.destroy
+        expect(Firm.where(id: subsidiary.id)).to be_empty
+      end
+    end
+
+    context 'when the firm has a principal' do
+      let(:firm) { create(:firm_with_principal) }
+
+      it 'cascades destroy to principal' do
+        principal = firm.principal
+        firm.destroy
+        expect(Principal.where(token: principal.id)).to be_empty
+      end
+    end
+  end
 end
