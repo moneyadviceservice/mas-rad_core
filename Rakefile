@@ -8,8 +8,8 @@ end
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 
 load 'rails/tasks/engine.rake'
-load 'lib/mas/tasks/firms.rake'
-load 'lib/mas/tasks/audit.rake'
+load 'lib/mas/tasks/firms/index.rake'
+load 'lib/mas/tasks/firms/audit.rake'
 
 Bundler::GemHelper.install_tasks
 

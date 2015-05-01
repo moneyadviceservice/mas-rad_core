@@ -22,6 +22,11 @@ module MAS
           FactoryGirl.definition_file_paths << root.join('spec', 'factories')
         end
       end
+
+      rake_tasks do
+        load 'tasks/firms/audit.rake'
+        load 'tasks/firms/index.rake'
+      end
     end
   end
 end
