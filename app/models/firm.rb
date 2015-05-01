@@ -130,11 +130,11 @@ class Firm < ActiveRecord::Base
     ]
   end
 
-  private
-
   def geocode
     GeocodeFirmJob.perform_later(self)
   end
+
+  private
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
