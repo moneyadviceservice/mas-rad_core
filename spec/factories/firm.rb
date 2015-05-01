@@ -2,9 +2,6 @@ FactoryGirl.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
   factory :firm do
-    before(:create) { |f| f.class.skip_callback(:save, :after, :geocode) }
-    after(:create) { |f| f.class.set_callback(:save, :after, :geocode, if: :valid?) }
-
     fca_number
     registered_name
     email_address { Faker::Internet.email }

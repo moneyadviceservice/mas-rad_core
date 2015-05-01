@@ -237,7 +237,7 @@ RSpec.describe Firm do
     context 'when the address is present' do
       it 'the firm is scheduled for geocoding' do
         expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.save!
+        firm.run_callbacks(:commit)
       end
     end
 
@@ -246,7 +246,7 @@ RSpec.describe Firm do
 
       it 'the firm is not scheduled for geocoding' do
         expect(GeocodeFirmJob).not_to receive(:perform_later)
-        firm.save!(validate: false)
+        firm.run_callbacks(:commit)
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Firm do
 
       it 'the firm is scheduled for geocoding' do
         expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.save!
+        firm.run_callbacks(:commit)
       end
     end
   end
