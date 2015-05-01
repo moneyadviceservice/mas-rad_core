@@ -261,4 +261,21 @@ RSpec.describe Firm do
       end
     end
   end
+
+  describe 'deleting in elastic search' do
+    context 'when the firm is destroyed' do
+      it 'the firm is scheduled for deletion' do
+        expect(DeleteFirmJob).to receive(:perform_later).with(firm.id)
+        firm.destroy
+        firm.run_callbacks(:commit)
+      end
+    end
+
+    context 'when the firm is not destroyed' do
+      it 'the firm is not scheduled for deletion' do
+        expect(DeleteFirmJob).not_to receive(:perform_later).with(firm.id)
+        firm.run_callbacks(:commit)
+      end
+    end
+  end
 end

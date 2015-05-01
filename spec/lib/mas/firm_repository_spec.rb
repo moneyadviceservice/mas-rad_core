@@ -23,7 +23,7 @@ RSpec.describe FirmRepository do
     end
   end
 
-  describe 'searching and retrieving' do
+  describe 'searching, modifying, and retrieving' do
     let(:client) { double }
     let(:client_class) { double(new: client) }
 
@@ -69,6 +69,14 @@ RSpec.describe FirmRepository do
       it 'returns the JSON parsed body' do
         expect(client).to receive(:search).with('firms/_search?size=10000').and_return(response)
         expect(described_class.new(client_class).all).to eq(response_object)
+      end
+    end
+
+    describe '#delete' do
+      it 'delegates to the configured client' do
+        expect(client).to receive(:delete).with("firms/1")
+
+        described_class.new(client_class).delete(1)
       end
     end
   end

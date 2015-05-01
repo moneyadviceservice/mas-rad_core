@@ -19,6 +19,11 @@ class ElasticSearchClient
     http.get(uri_for(path))
   end
 
+  def delete(path)
+    res = http.delete(uri_for(path))
+    res.ok?
+  end
+
   private
 
   def http

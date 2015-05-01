@@ -18,6 +18,11 @@ class FirmRepository
     JSON.parse(client.find(path).body)
   end
 
+  def delete(id)
+    path = "#{Firm.model_name.plural}/#{id}"
+    client.delete(path)
+  end
+
   def search(query, page: 1)
     response = client.search("firms/_search?from=#{from_for(page)}", query)
     SearchResult.new(response, page: page)

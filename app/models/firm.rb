@@ -88,6 +88,7 @@ class Firm < ActiveRecord::Base
     length: { minimum: 1 }
 
   after_commit :geocode, if: :valid?
+  after_commit :delete_elastic_search_entry, if: :destroyed?
 
   def telephone_number
     return nil unless self[:telephone_number]
@@ -135,6 +136,10 @@ class Firm < ActiveRecord::Base
   end
 
   private
+
+  def delete_elastic_search_entry
+    DeleteFirmJob.perform_later(id)
+  end
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
