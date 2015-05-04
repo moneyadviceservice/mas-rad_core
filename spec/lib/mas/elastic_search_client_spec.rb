@@ -52,4 +52,14 @@ RSpec.describe ElasticSearchClient do
       end
     end
   end
+
+  describe '#delete' do
+    context 'when successful' do
+      it 'returns truthily' do
+        VCR.use_cassette(:delete_firm_1) do
+          expect(described_class.new.delete('firms/1')).to be_truthy
+        end
+      end
+    end
+  end
 end

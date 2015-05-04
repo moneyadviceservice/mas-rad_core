@@ -42,5 +42,17 @@ FactoryGirl.define do
       wills_and_probate_percent 0
       other_percent 0
     end
+
+    factory :firm_with_advisers do
+      advisers { create_list(:adviser, rand(1..3)) }
+    end
+
+    factory :firm_with_subsidiaries do
+      subsidiaries { create_list(:subsidiary, rand(1..3)) }
+    end
+
+    factory :firm_with_principal do
+      principal { create(:principal) }
+    end
   end
 end

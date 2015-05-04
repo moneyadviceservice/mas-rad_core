@@ -261,4 +261,65 @@ RSpec.describe Firm do
       end
     end
   end
+
+  describe 'destroying' do
+    context 'when the firm has advisers' do
+      let(:firm) { create(:firm_with_advisers) }
+
+      it 'cascades destroy to advisers' do
+        adviser = firm.advisers.first
+        firm.destroy
+        firm.run_callbacks(:commit)
+        adviser.run_callbacks(:commit)
+        expect(Adviser.where(id: adviser.id)).to be_empty
+      end
+
+      it 'does not geocode the firm' do
+        expect(GeocodeFirmJob).not_to receive(:perform_later)
+        adviser = firm.advisers.first
+        firm.destroy
+        firm.run_callbacks(:commit)
+        adviser.run_callbacks(:commit)
+      end
+    end
+
+    context 'when the firm has subsidiaries' do
+      let(:firm) { create(:firm_with_subsidiaries) }
+
+      it 'cascades destroy to subsidiaries' do
+        subsidiary = firm.subsidiaries.first
+        firm.destroy
+        firm.run_callbacks(:commit)
+        expect(Firm.where(id: subsidiary.id)).to be_empty
+      end
+    end
+
+    context 'when the firm has a principal' do
+      let(:firm) { create(:firm_with_principal) }
+
+      it 'cascades destroy to principal' do
+        principal = firm.principal
+        firm.destroy
+        firm.run_callbacks(:commit)
+        expect(Principal.where(token: principal.id)).to be_empty
+      end
+    end
+
+    describe 'deleting in elastic search' do
+      context 'when the firm is destroyed' do
+        it 'the firm is scheduled for deletion' do
+          expect(DeleteFirmJob).to receive(:perform_later).with(firm.id)
+          firm.destroy
+          firm.run_callbacks(:commit)
+        end
+      end
+
+      context 'when the firm is not destroyed' do
+        it 'the firm is not scheduled for deletion' do
+          expect(DeleteFirmJob).not_to receive(:perform_later).with(firm.id)
+          firm.run_callbacks(:commit)
+        end
+      end
+    end
+  end
 end

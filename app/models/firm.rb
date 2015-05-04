@@ -21,11 +21,11 @@ class Firm < ActiveRecord::Base
   has_and_belongs_to_many :investment_sizes
 
   belongs_to :initial_meeting_duration
-  belongs_to :principal, primary_key: :fca_number, foreign_key: :fca_number
+  belongs_to :principal, primary_key: :fca_number, foreign_key: :fca_number, dependent: :destroy
   belongs_to :parent, class_name: 'Firm'
 
-  has_many :advisers
-  has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id
+  has_many :advisers, dependent: :destroy
+  has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :qualifications, -> { reorder('').uniq }, through: :advisers
   has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
@@ -88,6 +88,7 @@ class Firm < ActiveRecord::Base
     length: { minimum: 1 }
 
   after_commit :geocode, if: :valid?
+  after_commit :delete_elastic_search_entry, if: :destroyed?
 
   def telephone_number
     return nil unless self[:telephone_number]
@@ -131,10 +132,15 @@ class Firm < ActiveRecord::Base
   end
 
   def geocode
+    return if destroyed?
     GeocodeFirmJob.perform_later(self)
   end
 
   private
+
+  def delete_elastic_search_entry
+    DeleteFirmJob.perform_later(id)
+  end
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
