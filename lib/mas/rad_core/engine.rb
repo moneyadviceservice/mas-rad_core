@@ -24,8 +24,8 @@ module MAS
       end
 
       rake_tasks do
-        load 'tasks/firms/audit.rake'
-        load 'tasks/firms/index.rake'
+        load root.join('lib', 'mas', 'tasks', 'firms', 'index.rake')
+        load root.join('lib', 'mas', 'tasks', 'firms', 'audit.rake')
       end
     end
   end
