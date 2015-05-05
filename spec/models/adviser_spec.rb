@@ -121,7 +121,7 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after commit' do
+  describe 'after_commit :geocode' do
     let(:adviser) { create(:adviser) }
 
     before do
@@ -160,6 +160,51 @@ RSpec.describe Adviser do
 
       it 'the adviser\'s firm is scheduled for geocoding/indexing' do
         expect(queue_contains_a_job_for(GeocodeFirmJob)).to be_truthy
+      end
+    end
+  end
+
+  describe 'after_save :flag_changes_for_after_commit' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    before do
+      subject.firm = receiving_firm
+      subject.save!
+    end
+
+    context 'when the firm has changed' do
+      it 'stores the original firm id so it can be reindexed in an after_commit hook' do
+        expect(subject.old_firm_id).to eq(original_firm.id)
+      end
+    end
+  end
+
+  describe 'after_commit :reindex_old_firm' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    def save_with_commit_callback(model)
+      model.save!
+      model.run_callbacks(:commit)
+    end
+
+    context 'when the firm has changed' do
+      it 'triggers reindexing of the adviser and new firm' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+      end
+
+      it 'triggers reindexing of the original firm (once)' do
+        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm.id)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+
+        # Trigger a second time
+        subject.run_callbacks(:commit)
       end
     end
   end
