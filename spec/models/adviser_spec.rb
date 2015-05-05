@@ -163,4 +163,30 @@ RSpec.describe Adviser do
       end
     end
   end
+
+  describe 'after_save :check_for_changes' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    def save_with_commit_callback(model)
+      model.save!
+      model.run_callbacks(:commit)
+    end
+
+    context 'when the firm has changed' do
+      it 'triggers reindexing of the adviser and new firm' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+      end
+
+      it 'triggers reindexing of the original firm' do
+        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm.id)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+        subject.run_callbacks(:commit)
+      end
+    end
+  end
 end

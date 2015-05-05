@@ -32,6 +32,7 @@ class Adviser < ActiveRecord::Base
   validate :match_reference_number
 
   after_commit :geocode
+  after_save :check_for_changes
 
   def full_street_address
     "#{postcode}, United Kingdom"
@@ -48,11 +49,20 @@ class Adviser < ActiveRecord::Base
 
   private
 
+  def check_for_changes
+    @old_firm_id = firm_id_change.first if firm_id_changed?
+  end
+
   def geocode
     if destroyed?
       firm.geocode
     elsif valid?
       GeocodeAdviserJob.perform_later(self)
+    end
+
+    if @old_firm_id.present?
+      IndexFirmJob.perform_later(@old_firm_id)
+      @old_firm_id = nil
     end
   end
 
