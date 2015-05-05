@@ -44,11 +44,11 @@ FactoryGirl.define do
     end
 
     factory :firm_with_advisers do
-      advisers { create_list(:adviser, rand(1..3)) }
+      advisers { create_list(:adviser, 3) }
     end
 
     factory :firm_with_subsidiaries do
-      subsidiaries { create_list(:subsidiary, rand(1..3)) }
+      subsidiaries { create_list(:subsidiary, 3) }
     end
 
     factory :firm_with_principal do
