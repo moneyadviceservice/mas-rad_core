@@ -37,6 +37,14 @@ class Adviser < ActiveRecord::Base
   after_commit :geocode
   after_commit :reindex_old_firm
 
+  def self.move_all_to_firm(receiving_firm)
+    transaction do
+      current_scope.each do |adviser|
+        adviser.update!(firm: receiving_firm)
+      end
+    end
+  end
+
   def full_street_address
     "#{postcode}, United Kingdom"
   end
