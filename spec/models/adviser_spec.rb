@@ -189,4 +189,49 @@ RSpec.describe Adviser do
       end
     end
   end
+
+  describe '.move_to' do
+    let(:original_firm) { create(:firm_with_advisers) }
+    let(:receiving_firm) { create(:firm_with_advisers) }
+
+    it 'moves a batch of advisers to another firm' do
+      advisers_to_move = original_firm.advisers.limit(2)
+      advisers_to_move.move_to(receiving_firm)
+
+      expect(advisers_to_move[0].firm).to be(receiving_firm)
+      expect(advisers_to_move[1].firm).to be(receiving_firm)
+
+      receiving_firm.reload
+      original_firm.reload
+
+      expect(original_firm.advisers.count).to be(1)
+      expect(receiving_firm.advisers.count).to be(5)
+      expect(receiving_firm.adviser_ids).to include(advisers_to_move[0].id,
+                                                    advisers_to_move[1].id)
+      expect(original_firm.adviser_ids).not_to include(advisers_to_move[0].id,
+                                                       advisers_to_move[1].id)
+    end
+
+    context 'when one of the move operations fails' do
+      let(:advisers_to_move) { original_firm.advisers.limit(3) }
+      let(:invalid_record_index) { 1 }
+
+      before do
+        advisers_to_move[invalid_record_index].reference_number = 'NOT_VALID'
+        advisers_to_move[invalid_record_index].save!(validate: false)
+      end
+
+      it 'aborts the entire operation' do
+        expect(advisers_to_move[invalid_record_index]).not_to be_valid
+        expect { advisers_to_move.move_to(receiving_firm) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+
+        receiving_firm.reload
+        original_firm.reload
+
+        expect(original_firm.advisers.count).to be(3)
+        expect(receiving_firm.advisers.count).to be(3)
+      end
+    end
+  end
 end
