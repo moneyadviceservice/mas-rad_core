@@ -14,7 +14,7 @@ namespace :firms do
   end
 
   def audit_database
-    Firm.all.select do |firm|
+    Firm.registered.select do |firm|
       es_firm = FirmRepository.new.find(firm)['_source']
       if es_firm != serialize_firm(firm)
         print '!'
@@ -27,7 +27,7 @@ namespace :firms do
   end
 
   def audit_es
-    ids = Firm.all.map(&:id)
+    ids = Firm.registered.map(&:id)
     all_firms.select do |es_firm|
       if ids.include? es_firm['_source']['_id']
         print '.'
