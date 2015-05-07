@@ -190,13 +190,13 @@ RSpec.describe Adviser do
     end
   end
 
-  describe '.move_to' do
+  describe '.move_all_to_firm' do
     let(:original_firm) { create(:firm_with_advisers) }
     let(:receiving_firm) { create(:firm_with_advisers) }
 
     it 'moves a batch of advisers to another firm' do
       advisers_to_move = original_firm.advisers.limit(2)
-      advisers_to_move.move_to(receiving_firm)
+      advisers_to_move.move_all_to_firm(receiving_firm)
 
       expect(advisers_to_move[0].firm).to be(receiving_firm)
       expect(advisers_to_move[1].firm).to be(receiving_firm)
@@ -223,7 +223,7 @@ RSpec.describe Adviser do
 
       it 'aborts the entire operation' do
         expect(advisers_to_move[invalid_record_index]).not_to be_valid
-        expect { advisers_to_move.move_to(receiving_firm) }
+        expect { advisers_to_move.move_all_to_firm(receiving_firm) }
           .to raise_error(ActiveRecord::RecordInvalid)
 
         receiving_firm.reload

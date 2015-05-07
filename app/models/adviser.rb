@@ -34,7 +34,7 @@ class Adviser < ActiveRecord::Base
   after_commit :geocode
   after_save :check_for_changes
 
-  def self.move_to(receiving_firm)
+  def self.move_all_to_firm(receiving_firm)
     transaction do
       current_scope.each do |adviser|
         adviser.update!(firm: receiving_firm)
