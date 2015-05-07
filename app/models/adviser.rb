@@ -35,7 +35,7 @@ class Adviser < ActiveRecord::Base
   after_save :check_for_changes
 
   def self.move_to(receiving_firm)
-    self.transaction do
+    transaction do
       current_scope.each do |adviser|
         adviser.update!(firm: receiving_firm)
       end
