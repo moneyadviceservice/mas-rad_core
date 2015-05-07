@@ -198,10 +198,12 @@ RSpec.describe Adviser do
         save_with_commit_callback(subject)
       end
 
-      it 'triggers reindexing of the original firm' do
+      it 'triggers reindexing of the original firm (once)' do
         expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm.id)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
+
+        # Trigger a second time
         subject.run_callbacks(:commit)
       end
     end
