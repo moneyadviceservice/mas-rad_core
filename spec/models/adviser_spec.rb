@@ -121,7 +121,7 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after commit' do
+  describe 'after_commit :geocode' do
     let(:adviser) { create(:adviser) }
 
     before do
@@ -165,6 +165,23 @@ RSpec.describe Adviser do
   end
 
   describe 'after_save :check_for_changes' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    before do
+      subject.firm = receiving_firm
+      subject.save!
+    end
+
+    context 'when the firm has changed' do
+      it 'stores the original firm id so it can be reindexed in an after_commit hook' do
+        expect(subject.old_firm_id).to eq(original_firm.id)
+      end
+    end
+  end
+
+  describe 'after_commit :reindex_old_firm' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }
     subject { create(:adviser, firm: original_firm) }

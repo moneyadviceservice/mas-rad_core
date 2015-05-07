@@ -1,6 +1,8 @@
 class Adviser < ActiveRecord::Base
   include Geocodable
 
+  attr_reader :old_firm_id
+
   belongs_to :firm
 
   has_and_belongs_to_many :qualifications
@@ -31,8 +33,9 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_commit :geocode
   after_save :check_for_changes
+  after_commit :geocode
+  after_commit :reindex_old_firm
 
   def self.move_all_to_firm(receiving_firm)
     transaction do
@@ -67,11 +70,11 @@ class Adviser < ActiveRecord::Base
     elsif valid?
       GeocodeAdviserJob.perform_later(self)
     end
+  end
 
-    if @old_firm_id.present?
-      IndexFirmJob.perform_later(@old_firm_id)
-      @old_firm_id = nil
-    end
+  def reindex_old_firm
+    IndexFirmJob.perform_later(@old_firm_id) if @old_firm_id.present?
+    @old_firm_id = nil
   end
 
   def upcase_postcode
