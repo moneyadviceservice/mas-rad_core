@@ -33,9 +33,9 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_save :flag_changes_for_after_commit
-  after_commit :geocode
-  after_commit :reindex_old_firm
+  after_save :geocode
+  after_save :reindex_old_firm
+  after_commit :run_commit_jobs
 
   def self.move_all_to_firm(receiving_firm)
     transaction do
@@ -68,15 +68,16 @@ class Adviser < ActiveRecord::Base
 
   def geocode
     if destroyed?
-      firm.geocode
+      run_after_commit(:geocode_parent_firm)
     elsif valid?
-      GeocodeAdviserJob.perform_later(self)
+      run_after_commit(:geocode_self)
     end
   end
 
   def reindex_old_firm
-    IndexFirmJob.perform_later(@old_firm_id) if @old_firm_id.present?
-    @old_firm_id = nil
+    return unless firm_id_changed?
+    return unless firm_id_change.first.present?
+    run_after_commit(:reindex_previous_firm, firm_id_change.first)
   end
 
   def upcase_postcode
@@ -96,5 +97,28 @@ class Adviser < ActiveRecord::Base
         I18n.t('questionnaire.adviser.reference_number_un_matched')
       )
     end
+  end
+
+  def run_after_commit(method_symbol, *args)
+    @jobs ||= []
+    return if @jobs.any? { |job| job == [method_symbol, args] }
+    @jobs << [method_symbol, args]
+  end
+
+  def run_commit_jobs
+    @jobs.each { |method_symbol, args| send(method_symbol, *args) }
+    @jobs = []
+  end
+
+  def commit_jobs
+    firm.geocode
+  end
+
+  def geocode_self
+    GeocodeAdviserJob.perform_later(self)
+  end
+
+  def reindex_previous_firm(firm_id)
+    IndexFirmJob.perform_later(firm_id)
   end
 end
