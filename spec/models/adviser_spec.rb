@@ -164,7 +164,7 @@ RSpec.describe Adviser do
     end
   end
 
-  describe 'after_save :check_for_changes' do
+  describe 'after_save :flag_changes_for_after_commit' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }
     subject { create(:adviser, firm: original_firm) }
