@@ -121,7 +121,7 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after commit' do
+  describe 'after_commit :geocode' do
     let(:adviser) { create(:adviser) }
 
     before do
@@ -160,6 +160,96 @@ RSpec.describe Adviser do
 
       it 'the adviser\'s firm is scheduled for geocoding/indexing' do
         expect(queue_contains_a_job_for(GeocodeFirmJob)).to be_truthy
+      end
+    end
+  end
+
+  describe 'after_save :flag_changes_for_after_commit' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    before do
+      subject.firm = receiving_firm
+      subject.save!
+    end
+
+    context 'when the firm has changed' do
+      it 'stores the original firm id so it can be reindexed in an after_commit hook' do
+        expect(subject.old_firm_id).to eq(original_firm.id)
+      end
+    end
+  end
+
+  describe 'after_commit :reindex_old_firm' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    def save_with_commit_callback(model)
+      model.save!
+      model.run_callbacks(:commit)
+    end
+
+    context 'when the firm has changed' do
+      it 'triggers reindexing of the adviser and new firm' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+      end
+
+      it 'triggers reindexing of the original firm (once)' do
+        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm.id)
+        subject.firm = receiving_firm
+        save_with_commit_callback(subject)
+
+        # Trigger a second time
+        subject.run_callbacks(:commit)
+      end
+    end
+  end
+
+  describe '.move_all_to_firm' do
+    let(:original_firm) { create(:firm_with_advisers) }
+    let(:receiving_firm) { create(:firm_with_advisers) }
+
+    it 'moves a batch of advisers to another firm' do
+      advisers_to_move = original_firm.advisers.limit(2)
+      advisers_to_move.move_all_to_firm(receiving_firm)
+
+      expect(advisers_to_move[0].firm).to be(receiving_firm)
+      expect(advisers_to_move[1].firm).to be(receiving_firm)
+
+      receiving_firm.reload
+      original_firm.reload
+
+      expect(original_firm.advisers.count).to be(1)
+      expect(receiving_firm.advisers.count).to be(5)
+      expect(receiving_firm.adviser_ids).to include(advisers_to_move[0].id,
+                                                    advisers_to_move[1].id)
+      expect(original_firm.adviser_ids).not_to include(advisers_to_move[0].id,
+                                                       advisers_to_move[1].id)
+    end
+
+    context 'when one of the move operations fails' do
+      let(:advisers_to_move) { original_firm.advisers.limit(3) }
+      let(:invalid_record_index) { 1 }
+
+      before do
+        advisers_to_move[invalid_record_index].reference_number = 'NOT_VALID'
+        advisers_to_move[invalid_record_index].save!(validate: false)
+      end
+
+      it 'aborts the entire operation' do
+        expect(advisers_to_move[invalid_record_index]).not_to be_valid
+        expect { advisers_to_move.move_all_to_firm(receiving_firm) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+
+        receiving_firm.reload
+        original_firm.reload
+
+        expect(original_firm.advisers.count).to be(3)
+        expect(receiving_firm.advisers.count).to be(3)
       end
     end
   end
