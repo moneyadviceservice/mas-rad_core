@@ -199,7 +199,7 @@ RSpec.describe Adviser do
       end
 
       it 'triggers reindexing of the original firm (once)' do
-        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm.id)
+        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
 
