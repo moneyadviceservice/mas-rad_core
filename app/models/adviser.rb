@@ -75,7 +75,7 @@ class Adviser < ActiveRecord::Base
   end
 
   def reindex_old_firm
-    IndexFirmJob.perform_later(@old_firm_id) if @old_firm_id.present?
+    IndexFirmJob.perform_later(Firm.find(@old_firm_id)) if @old_firm_id.present?
     @old_firm_id = nil
   end
 
