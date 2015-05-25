@@ -43,15 +43,15 @@ RSpec.describe Firm do
 
   describe 'subsidaries' do
     context 'when the firm has a parent' do
-      it 'is classed as a subsidiary' do
-        expect(build(:subsidiary)).to be_subsidiary
+      it 'is classed as a trading_name' do
+        expect(build(:trading_name)).to be_trading_name
       end
     end
 
-    describe '#subsidiaries' do
-      it 'exposes subsidiaries' do
-        subsidiary = create(:subsidiary)
-        expect(subsidiary.parent.subsidiaries).to contain_exactly(subsidiary)
+    describe '#trading_names' do
+      it 'exposes trading_names' do
+        trading_name = create(:trading_name)
+        expect(trading_name.parent.trading_names).to contain_exactly(trading_name)
       end
     end
   end
@@ -283,14 +283,14 @@ RSpec.describe Firm do
       end
     end
 
-    context 'when the firm has subsidiaries' do
-      let(:firm) { create(:firm_with_subsidiaries) }
+    context 'when the firm has trading_names' do
+      let(:firm) { create(:firm_with_trading_names) }
 
-      it 'cascades destroy to subsidiaries' do
-        subsidiary = firm.subsidiaries.first
+      it 'cascades destroy to trading_names' do
+        trading_name = firm.trading_names.first
         firm.destroy
         firm.run_callbacks(:commit)
-        expect(Firm.where(id: subsidiary.id)).to be_empty
+        expect(Firm.where(id: trading_name.id)).to be_empty
       end
     end
 

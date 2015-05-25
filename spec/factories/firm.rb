@@ -29,7 +29,7 @@ FactoryGirl.define do
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
 
-    factory :subsidiary do
+    factory :trading_name do
       parent factory: Firm
     end
 
@@ -47,8 +47,8 @@ FactoryGirl.define do
       advisers { create_list(:adviser, 3) }
     end
 
-    factory :firm_with_subsidiaries do
-      subsidiaries { create_list(:subsidiary, 3) }
+    factory :firm_with_trading_names do
+      trading_names { create_list(:trading_name, 3) }
     end
 
     factory :firm_with_principal do

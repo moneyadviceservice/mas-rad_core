@@ -3,9 +3,9 @@ RSpec.describe Principal do
 
   describe '#firm' do
     it 'is restricted to the parent firm' do
-      subsidiary = create(:firm, parent: principal.firm, fca_number: principal.fca_number)
+      trading_name = create(:firm, parent: principal.firm, fca_number: principal.fca_number)
 
-      expect(principal.firm).to_not eq(subsidiary)
+      expect(principal.firm).to_not eq(trading_name)
     end
   end
 
@@ -15,18 +15,18 @@ RSpec.describe Principal do
     end
   end
 
-  describe '#subsidiaries?' do
-    context 'when my firm has subsidiaries' do
-      before { principal.lookup_firm.subsidiaries.create! }
+  describe '#trading_names?' do
+    context 'when my firm has trading_names' do
+      before { principal.lookup_firm.trading_names.create! }
 
       it 'is truthy' do
-        expect(principal.subsidiaries?).to be_truthy
+        expect(principal.trading_names?).to be_truthy
       end
     end
 
-    context 'when my firm has no subsidiaries' do
+    context 'when my firm has no trading_names' do
       it 'is falsey' do
-        expect(principal.subsidiaries?).to be_falsey
+        expect(principal.trading_names?).to be_falsey
       end
     end
   end

@@ -25,7 +25,7 @@ class Firm < ActiveRecord::Base
   belongs_to :parent, class_name: 'Firm'
 
   has_many :advisers, dependent: :destroy
-  has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
+  has_many :trading_names, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :qualifications, -> { reorder('').uniq }, through: :advisers
   has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
@@ -105,7 +105,7 @@ class Firm < ActiveRecord::Base
   end
   alias :postcode_searchable? :in_person_advice?
 
-  def subsidiary?
+  def trading_name?
     parent.present?
   end
 
