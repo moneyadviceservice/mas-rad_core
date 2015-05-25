@@ -48,7 +48,7 @@ FactoryGirl.define do
     end
 
     factory :firm_with_subsidiaries do
-      subsidiaries { create_list(:subsidiary, 3) }
+      subsidiaries { create_list(:subsidiary, 3, fca_number: fca_number) }
     end
 
     factory :firm_with_principal do
