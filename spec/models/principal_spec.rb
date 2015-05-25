@@ -31,6 +31,12 @@ RSpec.describe Principal do
     end
   end
 
+  describe '#full_name' do
+    it 'returns a string containing the first and last name together' do
+      expect(principal.full_name).to eq("#{principal.first_name} #{principal.last_name}")
+    end
+  end
+
   it 'uses the token for ID purposes' do
     expect(principal.id).to eq(principal.token)
     expect(Principal.find(principal.token)).to eq(principal)
