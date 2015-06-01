@@ -284,7 +284,7 @@ RSpec.describe Firm do
     end
 
     context 'when the firm has subsidiaries' do
-      let(:firm) { create(:firm_with_subsidiaries) }
+      let(:firm) { create(:firm_with_trading_names) }
 
       it 'cascades destroy to subsidiaries' do
         subsidiary = firm.subsidiaries.first

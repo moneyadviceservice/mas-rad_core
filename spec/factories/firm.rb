@@ -30,8 +30,10 @@ FactoryGirl.define do
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
 
-    factory :subsidiary do
+    factory :trading_name do
       parent factory: Firm
+
+      factory :subsidiary
     end
 
     factory :firm_with_no_business_split do
@@ -48,8 +50,10 @@ FactoryGirl.define do
       advisers { create_list(:adviser, 3) }
     end
 
-    factory :firm_with_subsidiaries do
-      subsidiaries { create_list(:subsidiary, 3, fca_number: fca_number) }
+    factory :firm_with_trading_names do
+      subsidiaries { create_list(:trading_name, 3, fca_number: fca_number) }
+
+      factory :firm_with_subsidiaries
     end
 
     factory :firm_with_principal do
