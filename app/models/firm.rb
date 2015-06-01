@@ -105,9 +105,11 @@ class Firm < ActiveRecord::Base
   end
   alias :postcode_searchable? :in_person_advice?
 
-  def subsidiary?
+  def trading_name?
     parent.present?
   end
+
+  alias_method :subsidiary?, :trading_name?
 
   def field_order
     [
