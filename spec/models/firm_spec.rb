@@ -297,11 +297,11 @@ RSpec.describe Firm do
     context 'when the firm has a principal' do
       let(:firm) { create(:firm_with_principal) }
 
-      it 'cascades destroy to principal' do
+      it 'does not destroy the principal' do
         principal = firm.principal
         firm.destroy
         firm.run_callbacks(:commit)
-        expect(Principal.where(token: principal.id)).to be_empty
+        expect(Principal.where(token: principal.id)).not_to be_empty
       end
     end
 

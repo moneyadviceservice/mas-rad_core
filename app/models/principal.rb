@@ -7,7 +7,8 @@ class Principal < ActiveRecord::Base
   has_one :firm,
     -> { where(parent_id: nil) },
     primary_key: :fca_number,
-    foreign_key: :fca_number
+    foreign_key: :fca_number,
+    dependent: :destroy
 
   validates :fca_number,
     presence: true,
