@@ -204,4 +204,12 @@ RSpec.describe Principal do
       expect(principal.field_order).to contain_exactly(*fields)
     end
   end
+
+  describe '#destroy' do
+    it 'cascades to the firm' do
+      firm = principal.firm
+      principal.destroy
+      expect(Firm.where(id: firm.id)).to be_empty
+    end
+  end
 end
