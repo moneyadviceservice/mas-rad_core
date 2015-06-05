@@ -46,7 +46,7 @@ class Principal < ActiveRecord::Base
     @lookup_firm ||= Lookup::Firm.find_by(fca_number: fca_number)
   end
 
-  delegate :subsidiaries?, to: :lookup_firm
+  delegate :trading_names?, to: :lookup_firm
 
   def field_order
     [
@@ -62,7 +62,7 @@ class Principal < ActiveRecord::Base
   end
 
   def find_or_create_subsidiary(id)
-    subsidiary = lookup_firm.subsidiaries.find(id)
+    subsidiary = lookup_firm.trading_names.find(id)
 
     find_subsidiary(subsidiary).tap do |firm|
       firm.save(validate: false) unless firm.persisted?

@@ -15,18 +15,18 @@ RSpec.describe Principal do
     end
   end
 
-  describe '#subsidiaries?' do
-    context 'when my firm has subsidiaries' do
-      before { principal.lookup_firm.subsidiaries.create! }
+  describe '#trading_names?' do
+    context 'when my firm has trading names' do
+      before { principal.lookup_firm.trading_names.create! }
 
       it 'is truthy' do
-        expect(principal.subsidiaries?).to be_truthy
+        expect(principal.trading_names?).to be_truthy
       end
     end
 
-    context 'when my firm has no subsidiaries' do
+    context 'when my firm has no trading names' do
       it 'is falsey' do
-        expect(principal.subsidiaries?).to be_falsey
+        expect(principal.trading_names?).to be_falsey
       end
     end
   end
