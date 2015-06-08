@@ -43,26 +43,28 @@ namespace :firms do
     if (bad_firms.size + absent_firms.size) > 0
       puts "\nDatabase firms that don't match ES records #{bad_firms.size}"
       puts "Firms in ES that don't exist in database #{absent_firms.size}"
-      puts "\nWrote output to /bad_firms.csv"
+      puts "\nOutput in CSV format:"
 
-      write_csv(bad_firms, absent_firms)
+      puts generate_csv(bad_firms, absent_firms)
     else
       puts 'All good!'
     end
   end
 
-  def write_csv(bad_firms, absent_firms)
-    CSV.open('bad_firms.csv', 'wb') do |file|
-      file << ['STATUS','ID','NAME']
+  def generate_csv(bad_firms, absent_firms)
+    csv = []
 
-      bad_firms.each do |firm|
-        file << ['ES_WRONG', firm.id, firm.registered_name]
-      end
+    csv << ['STATUS','ID','NAME']
 
-      absent_firms.each do |firm|
-        file << ['DB_ABSENT', firm['_source']['_id'], firm['_source']['registered_name']]
-      end
+    bad_firms.each do |firm|
+      csv << ['ES_WRONG', firm.id, firm.registered_name]
     end
+
+    absent_firms.each do |firm|
+      csv << ['DB_ABSENT', firm['_source']['_id'], firm['_source']['registered_name']]
+    end
+
+    csv.to_csv
   end
 
   def all_firms
