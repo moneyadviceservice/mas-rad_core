@@ -12,6 +12,7 @@ class Firm < ActiveRecord::Base
   ]
 
   scope :registered, -> { where.not(email_address: nil) }
+  scope :sorted_by_registered_name, -> { order(:registered_name) }
 
   has_and_belongs_to_many :in_person_advice_methods
   has_and_belongs_to_many :other_advice_methods

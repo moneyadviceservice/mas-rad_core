@@ -322,4 +322,14 @@ RSpec.describe Firm do
       end
     end
   end
+
+  describe '.sorted_by_registered_name scope' do
+    it 'sorts the result set by the registered_name field' do
+      FactoryGirl.create(:firm, registered_name: 'B')
+      FactoryGirl.create(:firm, registered_name: 'A')
+
+      expect(Firm.all.map(&:registered_name)).to eq %w(B A)
+      expect(Firm.sorted_by_registered_name.map(&:registered_name)).to eq %w(A B)
+    end
+  end
 end
