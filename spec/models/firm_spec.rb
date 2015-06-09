@@ -332,4 +332,21 @@ RSpec.describe Firm do
       expect(Firm.sorted_by_registered_name.map(&:registered_name)).to eq %w(A B)
     end
   end
+
+  describe '.most_recently_updated scope' do
+    let(:firms) { FactoryGirl.create_pair(:firm, updated_at: Time.zone.now) }
+    let(:firm1) { firms[0] }
+    let(:firm2) { firms[1] }
+
+    it 'sorts the result set by the most recently updated record' do
+      expect(Firm.all).to eq([firm1, firm2])
+      firm2.update!(updated_at: (Time.zone.now + 1.hour))
+      expect(Firm.most_recently_updated).to eq([firm2, firm1])
+    end
+
+    it 'limits the number records based on the `limit` argument' do
+      expect(Firm.most_recently_updated).to eq([firm1, firm2])
+      expect(Firm.most_recently_updated(limit: 1)).to eq([firm1])
+    end
+  end
 end
