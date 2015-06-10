@@ -9,6 +9,8 @@ require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support', '**', '*.rb')].each { |f| require f }
 
+Faker::Config.locale = 'en-GB'
+
 ActiveRecord::Migrator.migrations_paths.tap do |paths|
   paths << File.expand_path('../../spec/dummy/db/migrate', __FILE__)
   paths << File.expand_path('../../db/migrate', __FILE__)
