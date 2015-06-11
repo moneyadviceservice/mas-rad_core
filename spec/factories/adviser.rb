@@ -7,8 +7,8 @@ FactoryGirl.define do
     end
 
     reference_number
-    name 'Ben Lovell'
-    postcode 'RG1 1NN'
+    name { Faker::Name.name }
+    postcode { Faker::Address.postcode }
     travel_distance '650'
     latitude  { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
