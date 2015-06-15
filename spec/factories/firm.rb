@@ -47,7 +47,13 @@ FactoryGirl.define do
     end
 
     factory :firm_with_advisers do
-      advisers { create_list(:adviser, 3) }
+      transient do
+        advisers_count 3
+      end
+
+      after(:create) do |firm, evaluator|
+        create_list(:adviser, evaluator.advisers_count, firm: firm)
+      end
     end
 
     factory :firm_with_trading_names do
