@@ -37,6 +37,13 @@ class Adviser < ActiveRecord::Base
   after_commit :geocode
   after_commit :reindex_old_firm
 
+  scope :most_recently_edited, -> (limit: 3) { order(updated_at: 'DESC').limit(limit) }
+
+  def self.on_firms_with_fca_number(fca_number)
+    firms = Firm.where(fca_number: fca_number)
+    where(firm: firms)
+  end
+
   def self.move_all_to_firm(receiving_firm)
     transaction do
       current_scope.each do |adviser|
