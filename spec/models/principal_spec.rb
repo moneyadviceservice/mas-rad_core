@@ -3,8 +3,10 @@ RSpec.describe Principal do
   let(:trading_name) { create(:firm, parent: principal.firm, fca_number: principal.fca_number) }
 
   describe '#firm' do
-    it 'is restricted to the parent firm' do
-      expect(principal.firm).to_not eq(trading_name)
+    let(:parent_firm) { Firm.find_by(fca_number: principal.fca_number, parent: nil) }
+
+    it 'fetches the parent firm' do
+      expect(principal.firm).to eq(parent_firm)
     end
   end
 
