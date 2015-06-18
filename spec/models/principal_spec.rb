@@ -9,6 +9,14 @@ RSpec.describe Principal do
     end
   end
 
+  describe '#all_firms' do
+    it 'fetches all firms associated with the principal' do
+      subsidiary = create(:firm, parent: principal.firm, fca_number: principal.fca_number)
+
+      expect(principal.all_firms).to contain_exactly(principal.firm, subsidiary)
+    end
+  end
+
   describe '#lookup_firm' do
     it 'returns my associated lookup firm' do
       expect(principal.lookup_firm).to be

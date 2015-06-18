@@ -10,6 +10,11 @@ class Principal < ActiveRecord::Base
     foreign_key: :fca_number,
     dependent: :destroy
 
+  has_many :all_firms,
+    class_name: 'Firm',
+    primary_key: :fca_number,
+    foreign_key: :fca_number
+
   validates :fca_number,
     presence: true,
     uniqueness: true,
