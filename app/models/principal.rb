@@ -38,6 +38,10 @@ class Principal < ActiveRecord::Base
 
   validate :match_fca_number, if: :fca_number?
 
+  def main_firm_with_trading_names
+    Firm.where(fca_number: fca_number)
+  end
+
   def to_param
     token.parameterize
   end

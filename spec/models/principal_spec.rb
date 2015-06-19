@@ -1,11 +1,18 @@
 RSpec.describe Principal do
   let(:principal) { create(:principal) }
+  let(:trading_name) { create(:firm, parent: principal.firm, fca_number: principal.fca_number) }
 
   describe '#firm' do
-    it 'is restricted to the parent firm' do
-      subsidiary = create(:firm, parent: principal.firm, fca_number: principal.fca_number)
+    let(:parent_firm) { Firm.find_by(fca_number: principal.fca_number, parent: nil) }
 
-      expect(principal.firm).to_not eq(subsidiary)
+    it 'fetches the parent firm' do
+      expect(principal.firm).to eq(parent_firm)
+    end
+  end
+
+  describe '#main_firm_with_trading_names' do
+    it 'fetches all firms associated with the principal' do
+      expect(principal.main_firm_with_trading_names).to contain_exactly(principal.firm, trading_name)
     end
   end
 
