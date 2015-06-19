@@ -10,9 +10,9 @@ RSpec.describe Principal do
     end
   end
 
-  describe '#all_firms' do
+  describe '#main_firm_with_trading_names' do
     it 'fetches all firms associated with the principal' do
-      expect(principal.all_firms).to contain_exactly(principal.firm, trading_name)
+      expect(principal.main_firm_with_trading_names).to contain_exactly(principal.firm, trading_name)
     end
   end
 

@@ -10,11 +10,6 @@ class Principal < ActiveRecord::Base
     foreign_key: :fca_number,
     dependent: :destroy
 
-  has_many :all_firms,
-    class_name: 'Firm',
-    primary_key: :fca_number,
-    foreign_key: :fca_number
-
   validates :fca_number,
     presence: true,
     uniqueness: true,
@@ -42,6 +37,10 @@ class Principal < ActiveRecord::Base
   validates_acceptance_of :confirmed_disclaimer, accept: true
 
   validate :match_fca_number, if: :fca_number?
+
+  def main_firm_with_trading_names
+    Firm.where(fca_number: fca_number)
+  end
 
   def to_param
     token.parameterize
