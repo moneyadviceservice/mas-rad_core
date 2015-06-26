@@ -1,5 +1,5 @@
 module MAS
   module RadCore
-    VERSION = '0.0.58'
+    VERSION = '0.0.59'
   end
 end
