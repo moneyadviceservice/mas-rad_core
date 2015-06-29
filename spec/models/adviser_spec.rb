@@ -274,4 +274,17 @@ RSpec.describe Adviser do
       expect(returned_advisers).to eq firm.advisers
     end
   end
+
+  describe '.sorted_by_name scope' do
+    let(:sorted_names)   { %w(A B C D E F G H) }
+    let(:unsorted_names) { %w(F C G E D H A B) }
+
+    before do
+      unsorted_names.each { |name| FactoryGirl.create(:adviser, name: name) }
+    end
+
+    it 'sorts the result set by the name field' do
+      expect(Adviser.sorted_by_name.map(&:name)).to eq(sorted_names)
+    end
+  end
 end
