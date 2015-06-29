@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mas-rad_core (0.0.59)
+    mas-rad_core (0.0.60)
       active_model_serializers
       geocoder
       httpclient
