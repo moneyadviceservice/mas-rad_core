@@ -170,3 +170,6 @@ DEPENDENCIES
   timecop
   vcr
   webmock
+
+BUNDLED WITH
+   1.10.4
