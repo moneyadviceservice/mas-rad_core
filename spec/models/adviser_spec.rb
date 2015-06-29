@@ -254,40 +254,6 @@ RSpec.describe Adviser do
     end
   end
 
-  describe '#most_recently_edited' do
-    it 'returns an empty list when there are no advisers' do
-      expect(Adviser.most_recently_edited).to eq([])
-    end
-
-    it 'returns one adviser when there is one adviser' do
-      adviser = FactoryGirl.create(:adviser)
-      most_recent = Adviser.most_recently_edited
-
-      expect(most_recent.length).to eq(1)
-      expect(most_recent[0]).to eq(adviser)
-    end
-
-    it 'provides three advisers when there are four advisers' do
-      FactoryGirl.create_list(:adviser, 4)
-      most_recent = Adviser.most_recently_edited
-
-      expect(most_recent.length).to eq(3)
-    end
-
-    it 'provides the three most recently edited advisers when there are four advisers' do
-      first_adviser = FactoryGirl.create(:adviser, updated_at: 2.weeks.ago)
-      second_adviser = FactoryGirl.create(:adviser, updated_at: 1.weeks.ago)
-      fourth_adviser = FactoryGirl.create(:adviser, updated_at: 3.weeks.ago)
-      FactoryGirl.create(:adviser, updated_at: 4.weeks.ago)
-
-      most_recent = Adviser.most_recently_edited
-
-      expect(most_recent[0]).to eq(second_adviser)
-      expect(most_recent[1]).to eq(first_adviser)
-      expect(most_recent[2]).to eq(fourth_adviser)
-    end
-  end
-
   describe '#on_firms_with_fca_number' do
     it 'returns advisers on firm and its trading names' do
       firm = FactoryGirl.create(:firm)
