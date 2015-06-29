@@ -37,6 +37,8 @@ class Adviser < ActiveRecord::Base
   after_commit :geocode
   after_commit :reindex_old_firm
 
+  scope :sorted_by_name, -> { order(:name) }
+
   def self.on_firms_with_fca_number(fca_number)
     firms = Firm.where(fca_number: fca_number)
     where(firm: firms)
