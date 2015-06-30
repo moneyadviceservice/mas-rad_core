@@ -20,13 +20,13 @@ FactoryGirl.define do
     ongoing_advice_fee_structures { create_list(:ongoing_advice_fee_structure, rand(1..3)) }
     allowed_payment_methods { create_list(:allowed_payment_method, rand(1..3)) }
     investment_sizes { create_list(:investment_size, rand(5..10)) }
-    retirement_income_products_percent 15
-    pension_transfer_percent 15
-    long_term_care_percent 15
-    equity_release_percent 15
-    inheritance_tax_and_estate_planning_percent 15
-    wills_and_probate_percent 15
-    other_percent 10
+    retirement_income_products_flag true
+    pension_transfer_flag true
+    long_term_care_flag true
+    equity_release_flag true
+    inheritance_tax_and_estate_planning_flag true
+    wills_and_probate_flag true
+    other_flag true
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
 
@@ -37,13 +37,13 @@ FactoryGirl.define do
     end
 
     factory :firm_with_no_business_split do
-      retirement_income_products_percent 0
-      pension_transfer_percent 0
-      long_term_care_percent 0
-      equity_release_percent 0
-      inheritance_tax_and_estate_planning_percent 0
-      wills_and_probate_percent 0
-      other_percent 0
+      retirement_income_products_flag false
+      pension_transfer_flag false
+      long_term_care_flag false
+      equity_release_flag false
+      inheritance_tax_and_estate_planning_flag false
+      wills_and_probate_flag false
+      other_flag false
     end
 
     factory :firm_with_advisers do

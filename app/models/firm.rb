@@ -1,14 +1,14 @@
 class Firm < ActiveRecord::Base
   include Geocodable
 
-  PERCENTAGE_ATTRIBUTES = [
-    :retirement_income_products_percent,
-    :pension_transfer_percent,
-    :long_term_care_percent,
-    :equity_release_percent,
-    :inheritance_tax_and_estate_planning_percent,
-    :wills_and_probate_percent,
-    :other_percent
+  BUSINESS_OFFERING_ATTRIBUTES = [
+    :retirement_income_products_flag,
+    :pension_transfer_flag,
+    :long_term_care_flag,
+    :equity_release_flag,
+    :inheritance_tax_and_estate_planning_flag,
+    :wills_and_probate_flag,
+    :other_flag
   ]
 
   scope :registered, -> { where.not(email_address: nil) }
@@ -80,11 +80,8 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     numericality: { only_integer: true }
 
-  validate :sum_of_percentages_equals_one_hundred
-
-  validates *PERCENTAGE_ATTRIBUTES,
-    presence: true,
-    numericality: { only_integer: true }
+  validates *BUSINESS_OFFERING_ATTRIBUTES,
+    inclusion: { in: [true, false] }
 
   validates :investment_sizes,
     length: { minimum: 1 }
@@ -130,7 +127,7 @@ class Firm < ActiveRecord::Base
       :allowed_payment_methods,
       :minimum_fixed_fee,
       :percent_total,
-      *PERCENTAGE_ATTRIBUTES,
+      *BUSINESS_OFFERING_ATTRIBUTES,
       :investment_sizes
     ]
   end
@@ -148,16 +145,5 @@ class Firm < ActiveRecord::Base
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
-  end
-
-  def sum_of_percentages_equals_one_hundred
-    total = PERCENTAGE_ATTRIBUTES.sum { |a| read_attribute(a).to_i }
-
-    unless total == 100
-      errors.add(
-        :percent_total,
-        I18n.t('questionnaire.retirement_advice.percent_total.not_one_hundred')
-      )
-    end
   end
 end

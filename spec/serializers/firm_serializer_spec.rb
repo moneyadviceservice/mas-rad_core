@@ -59,27 +59,27 @@ RSpec.describe FirmSerializer do
     end
 
     it 'exposes `retirement_income_products`' do
-      expect(subject[:retirement_income_products]).to eq(firm.retirement_income_products_percent)
+      expect(subject[:retirement_income_products]).to eq(firm.retirement_income_products_flag ? 100 : 0)
     end
 
     it 'exposes `pension_transfer`' do
-      expect(subject[:pension_transfer]).to eq(firm.pension_transfer_percent)
+      expect(subject[:pension_transfer]).to eq(firm.pension_transfer_flag ? 100 : 0)
     end
 
     it 'exposes `options_when_paying_for_care`' do
-      expect(subject[:options_when_paying_for_care]).to eq(firm.long_term_care_percent)
+      expect(subject[:options_when_paying_for_care]).to eq(firm.long_term_care_flag ? 100 : 0)
     end
 
     it 'exposes `equity_release`' do
-      expect(subject[:equity_release]).to eq(firm.equity_release_percent)
+      expect(subject[:equity_release]).to eq(firm.equity_release_flag ? 100 : 0)
     end
 
     it 'exposes `inheritance_tax_planning`' do
-      expect(subject[:inheritance_tax_planning]).to eq(firm.inheritance_tax_and_estate_planning_percent)
+      expect(subject[:inheritance_tax_planning]).to eq(firm.inheritance_tax_and_estate_planning_flag ? 100 : 0)
     end
 
     it 'exposes `wills_and_probate`' do
-      expect(subject[:wills_and_probate]).to eq(firm.wills_and_probate_percent)
+      expect(subject[:wills_and_probate]).to eq(firm.wills_and_probate_flag ? 100 : 0)
     end
 
     it 'exposes `other_advice_method_ids`' do
