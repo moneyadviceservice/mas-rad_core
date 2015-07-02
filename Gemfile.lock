@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mas-rad_core (0.0.60)
+    mas-rad_core (0.0.61)
       active_model_serializers
       geocoder
       httpclient
@@ -172,4 +172,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.10.4
+   1.10.5
