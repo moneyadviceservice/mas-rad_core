@@ -191,16 +191,6 @@ RSpec.describe Firm do
       end
     end
 
-    describe 'business income breakdown' do
-      context 'when sum not equal to 100' do
-        before do
-          firm.retirement_income_products_percent = 5
-        end
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
     describe 'investment size' do
       context 'when none assigned' do
         before { firm.investment_sizes = [] }

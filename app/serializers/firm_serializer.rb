@@ -49,27 +49,27 @@ class FirmSerializer < ActiveModel::Serializer
   end
 
   def retirement_income_products
-    object.retirement_income_products_percent
+    boolean_to_percentage object.retirement_income_products_flag
   end
 
   def pension_transfer
-    object.pension_transfer_percent
+    boolean_to_percentage object.pension_transfer_flag
   end
 
   def options_when_paying_for_care
-    object.long_term_care_percent
+    boolean_to_percentage object.long_term_care_flag
   end
 
   def equity_release
-    object.equity_release_percent
+    boolean_to_percentage object.equity_release_flag
   end
 
   def inheritance_tax_planning
-    object.inheritance_tax_and_estate_planning_percent
+    boolean_to_percentage object.inheritance_tax_and_estate_planning_flag
   end
 
   def wills_and_probate
-    object.wills_and_probate_percent
+    boolean_to_percentage object.wills_and_probate_flag
   end
 
   def _id
@@ -86,5 +86,11 @@ class FirmSerializer < ActiveModel::Serializer
 
   def investment_sizes
     object.investment_size_ids
+  end
+
+  private
+
+  def boolean_to_percentage(boolean)
+    boolean ? 100 : 0
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150423154732) do
+ActiveRecord::Schema.define(version: 20150630143001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,12 +79,12 @@ ActiveRecord::Schema.define(version: 20150423154732) do
   add_index "allowed_payment_methods_firms", ["firm_id", "allowed_payment_method_id"], name: "firms_allowed_payment_methods_index", unique: true, using: :btree
 
   create_table "firms", force: :cascade do |t|
-    t.integer  "fca_number",                                  null: false
-    t.string   "registered_name",                             null: false
+    t.integer  "fca_number",                                               null: false
+    t.string   "registered_name",                                          null: false
     t.string   "email_address"
     t.string   "telephone_number"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.string   "address_line_one"
     t.string   "address_line_two"
     t.string   "address_town"
@@ -93,16 +93,16 @@ ActiveRecord::Schema.define(version: 20150423154732) do
     t.boolean  "free_initial_meeting"
     t.integer  "initial_meeting_duration_id"
     t.integer  "minimum_fixed_fee"
-    t.integer  "retirement_income_products_percent"
-    t.integer  "pension_transfer_percent"
-    t.integer  "long_term_care_percent"
-    t.integer  "equity_release_percent"
-    t.integer  "inheritance_tax_and_estate_planning_percent"
-    t.integer  "wills_and_probate_percent"
-    t.integer  "other_percent"
     t.integer  "parent_id"
     t.float    "latitude"
     t.float    "longitude"
+    t.boolean  "retirement_income_products_flag",          default: false, null: false
+    t.boolean  "pension_transfer_flag",                    default: false, null: false
+    t.boolean  "long_term_care_flag",                      default: false, null: false
+    t.boolean  "equity_release_flag",                      default: false, null: false
+    t.boolean  "inheritance_tax_and_estate_planning_flag", default: false, null: false
+    t.boolean  "wills_and_probate_flag",                   default: false, null: false
+    t.boolean  "other_flag",                               default: false, null: false
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
