@@ -175,29 +175,12 @@ RSpec.describe Principal do
         expect(build(:principal, telephone_number: '1 abcd')).to_not be_valid
       end
     end
-
-    describe 'Website address' do
-      context 'when provided' do
-        it 'must not exceed 100 characters' do
-          expect(build(:principal, website_address: "#{'a' * 100}.com")).not_to be_valid
-        end
-
-        it 'must include the protocol segment' do
-          expect(build(:principal, website_address: 'www.google.com')).not_to be_valid
-        end
-
-        it 'must be a reasonably valid URL' do
-          expect(build(:principal, website_address: 'http://a')).not_to be_valid
-        end
-      end
-    end
   end
 
   describe 'dough #field_order' do
     let(:fields) do
       [
         :fca_number,
-        :website_address,
         :first_name,
         :last_name,
         :job_title,

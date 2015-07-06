@@ -6,6 +6,7 @@ FactoryGirl.define do
     registered_name
     email_address { Faker::Internet.email }
     telephone_number { Faker::Base.numerify('##### ### ###') }
+    website_address { Faker::Internet.url }
     address_line_one { Faker::Address.street_address }
     address_line_two { Faker::Address.secondary_address }
     address_town { Faker::Address.city }

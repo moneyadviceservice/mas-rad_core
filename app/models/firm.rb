@@ -45,6 +45,11 @@ class Firm < ActiveRecord::Base
     length: { maximum: 30 },
     format: { with: /\A[0-9 ]+\z/ }
 
+  validates :website_address,
+    allow_blank: true,
+    length: { maximum: 100 },
+    format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
+
   validates :address_line_one,
     presence: true,
     length: { maximum: 100 }

@@ -93,6 +93,22 @@ RSpec.describe Firm do
       end
     end
 
+    describe 'Website address' do
+      context 'when provided' do
+        it 'must not exceed 100 characters' do
+          expect(build(:firm, website_address: "#{'a' * 100}.com")).not_to be_valid
+        end
+
+        it 'must include the protocol segment' do
+          expect(build(:firm, website_address: 'www.google.com')).not_to be_valid
+        end
+
+        it 'must be a reasonably valid URL' do
+          expect(build(:firm, website_address: 'http://a')).not_to be_valid
+        end
+      end
+    end
+
     describe 'address line 1' do
       context 'when missing' do
         before { firm.address_line_one = nil }
