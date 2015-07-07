@@ -29,11 +29,6 @@ class Principal < ActiveRecord::Base
     length: { maximum: 50 },
     format: { with: /\A[0-9 ]+\z/ }
 
-  validates :website_address,
-    allow_blank: true,
-    length: { maximum: 100 },
-    format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
-
   validates_acceptance_of :confirmed_disclaimer, accept: true
 
   validate :match_fca_number, if: :fca_number?
@@ -55,7 +50,6 @@ class Principal < ActiveRecord::Base
   def field_order
     [
       :fca_number,
-      :website_address,
       :first_name,
       :last_name,
       :job_title,

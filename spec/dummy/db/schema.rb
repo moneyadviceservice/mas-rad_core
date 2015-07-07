@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630143001) do
+ActiveRecord::Schema.define(version: 20150706102943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20150630143001) do
     t.boolean  "inheritance_tax_and_estate_planning_flag", default: false, null: false
     t.boolean  "wills_and_probate_flag",                   default: false, null: false
     t.boolean  "other_flag",                               default: false, null: false
+    t.string   "website_address"
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
@@ -216,7 +217,6 @@ ActiveRecord::Schema.define(version: 20150630143001) do
   create_table "principals", force: :cascade do |t|
     t.integer  "fca_number"
     t.string   "token"
-    t.string   "website_address"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "job_title"

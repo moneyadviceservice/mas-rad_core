@@ -44,10 +44,6 @@ class FirmSerializer < ActiveModel::Serializer
     object.postcode_searchable?
   end
 
-  def website_address
-    object.principal.try(:website_address)
-  end
-
   def retirement_income_products
     boolean_to_percentage object.retirement_income_products_flag
   end

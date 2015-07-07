@@ -43,7 +43,7 @@ RSpec.describe FirmSerializer do
     end
 
     it 'exposes `website_address`' do
-      expect(subject[:website_address]).to eql(firm.principal.website_address)
+      expect(subject[:website_address]).to eql(firm.website_address)
     end
 
     it 'exposes `email_address`' do
