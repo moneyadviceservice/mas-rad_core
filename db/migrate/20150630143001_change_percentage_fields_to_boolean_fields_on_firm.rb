@@ -1,5 +1,5 @@
 class ChangePercentageFieldsToBooleanFieldsOnFirm < ActiveRecord::Migration
-  BUSINESS_OFFERING_ATTRIBUTE = [
+  ADVICE_TYPES_ATTRIBUTES = [
     :retirement_income_products,
     :pension_transfer,
     :long_term_care,
@@ -9,7 +9,7 @@ class ChangePercentageFieldsToBooleanFieldsOnFirm < ActiveRecord::Migration
     :other]
 
   def up
-    BUSINESS_OFFERING_ATTRIBUTE.each do |field|
+    ADVICE_TYPES_ATTRIBUTES.each do |field|
       # We add the boolean column
       add_column :firms, "#{field}_flag".to_sym, :boolean, null: false, default: false
       # Translate the old percentage values to the new boolean column
@@ -20,7 +20,7 @@ class ChangePercentageFieldsToBooleanFieldsOnFirm < ActiveRecord::Migration
   end
 
   def down
-    BUSINESS_OFFERING_ATTRIBUTE.each do |field|
+    ADVICE_TYPES_ATTRIBUTES.each do |field|
       # As above, but in reverse.
       # Since we've lost information, we can only migrate back by figuring
       #   true  => 100%

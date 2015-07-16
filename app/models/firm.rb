@@ -1,14 +1,13 @@
 class Firm < ActiveRecord::Base
   include Geocodable
 
-  BUSINESS_OFFERING_ATTRIBUTES = [
+  ADVICE_TYPES_ATTRIBUTES = [
     :retirement_income_products_flag,
     :pension_transfer_flag,
     :long_term_care_flag,
     :equity_release_flag,
     :inheritance_tax_and_estate_planning_flag,
-    :wills_and_probate_flag,
-    :other_flag
+    :wills_and_probate_flag
   ]
 
   scope :registered, -> { where.not(email_address: nil) }
@@ -85,8 +84,14 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     numericality: { only_integer: true }
 
-  validates *BUSINESS_OFFERING_ATTRIBUTES,
+  validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
+
+  validate do
+    unless advice_types.values.any?
+      errors.add(:advice_types, :invalid)
+    end
+  end
 
   validates :investment_sizes,
     length: { minimum: 1 }
@@ -132,7 +137,7 @@ class Firm < ActiveRecord::Base
       :allowed_payment_methods,
       :minimum_fixed_fee,
       :percent_total,
-      *BUSINESS_OFFERING_ATTRIBUTES,
+      *ADVICE_TYPES_ATTRIBUTES,
       :investment_sizes
     ]
   end
@@ -140,6 +145,10 @@ class Firm < ActiveRecord::Base
   def geocode
     return if destroyed?
     GeocodeFirmJob.perform_later(self)
+  end
+
+  def advice_types
+    ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
   end
 
   private

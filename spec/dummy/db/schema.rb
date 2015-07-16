@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150706102943) do
+ActiveRecord::Schema.define(version: 20150716123032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,7 +102,6 @@ ActiveRecord::Schema.define(version: 20150706102943) do
     t.boolean  "equity_release_flag",                      default: false, null: false
     t.boolean  "inheritance_tax_and_estate_planning_flag", default: false, null: false
     t.boolean  "wills_and_probate_flag",                   default: false, null: false
-    t.boolean  "other_flag",                               default: false, null: false
     t.string   "website_address"
   end
 

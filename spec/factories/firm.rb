@@ -27,7 +27,6 @@ FactoryGirl.define do
     equity_release_flag true
     inheritance_tax_and_estate_planning_flag true
     wills_and_probate_flag true
-    other_flag true
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
 
@@ -44,7 +43,6 @@ FactoryGirl.define do
       equity_release_flag false
       inheritance_tax_and_estate_planning_flag false
       wills_and_probate_flag false
-      other_flag false
     end
 
     factory :firm_with_advisers do
