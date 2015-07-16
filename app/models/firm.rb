@@ -88,6 +88,12 @@ class Firm < ActiveRecord::Base
   validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
 
+  validate do
+    unless advice_types.values.any?
+      errors.add(:advice_types, :invalid)
+    end
+  end
+
   validates :investment_sizes,
     length: { minimum: 1 }
 
@@ -140,6 +146,10 @@ class Firm < ActiveRecord::Base
   def geocode
     return if destroyed?
     GeocodeFirmJob.perform_later(self)
+  end
+
+  def advice_types
+    ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
   end
 
   private

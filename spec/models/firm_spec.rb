@@ -214,6 +214,18 @@ RSpec.describe Firm do
         it { is_expected.not_to be_valid }
       end
     end
+
+    describe 'advice types' do
+      context 'when none assigned' do
+        before do
+          Firm::ADVICE_TYPES_ATTRIBUTES.each do |attribute|
+            firm[attribute] = false
+          end
+        end
+
+        it { is_expected.not_to be_valid }
+      end
+    end
   end
 
   describe '#full_street_address' do
@@ -339,6 +351,20 @@ RSpec.describe Firm do
 
     it 'sorts the result set by the registered_name field' do
       expect(Firm.sorted_by_registered_name.map(&:registered_name)).to eq(sorted_names)
+    end
+  end
+
+  describe '#advice_types' do
+    it 'returns a hash of advice types' do
+      expect(subject.advice_types).to eq({
+        retirement_income_products_flag: subject.retirement_income_products_flag,
+        pension_transfer_flag: subject.pension_transfer_flag,
+        long_term_care_flag: subject.long_term_care_flag,
+        equity_release_flag: subject.equity_release_flag,
+        inheritance_tax_and_estate_planning_flag: subject.inheritance_tax_and_estate_planning_flag,
+        wills_and_probate_flag: subject.wills_and_probate_flag,
+        other_flag: subject.other_flag
+      })
     end
   end
 end
