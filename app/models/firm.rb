@@ -1,7 +1,7 @@
 class Firm < ActiveRecord::Base
   include Geocodable
 
-  BUSINESS_OFFERING_ATTRIBUTES = [
+  ADVICE_TYPES_ATTRIBUTES = [
     :retirement_income_products_flag,
     :pension_transfer_flag,
     :long_term_care_flag,
@@ -85,7 +85,7 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     numericality: { only_integer: true }
 
-  validates *BUSINESS_OFFERING_ATTRIBUTES,
+  validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
 
   validates :investment_sizes,
@@ -132,7 +132,7 @@ class Firm < ActiveRecord::Base
       :allowed_payment_methods,
       :minimum_fixed_fee,
       :percent_total,
-      *BUSINESS_OFFERING_ATTRIBUTES,
+      *ADVICE_TYPES_ATTRIBUTES,
       :investment_sizes
     ]
   end
