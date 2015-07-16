@@ -7,8 +7,7 @@ class Firm < ActiveRecord::Base
     :long_term_care_flag,
     :equity_release_flag,
     :inheritance_tax_and_estate_planning_flag,
-    :wills_and_probate_flag,
-    :other_flag
+    :wills_and_probate_flag
   ]
 
   scope :registered, -> { where.not(email_address: nil) }

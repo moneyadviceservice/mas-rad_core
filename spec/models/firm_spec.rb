@@ -362,8 +362,7 @@ RSpec.describe Firm do
         long_term_care_flag: subject.long_term_care_flag,
         equity_release_flag: subject.equity_release_flag,
         inheritance_tax_and_estate_planning_flag: subject.inheritance_tax_and_estate_planning_flag,
-        wills_and_probate_flag: subject.wills_and_probate_flag,
-        other_flag: subject.other_flag
+        wills_and_probate_flag: subject.wills_and_probate_flag
       })
     end
   end
