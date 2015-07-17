@@ -130,6 +130,7 @@ class Firm < ActiveRecord::Base
       :address_county,
       :address_postcode,
       :in_person_advice_methods,
+      :other_advice_methods,
       :free_initial_meeting,
       :initial_meeting_duration,
       :initial_advice_fee_structures,
@@ -149,6 +150,16 @@ class Firm < ActiveRecord::Base
 
   def advice_types
     ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
+  end
+
+  def remote_or_local_advice
+    if in_person_advice_methods.any?
+      :local
+    elsif other_advice_methods.any?
+      :remote
+    else
+      nil
+    end
   end
 
   private
