@@ -1,6 +1,10 @@
 module FriendlyNamable
   def self.included(base)
     base.extend(ClassMethods)
+
+    def friendly_name
+      I18n.t("#{model_name.i18n_key}.ordinal.#{order}")
+    end
   end
 
   module ClassMethods
