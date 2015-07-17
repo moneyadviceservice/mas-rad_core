@@ -374,6 +374,13 @@ RSpec.describe Firm do
                          other_advice_methods: other_advice_methods)
     end
     subject { firm.remote_or_local_advice }
+    let(:in_person_advice_methods) { [] }
+    let(:other_advice_methods) { [] }
+
+    context 'when instance variable is set' do
+      before { firm.remote_or_local_advice = :dog }
+      it { is_expected.to be :dog }
+    end
 
     context 'when in-person advice methods are set' do
       let(:in_person_advice_methods) { FactoryGirl.create_list :in_person_advice_method, 1 }
@@ -384,21 +391,17 @@ RSpec.describe Firm do
       end
 
       context 'when remote advice methods are not set' do
-        let(:other_advice_methods) { [] }
         it { is_expected.to be :local }
       end
     end
 
     context 'when in-person advice methods are not set' do
-      let(:in_person_advice_methods) { [] }
-
       context 'when remote advice methods are set' do
         let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
         it { is_expected.to be :remote }
       end
 
       context 'when remote advice methods are not set' do
-        let(:other_advice_methods) { [] }
         it { is_expected.to be nil }
       end
     end

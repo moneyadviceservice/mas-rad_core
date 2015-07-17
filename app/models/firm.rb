@@ -31,8 +31,10 @@ class Firm < ActiveRecord::Base
   has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
   attr_accessor :percent_total
+  attr_accessor :remote_or_local_advice
 
   before_validation :upcase_postcode
+  before_validation :clear_inapplicable_remote_or_local_advice_methods
 
   validates :email_address,
     presence: true,
@@ -153,13 +155,8 @@ class Firm < ActiveRecord::Base
   end
 
   def remote_or_local_advice
-    if in_person_advice_methods.any?
-      :local
-    elsif other_advice_methods.any?
-      :remote
-    else
-      nil
-    end
+    return @remote_or_local_advice.to_sym if @remote_or_local_advice
+    infer_remote_or_local_advice
   end
 
   private
@@ -170,5 +167,23 @@ class Firm < ActiveRecord::Base
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
+  end
+
+  def infer_remote_or_local_advice
+    if in_person_advice_methods.any?
+      :local
+    elsif other_advice_methods.any?
+      :remote
+    else
+      nil
+    end
+  end
+
+  def clear_inapplicable_remote_or_local_advice_methods
+    if remote_or_local_advice == :local
+      self.other_advice_methods = []
+    elsif remote_or_local_advice == :remote
+      self.in_person_advice_methods = []
+    end
   end
 end
