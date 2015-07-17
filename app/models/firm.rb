@@ -86,8 +86,19 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     numericality: { only_integer: true }
 
+  validates :in_person_advice_methods,
+    presence: true,
+    if: ->{ remote_or_local_advice == :local }
+
+  validates :other_advice_methods,
+    presence: true,
+    if: ->{ remote_or_local_advice == :remote }
+
   validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
+
+  validates :remote_or_local_advice,
+    presence: true
 
   validate do
     unless advice_types.values.any?

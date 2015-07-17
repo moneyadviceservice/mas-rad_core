@@ -148,10 +148,47 @@ RSpec.describe Firm do
     end
 
     describe 'in person advice methods' do
+      # Make the record generally valid for either remote or local types vvv
+      before { firm.other_advice_methods = create_list(:other_advice_method, rand(1..3)) }
+
       context 'when none assigned' do
         before { firm.in_person_advice_methods = [] }
 
-        it { is_expected.to be_valid }
+        context 'when the user selects remote advice' do
+          before { firm.remote_or_local_advice = :remote }
+          it { is_expected.to be_valid }
+        end
+
+        context 'when the user selects local advice' do
+          before { firm.remote_or_local_advice = :local }
+          it { is_expected.not_to be_valid }
+        end
+      end
+    end
+
+    describe 'other (remote) advice methods' do
+      context 'when none assigned' do
+        before { firm.other_advice_methods = [] }
+
+        context 'when the user selects remote advice' do
+          before { firm.remote_or_local_advice = :remote }
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when the user selects local advice' do
+          before { firm.remote_or_local_advice = :local }
+          it { is_expected.to be_valid }
+        end
+      end
+    end
+
+    describe 'remote or local advice method' do
+      context 'when none assigned' do
+        before { firm.other_advice_methods = [] }
+        before { firm.in_person_advice_methods = [] }
+        before { firm.remote_or_local_advice = nil }
+
+        it { is_expected.not_to be_valid }
       end
     end
 
@@ -374,7 +411,7 @@ RSpec.describe Firm do
                          other_advice_methods: other_advice_methods)
     end
     subject { firm.remote_or_local_advice }
-    let(:in_person_advice_methods) { [] }
+    let(:in_person_advice_methods) { [create(:in_person_advice_method)] }
     let(:other_advice_methods) { [] }
 
     context 'when instance variable is set' do
@@ -398,10 +435,12 @@ RSpec.describe Firm do
     context 'when in-person advice methods are not set' do
       context 'when remote advice methods are set' do
         let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
+        let(:in_person_advice_methods) { [] }
         it { is_expected.to be :remote }
       end
 
       context 'when remote advice methods are not set' do
+        before { firm.in_person_advice_methods = [] }
         it { is_expected.to be nil }
       end
     end
