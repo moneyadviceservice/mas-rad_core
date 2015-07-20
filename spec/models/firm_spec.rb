@@ -157,11 +157,21 @@ RSpec.describe Firm do
         context 'when the user selects remote advice' do
           before { firm.remote_or_local_advice = :remote }
           it { is_expected.to be_valid }
+
+          it 'clears in-person advice methods' do
+            subject.valid?
+            expect(subject.in_person_advice_methods).to be_empty
+          end
         end
 
         context 'when the user selects local advice' do
           before { firm.remote_or_local_advice = :local }
           it { is_expected.not_to be_valid }
+
+          it 'preserves remote advice methods' do
+            subject.valid?
+            expect(subject.other_advice_methods).to_not be_empty
+          end
         end
       end
     end

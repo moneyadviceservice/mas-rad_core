@@ -34,7 +34,7 @@ class Firm < ActiveRecord::Base
   attr_accessor :remote_or_local_advice
 
   before_validation :upcase_postcode
-  before_validation :clear_inapplicable_remote_or_local_advice_methods
+  before_validation :clear_inapplicable_local_advice_methods
 
   validates :email_address,
     presence: true,
@@ -190,11 +190,8 @@ class Firm < ActiveRecord::Base
     end
   end
 
-  def clear_inapplicable_remote_or_local_advice_methods
-    if remote_or_local_advice == :local
-      self.other_advice_methods = []
-    elsif remote_or_local_advice == :remote
-      self.in_person_advice_methods = []
-    end
+  def clear_inapplicable_local_advice_methods
+    return unless remote_or_local_advice == :remote
+    self.in_person_advice_methods = []
   end
 end
