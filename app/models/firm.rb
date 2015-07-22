@@ -31,10 +31,10 @@ class Firm < ActiveRecord::Base
   has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
   attr_accessor :percent_total
-  attr_accessor :remote_or_local_advice
+  attr_accessor :primary_advice_method
 
   before_validation :upcase_postcode
-  before_validation :clear_inapplicable_local_advice_methods
+  before_validation :clear_inapplicable_advice_methods
 
   validates :email_address,
     presence: true,
@@ -88,16 +88,16 @@ class Firm < ActiveRecord::Base
 
   validates :in_person_advice_methods,
     presence: true,
-    if: ->{ remote_or_local_advice == :local }
+    if: ->{ primary_advice_method == :local }
 
   validates :other_advice_methods,
     presence: true,
-    if: ->{ remote_or_local_advice == :remote }
+    if: ->{ primary_advice_method == :remote }
 
   validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
 
-  validates :remote_or_local_advice,
+  validates :primary_advice_method,
     presence: true
 
   validate do
@@ -165,9 +165,9 @@ class Firm < ActiveRecord::Base
     ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
   end
 
-  def remote_or_local_advice
-    return @remote_or_local_advice.to_sym if @remote_or_local_advice
-    infer_remote_or_local_advice
+  def primary_advice_method
+    return @primary_advice_method.to_sym if @primary_advice_method
+    infer_primary_advice_method
   end
 
   private
@@ -180,7 +180,7 @@ class Firm < ActiveRecord::Base
     address_postcode.upcase! if address_postcode.present?
   end
 
-  def infer_remote_or_local_advice
+  def infer_primary_advice_method
     if in_person_advice_methods.any?
       :local
     elsif other_advice_methods.any?
@@ -190,8 +190,8 @@ class Firm < ActiveRecord::Base
     end
   end
 
-  def clear_inapplicable_local_advice_methods
-    return unless remote_or_local_advice == :remote
+  def clear_inapplicable_advice_methods
+    return unless primary_advice_method == :remote
     self.in_person_advice_methods = []
   end
 end

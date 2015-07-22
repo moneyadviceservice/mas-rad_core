@@ -155,7 +155,7 @@ RSpec.describe Firm do
         before { firm.in_person_advice_methods = [] }
 
         context 'when the user selects remote advice' do
-          before { firm.remote_or_local_advice = :remote }
+          before { firm.primary_advice_method = :remote }
           it { is_expected.to be_valid }
 
           it 'clears in-person advice methods' do
@@ -165,7 +165,7 @@ RSpec.describe Firm do
         end
 
         context 'when the user selects local advice' do
-          before { firm.remote_or_local_advice = :local }
+          before { firm.primary_advice_method = :local }
           it { is_expected.not_to be_valid }
 
           it 'preserves remote advice methods' do
@@ -181,12 +181,12 @@ RSpec.describe Firm do
         before { firm.other_advice_methods = [] }
 
         context 'when the user selects remote advice' do
-          before { firm.remote_or_local_advice = :remote }
+          before { firm.primary_advice_method = :remote }
           it { is_expected.not_to be_valid }
         end
 
         context 'when the user selects local advice' do
-          before { firm.remote_or_local_advice = :local }
+          before { firm.primary_advice_method = :local }
           it { is_expected.to be_valid }
         end
       end
@@ -196,7 +196,7 @@ RSpec.describe Firm do
       context 'when none assigned' do
         before { firm.other_advice_methods = [] }
         before { firm.in_person_advice_methods = [] }
-        before { firm.remote_or_local_advice = nil }
+        before { firm.primary_advice_method = nil }
 
         it { is_expected.not_to be_valid }
       end
@@ -420,12 +420,12 @@ RSpec.describe Firm do
                          in_person_advice_methods: in_person_advice_methods,
                          other_advice_methods: other_advice_methods)
     end
-    subject { firm.remote_or_local_advice }
+    subject { firm.primary_advice_method }
     let(:in_person_advice_methods) { [create(:in_person_advice_method)] }
     let(:other_advice_methods) { [] }
 
     context 'when instance variable is set' do
-      before { firm.remote_or_local_advice = :dog }
+      before { firm.primary_advice_method = :dog }
       it { is_expected.to be :dog }
     end
 
