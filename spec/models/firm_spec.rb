@@ -148,10 +148,57 @@ RSpec.describe Firm do
     end
 
     describe 'in person advice methods' do
+      # Make the record generally valid for either remote or local types vvv
+      before { firm.other_advice_methods = create_list(:other_advice_method, rand(1..3)) }
+
       context 'when none assigned' do
         before { firm.in_person_advice_methods = [] }
 
-        it { is_expected.to be_valid }
+        context 'when the user selects remote advice' do
+          before { firm.primary_advice_method = :remote }
+          it { is_expected.to be_valid }
+
+          it 'clears in-person advice methods' do
+            subject.valid?
+            expect(subject.in_person_advice_methods).to be_empty
+          end
+        end
+
+        context 'when the user selects local advice' do
+          before { firm.primary_advice_method = :local }
+          it { is_expected.not_to be_valid }
+
+          it 'preserves remote advice methods' do
+            subject.valid?
+            expect(subject.other_advice_methods).to_not be_empty
+          end
+        end
+      end
+    end
+
+    describe 'other (remote) advice methods' do
+      context 'when none assigned' do
+        before { firm.other_advice_methods = [] }
+
+        context 'when the user selects remote advice' do
+          before { firm.primary_advice_method = :remote }
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when the user selects local advice' do
+          before { firm.primary_advice_method = :local }
+          it { is_expected.to be_valid }
+        end
+      end
+    end
+
+    describe 'remote or local advice method' do
+      context 'when none assigned' do
+        before { firm.other_advice_methods = [] }
+        before { firm.in_person_advice_methods = [] }
+        before { firm.primary_advice_method = nil }
+
+        it { is_expected.not_to be_valid }
       end
     end
 
@@ -364,6 +411,48 @@ RSpec.describe Firm do
         inheritance_tax_and_estate_planning_flag: subject.inheritance_tax_and_estate_planning_flag,
         wills_and_probate_flag: subject.wills_and_probate_flag
       })
+    end
+  end
+
+  describe '#remote_advice' do
+    let(:firm) do
+      FactoryGirl.create(:firm,
+                         in_person_advice_methods: in_person_advice_methods,
+                         other_advice_methods: other_advice_methods)
+    end
+    subject { firm.primary_advice_method }
+    let(:in_person_advice_methods) { [create(:in_person_advice_method)] }
+    let(:other_advice_methods) { [] }
+
+    context 'when instance variable is set' do
+      before { firm.primary_advice_method = :dog }
+      it { is_expected.to be :dog }
+    end
+
+    context 'when in-person advice methods are set' do
+      let(:in_person_advice_methods) { FactoryGirl.create_list :in_person_advice_method, 1 }
+
+      context 'when remote advice methods are set' do
+        let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
+        it { is_expected.to be :local }
+      end
+
+      context 'when remote advice methods are not set' do
+        it { is_expected.to be :local }
+      end
+    end
+
+    context 'when in-person advice methods are not set' do
+      context 'when remote advice methods are set' do
+        let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
+        let(:in_person_advice_methods) { [] }
+        it { is_expected.to be :remote }
+      end
+
+      context 'when remote advice methods are not set' do
+        before { firm.in_person_advice_methods = [] }
+        it { is_expected.to be nil }
+      end
     end
   end
 end

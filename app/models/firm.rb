@@ -31,8 +31,11 @@ class Firm < ActiveRecord::Base
   has_many :accreditations, -> { reorder('').uniq }, through: :advisers
 
   attr_accessor :percent_total
+  attr_accessor :primary_advice_method
 
   before_validation :upcase_postcode
+  before_validation :clear_inapplicable_advice_methods,
+                    if: -> { primary_advice_method == :remote }
 
   validates :email_address,
     presence: true,
@@ -84,8 +87,19 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     numericality: { only_integer: true }
 
+  validates :in_person_advice_methods,
+    presence: true,
+    if: ->{ primary_advice_method == :local }
+
+  validates :other_advice_methods,
+    presence: true,
+    if: ->{ primary_advice_method == :remote }
+
   validates *ADVICE_TYPES_ATTRIBUTES,
     inclusion: { in: [true, false] }
+
+  validates :primary_advice_method,
+    presence: true
 
   validate do
     unless advice_types.values.any?
@@ -130,6 +144,7 @@ class Firm < ActiveRecord::Base
       :address_county,
       :address_postcode,
       :in_person_advice_methods,
+      :other_advice_methods,
       :free_initial_meeting,
       :initial_meeting_duration,
       :initial_advice_fee_structures,
@@ -151,6 +166,11 @@ class Firm < ActiveRecord::Base
     ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
   end
 
+  def primary_advice_method
+    return @primary_advice_method.to_sym if @primary_advice_method
+    infer_primary_advice_method
+  end
+
   private
 
   def delete_elastic_search_entry
@@ -159,5 +179,19 @@ class Firm < ActiveRecord::Base
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
+  end
+
+  def infer_primary_advice_method
+    if in_person_advice_methods.any?
+      :local
+    elsif other_advice_methods.any?
+      :remote
+    else
+      nil
+    end
+  end
+
+  def clear_inapplicable_advice_methods
+    self.in_person_advice_methods = []
   end
 end

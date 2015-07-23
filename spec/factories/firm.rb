@@ -13,7 +13,6 @@ FactoryGirl.define do
     address_county { Faker::Address.state }
     address_postcode 'EC1N 2TD'
     in_person_advice_methods { create_list(:in_person_advice_method, rand(1..3)) }
-    other_advice_methods { create_list(:other_advice_method, rand(1..3)) }
     free_initial_meeting { [true, false].sample }
     initial_meeting_duration { create(:initial_meeting_duration) }
     minimum_fixed_fee { Faker::Number.number(4) }
@@ -29,6 +28,11 @@ FactoryGirl.define do
     wills_and_probate_flag true
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
+
+    factory :firm_with_remote_advice do
+      other_advice_methods { create_list(:other_advice_method, rand(1..3)) }
+      in_person_advice_methods []
+    end
 
     factory :trading_name do
       parent factory: Firm
