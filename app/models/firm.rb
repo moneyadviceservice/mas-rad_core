@@ -34,7 +34,8 @@ class Firm < ActiveRecord::Base
   attr_accessor :primary_advice_method
 
   before_validation :upcase_postcode
-  before_validation :clear_inapplicable_advice_methods
+  before_validation :clear_inapplicable_advice_methods,
+                    if: -> { primary_advice_method == :remote }
 
   validates :email_address,
     presence: true,
@@ -191,7 +192,6 @@ class Firm < ActiveRecord::Base
   end
 
   def clear_inapplicable_advice_methods
-    return unless primary_advice_method == :remote
     self.in_person_advice_methods = []
   end
 end
