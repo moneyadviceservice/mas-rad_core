@@ -153,6 +153,8 @@ class Firm < ActiveRecord::Base
       :minimum_fixed_fee,
       :percent_total,
       *ADVICE_TYPES_ATTRIBUTES,
+      :ethical_investing_flag,
+      :sharia_investing_flag,
       :investment_sizes
     ]
   end
