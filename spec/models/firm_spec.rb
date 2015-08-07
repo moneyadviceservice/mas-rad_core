@@ -3,6 +3,16 @@ RSpec.describe Firm do
 
   before { allow(GeocodeFirmJob).to receive(:perform_later) }
 
+  describe 'default behaviour' do
+    it 'sets ethical_investing_flag to false' do
+      expect(Firm.new.ethical_investing_flag).to be_falsey
+    end
+
+    it 'sets sharia_investing_flag to false' do
+      expect(Firm.new.sharia_investing_flag).to be_falsey
+    end
+  end
+
   describe '#telephone_number' do
     context 'when `nil`' do
       it 'returns `nil`' do
