@@ -3,6 +3,8 @@ class Adviser < ActiveRecord::Base
 
   attr_reader :old_firm_id
 
+  enum status: [:independent, :restricted]
+
   belongs_to :firm
 
   has_and_belongs_to_many :qualifications
@@ -30,6 +32,8 @@ class Adviser < ActiveRecord::Base
     format: {
       with: /\A[A-Z]{3}[0-9]{5}\z/
     }
+
+  validates :status, presence: true
 
   validate :match_reference_number
 

@@ -107,6 +107,33 @@ RSpec.describe Adviser do
         end
       end
     end
+
+    describe 'status' do
+      context 'without a status' do
+        it 'is not valid' do
+          expect(build(:adviser, status: nil)).to_not be_valid
+        end
+      end
+
+      context 'with a garbage status' do
+        it 'throws an exception' do
+          adviser = build(:adviser)
+          expect { adviser.status = :horse }.to raise_error
+        end
+      end
+
+      context 'with status "independent"' do
+        it 'is valid' do
+          expect(build(:adviser, status: :independent)).to be_valid
+        end
+      end
+
+      context 'with status "restricted"' do
+        it 'is valid' do
+          expect(build(:adviser, status: :restricted)).to be_valid
+        end
+      end
+    end
   end
 
   describe '#full_street_address' do
