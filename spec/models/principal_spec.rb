@@ -202,4 +202,325 @@ RSpec.describe Principal do
       expect(Firm.where(id: firm.id)).to be_empty
     end
   end
+
+  describe '#next_onboarding_action' do
+    context 'when principal has no parent firm' do
+      before :each do
+        principal.firm.destroy
+        principal.reload
+      end
+
+      it 'returns :complete_a_firm' do
+        expect(principal.next_onboarding_action).to eql(:complete_a_firm)
+      end
+    end
+
+    context 'when principal only has a parent firm' do
+      before :each do
+        expect(principal.firm).not_to be_nil
+        expect(Firm.where(fca_number: principal.fca_number).count).to eql(1)
+      end
+
+      context 'and the parent firm has no email address' do
+        before :each do
+          expect(principal.firm.email_address).to be_blank
+        end
+
+        it 'returns :complete_a_firm' do
+          expect(principal.next_onboarding_action).to eql(:complete_a_firm)
+        end
+      end
+
+      context 'and the parent firm has an email address' do
+        before :each do
+          principal.firm.update_column(:email_address, 'acme@example.com')
+          principal.reload
+        end
+
+        context 'and the firm primarily gives remote advice' do
+          before :each do
+            principal.firm.in_person_advice_methods.destroy_all
+            principal.firm.other_advice_methods << create(:other_advice_method)
+            principal.reload
+          end
+
+          context 'and the firm has no advisers' do
+            before :each do
+              expect(principal.firm.advisers.any?).to eql(false)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and the firm has advisers' do
+            before :each do
+              create(:adviser, firm: principal.firm)
+              principal.reload
+              expect(principal.firm.advisers.any?).to eql(true)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+        end
+
+        context 'and the firm primarily gives in-person advice' do
+          before :each do
+            principal.firm.in_person_advice_methods << create(:in_person_advice_method)
+            principal.reload
+          end
+
+          context 'and has at least one in-person adviser' do
+            before :each do
+              create(:adviser, firm: principal.firm)
+              principal.reload
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and does not have at least one adviser' do
+            before :each do
+              expect(principal.firm.advisers.any?).to eql(false)
+            end
+
+            it 'returns :complete_an_adviser' do
+              expect(principal.next_onboarding_action).to eql(:complete_an_adviser)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when principal has a parent firm and a trading name' do
+      let(:parent_firm)   { principal.firm }
+      let!(:trading_name) { create(:firm, registered_name: 'cabbage', parent_id: parent_firm.id, fca_number: principal.fca_number) }
+
+      before :each do
+        parent_firm.update_column(:email_address, 'acme@example.com')
+        principal.reload
+        expect(Firm.where(fca_number: principal.fca_number).count).to eql(2)
+      end
+
+      context 'and neither firm give in-person advice' do
+        before :each do
+          parent_firm.in_person_advice_methods.destroy_all
+          parent_firm.other_advice_methods << create(:other_advice_method)
+          trading_name.in_person_advice_methods.destroy_all
+          trading_name.other_advice_methods << create(:other_advice_method)
+          principal.reload
+        end
+
+        context 'and neither firm has advisers' do
+          before :each do
+            expect(parent_firm.advisers.any?).to eql(false)
+            expect(trading_name.advisers.any?).to eql(false)
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+
+        context 'and the parent firm has advisers' do
+          before :each do
+            create(:adviser, firm: parent_firm)
+            principal.reload
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+
+        context 'and the trading name has advisers' do
+          before :each do
+            create(:adviser, firm: trading_name)
+            principal.reload
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+
+        context 'and both firms have advisers' do
+          before :each do
+            create(:adviser, firm: parent_firm)
+            create(:adviser, firm: trading_name)
+            principal.reload
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+      end
+
+      context 'if at least one firm gives remote advice' do
+        context 'parent firm gives remote advice' do
+          before :each do
+            parent_firm.in_person_advice_methods.destroy_all
+            parent_firm.other_advice_methods << create(:other_advice_method)
+            trading_name.in_person_advice_methods << create(:in_person_advice_method)
+            principal.reload
+          end
+
+          context 'and neither firm has advisers' do
+            before :each do
+              expect(parent_firm.advisers.any?).to eql(false)
+              expect(trading_name.advisers.any?).to eql(false)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and parent firm has advisers' do
+            before :each do
+              create(:adviser, firm: parent_firm)
+              expect(trading_name.advisers.any?).to eql(false)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and trading name has advisers' do
+            before :each do
+              expect(parent_firm.advisers.any?).to eql(false)
+              create(:adviser, firm: trading_name)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and both firms have advisers' do
+            before :each do
+              create(:adviser, firm: parent_firm)
+              create(:adviser, firm: trading_name)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+        end
+
+        context 'trading name gives remote advice' do
+          before :each do
+            parent_firm.in_person_advice_methods << create(:in_person_advice_method)
+            trading_name.in_person_advice_methods.destroy_all
+            trading_name.other_advice_methods << create(:other_advice_method)
+            principal.reload
+          end
+
+          context 'and neither firm has advisers' do
+            before :each do
+              expect(parent_firm.advisers.any?).to eql(false)
+              expect(trading_name.advisers.any?).to eql(false)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and parent firm has advisers' do
+            before :each do
+              create(:adviser, firm: parent_firm)
+              expect(trading_name.advisers.any?).to eql(false)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and trading name has advisers' do
+            before :each do
+              expect(parent_firm.advisers.any?).to eql(false)
+              create(:adviser, firm: trading_name)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+
+          context 'and both firms have advisers' do
+            before :each do
+              create(:adviser, firm: parent_firm)
+              create(:adviser, firm: trading_name)
+            end
+
+            it 'returns :onboarded' do
+              expect(principal.next_onboarding_action).to eql(:onboarded)
+            end
+          end
+        end
+      end
+
+      context 'and both firms give in-person advice' do
+        before :each do
+          parent_firm.in_person_advice_methods  << create(:in_person_advice_method)
+          trading_name.in_person_advice_methods << create(:in_person_advice_method)
+          principal.reload
+        end
+
+        context 'and neither firm has advisers' do
+          before :each do
+            expect(parent_firm.advisers.any?).to eql(false)
+            expect(trading_name.advisers.any?).to eql(false)
+          end
+
+          it 'returns :complete_an_adviser' do
+            expect(principal.next_onboarding_action).to eql(:complete_an_adviser)
+          end
+        end
+
+        context 'and parent firm has advisers' do
+          before :each do
+            create(:adviser, firm: parent_firm)
+            expect(trading_name.advisers.any?).to eql(false)
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+
+        context 'and trading name has advisers' do
+          before :each do
+            expect(parent_firm.advisers.any?).to eql(false)
+            create(:adviser, firm: trading_name)
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+
+        context 'and both firms have advisers' do
+          before :each do
+            create(:adviser, firm: parent_firm)
+            create(:adviser, firm: trading_name)
+          end
+
+          it 'returns :onboarded' do
+            expect(principal.next_onboarding_action).to eql(:onboarded)
+          end
+        end
+      end
+    end
+  end
 end

@@ -71,7 +71,31 @@ class Principal < ActiveRecord::Base
     "#{first_name} #{last_name}"
   end
 
+  def next_onboarding_action
+    registered_firms = main_firm_with_trading_names.registered
+
+    if registered_firms.empty?
+      :complete_a_firm
+    elsif needs_advisers?(registered_firms)
+      :complete_an_adviser
+    else
+      :onboarded
+    end
+  end
+
   private
+
+  def needs_advisers?(firm_list)
+     no_remote_firms?(firm_list) && no_advisers_for?(firm_list)
+  end
+
+  def no_remote_firms?(firm_list)
+    firm_list.none? { |f| f.primary_advice_method == :remote }
+  end
+
+  def no_advisers_for?(firm_list)
+    firm_list.none? { |f| f.advisers.present? }
+  end
 
   def find_subsidiary(subsidiary)
     firm.subsidiaries.find_or_initialize_by(
