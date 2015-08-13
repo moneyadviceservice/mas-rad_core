@@ -12,7 +12,6 @@ FactoryGirl.define do
     travel_distance '650'
     latitude  { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
-    confirmed_disclaimer true
     firm
 
     after(:build) do |a, evaluator|

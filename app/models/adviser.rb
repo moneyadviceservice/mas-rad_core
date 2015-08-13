@@ -14,8 +14,6 @@ class Adviser < ActiveRecord::Base
 
   before_validation :upcase_postcode
 
-  validates_acceptance_of :confirmed_disclaimer, accept: true
-
   validates :travel_distance,
     presence: true,
     inclusion: { in: TravelDistance.all.values }
@@ -60,8 +58,7 @@ class Adviser < ActiveRecord::Base
     [
       :reference_number,
       :postcode,
-      :travel_distance,
-      :confirmed_disclaimer
+      :travel_distance
     ]
   end
 
