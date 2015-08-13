@@ -74,11 +74,12 @@ class Principal < ActiveRecord::Base
   def next_onboarding_action
     registered_firms = main_firm_with_trading_names.registered
 
-    if registered_firms.empty?
+    case
+    when registered_firms.empty?
       :complete_a_firm
-    elsif any_remote_firms?(registered_firms)
+    when any_remote_firms?(registered_firms)
       :onboarded
-    elsif needs_advisers?(registered_firms)
+    when needs_advisers?(registered_firms)
       :complete_an_adviser
     else
       :onboarded

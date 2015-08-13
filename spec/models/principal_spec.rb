@@ -204,10 +204,11 @@ RSpec.describe Principal do
   end
 
   describe '#next_onboarding_action' do
-    context 'when principal has no parent firm' do
+    context 'when principal has no firms or trading names' do
       before :each do
         principal.firm.destroy
         principal.reload
+        expect(principal.main_firm_with_trading_names).to be_empty
       end
 
       it 'returns :complete_a_firm' do
@@ -221,9 +222,9 @@ RSpec.describe Principal do
         expect(Firm.where(fca_number: principal.fca_number).count).to eql(1)
       end
 
-      context 'and the parent firm has no email address' do
+      context 'and the parent firm is not registered' do
         before :each do
-          expect(principal.firm.email_address).to be_blank
+          expect(principal.firm).not_to be_registered
         end
 
         it 'returns :complete_a_firm' do
@@ -231,10 +232,11 @@ RSpec.describe Principal do
         end
       end
 
-      context 'and the parent firm has an email address' do
+      context 'and the parent firm is registered' do
         before :each do
           principal.firm.update_column(:email_address, 'acme@example.com')
           principal.reload
+          expect(principal.firm).to be_registered
         end
 
         context 'and the firm primarily gives remote advice' do

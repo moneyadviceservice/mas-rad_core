@@ -13,6 +13,18 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#registered?' do
+    it 'is false if the firm has no email address' do
+      firm.email_address = nil
+      expect(firm).not_to be_registered
+    end
+
+    it 'is true if the firm has an email address' do
+      firm.email_address = 'acme@example.com'
+      expect(firm).to be_registered
+    end
+  end
+
   describe '#telephone_number' do
     context 'when `nil`' do
       it 'returns `nil`' do

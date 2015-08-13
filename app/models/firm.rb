@@ -113,6 +113,10 @@ class Firm < ActiveRecord::Base
   after_commit :geocode, if: :valid?
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
+  def registered?
+    email_address.present?
+  end
+
   def telephone_number
     return nil unless self[:telephone_number]
 
