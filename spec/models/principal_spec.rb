@@ -318,50 +318,7 @@ RSpec.describe Principal do
           principal.reload
         end
 
-        context 'and neither firm has advisers' do
-          before :each do
-            expect(parent_firm.advisers.any?).to eql(false)
-            expect(trading_name.advisers.any?).to eql(false)
-          end
-
-          it 'returns :onboarded' do
-            expect(principal.next_onboarding_action).to eql(:onboarded)
-          end
-        end
-
-        context 'and the parent firm has advisers' do
-          before :each do
-            create(:adviser, firm: parent_firm)
-            principal.reload
-          end
-
-          it 'returns :onboarded' do
-            expect(principal.next_onboarding_action).to eql(:onboarded)
-          end
-        end
-
-        context 'and the trading name has advisers' do
-          before :each do
-            create(:adviser, firm: trading_name)
-            principal.reload
-          end
-
-          it 'returns :onboarded' do
-            expect(principal.next_onboarding_action).to eql(:onboarded)
-          end
-        end
-
-        context 'and both firms have advisers' do
-          before :each do
-            create(:adviser, firm: parent_firm)
-            create(:adviser, firm: trading_name)
-            principal.reload
-          end
-
-          it 'returns :onboarded' do
-            expect(principal.next_onboarding_action).to eql(:onboarded)
-          end
-        end
+        it_behaves_like 'at least one remote firm'
       end
 
       context 'if at least one firm gives remote advice' do
@@ -373,49 +330,7 @@ RSpec.describe Principal do
             principal.reload
           end
 
-          context 'and neither firm has advisers' do
-            before :each do
-              expect(parent_firm.advisers.any?).to eql(false)
-              expect(trading_name.advisers.any?).to eql(false)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and parent firm has advisers' do
-            before :each do
-              create(:adviser, firm: parent_firm)
-              expect(trading_name.advisers.any?).to eql(false)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and trading name has advisers' do
-            before :each do
-              expect(parent_firm.advisers.any?).to eql(false)
-              create(:adviser, firm: trading_name)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and both firms have advisers' do
-            before :each do
-              create(:adviser, firm: parent_firm)
-              create(:adviser, firm: trading_name)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
+          it_behaves_like 'at least one remote firm'
         end
 
         context 'trading name gives remote advice' do
@@ -426,49 +341,7 @@ RSpec.describe Principal do
             principal.reload
           end
 
-          context 'and neither firm has advisers' do
-            before :each do
-              expect(parent_firm.advisers.any?).to eql(false)
-              expect(trading_name.advisers.any?).to eql(false)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and parent firm has advisers' do
-            before :each do
-              create(:adviser, firm: parent_firm)
-              expect(trading_name.advisers.any?).to eql(false)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and trading name has advisers' do
-            before :each do
-              expect(parent_firm.advisers.any?).to eql(false)
-              create(:adviser, firm: trading_name)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
-
-          context 'and both firms have advisers' do
-            before :each do
-              create(:adviser, firm: parent_firm)
-              create(:adviser, firm: trading_name)
-            end
-
-            it 'returns :onboarded' do
-              expect(principal.next_onboarding_action).to eql(:onboarded)
-            end
-          end
+          it_behaves_like 'at least one remote firm'
         end
       end
 
