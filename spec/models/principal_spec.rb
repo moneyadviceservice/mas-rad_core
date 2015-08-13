@@ -275,7 +275,7 @@ RSpec.describe Principal do
             principal.reload
           end
 
-          context 'and has at least one in-person adviser' do
+          context 'and has at least one adviser' do
             before :each do
               create(:adviser, firm: principal.firm)
               principal.reload
