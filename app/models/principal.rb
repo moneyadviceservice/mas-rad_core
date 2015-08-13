@@ -76,6 +76,8 @@ class Principal < ActiveRecord::Base
 
     if registered_firms.empty?
       :complete_a_firm
+    elsif any_remote_firms?(registered_firms)
+      :onboarded
     elsif needs_advisers?(registered_firms)
       :complete_an_adviser
     else
@@ -85,16 +87,12 @@ class Principal < ActiveRecord::Base
 
   private
 
+  def any_remote_firms?(firm_list)
+    firm_list.any? { |f| f.primary_advice_method == :remote }
+  end
+
   def needs_advisers?(firm_list)
-     no_remote_firms?(firm_list) && no_advisers_for?(firm_list)
-  end
-
-  def no_remote_firms?(firm_list)
-    firm_list.none? { |f| f.primary_advice_method == :remote }
-  end
-
-  def no_advisers_for?(firm_list)
-    firm_list.none? { |f| f.advisers.present? }
+     firm_list.none? { |f| f.advisers.present? }
   end
 
   def find_subsidiary(subsidiary)
