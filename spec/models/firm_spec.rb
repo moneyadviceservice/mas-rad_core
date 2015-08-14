@@ -82,16 +82,16 @@ RSpec.describe Firm do
     let(:firm) { create(:firm) }
     let!(:unsorted_offices) do
       [
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'd', created_at: Time.zone.now),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'b', created_at: 2.days.ago),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'a', created_at: 3.days.ago),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'c', created_at: 1.day.ago)
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'fourth', created_at: Time.zone.now),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'second', created_at: 2.days.ago),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'first',  created_at: 3.days.ago),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'third',  created_at: 1.day.ago)
       ]
     end
 
     describe 'default sort order' do
       subject { firm.offices.map(&:address_line_one) }
-      it { is_expected.to eq(%w{a b c d}) }
+      it { is_expected.to eq(%w{first second third fourth}) }
     end
   end
 
