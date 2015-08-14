@@ -178,6 +178,10 @@ class Firm < ActiveRecord::Base
     infer_primary_advice_method
   end
 
+  def main_office
+    offices.first
+  end
+
   private
 
   def delete_elastic_search_entry

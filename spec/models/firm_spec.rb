@@ -95,6 +95,20 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#main_office' do
+    let(:firm) { create(:firm) }
+    subject { firm.main_office }
+
+    context 'when the firm has no offices' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the firm has offices' do
+      before { FactoryGirl.create_list(:office, 3, firm: firm) }
+      it { is_expected.to eq(firm.offices[0]).and(eq(firm.offices.first)) }
+    end
+  end
+
   describe 'validation' do
     it 'is valid with valid attributes' do
       expect(firm).to be_valid
