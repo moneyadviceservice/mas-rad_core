@@ -105,7 +105,10 @@ RSpec.describe Firm do
 
     context 'when the firm has offices' do
       before { FactoryGirl.create_list(:office, 3, firm: firm) }
-      it { is_expected.to eq(firm.offices[0]).and(eq(firm.offices.first)) }
+      # We implement using #first (which runs one query) but test against
+      # offices[0]. Both should return the same value or things are not
+      # correct.
+      it { is_expected.to eq(firm.offices[0]) }
     end
   end
 
