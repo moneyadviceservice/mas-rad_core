@@ -97,7 +97,7 @@ class Adviser < ActiveRecord::Base
     unless Lookup::Adviser.exists?(reference_number: reference_number)
       errors.add(
         :reference_number,
-        I18n.t('questionnaire.adviser.reference_number_un_matched')
+        I18n.t('adviser.reference_number_unmatched')
       )
     end
   end
