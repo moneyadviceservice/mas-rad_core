@@ -25,6 +25,7 @@ class Firm < ActiveRecord::Base
   belongs_to :parent, class_name: 'Firm'
 
   has_many :advisers, dependent: :destroy
+  has_many :offices, -> { order created_at: :asc }
   has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :trading_names, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :qualifications, -> { reorder('').uniq }, through: :advisers
@@ -175,6 +176,10 @@ class Firm < ActiveRecord::Base
   def primary_advice_method
     return @primary_advice_method.to_sym if @primary_advice_method
     infer_primary_advice_method
+  end
+
+  def main_office
+    offices.first
   end
 
   private

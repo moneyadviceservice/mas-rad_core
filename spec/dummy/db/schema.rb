@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150806143047) do
+ActiveRecord::Schema.define(version: 20150812140642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,6 +199,20 @@ ActiveRecord::Schema.define(version: 20150806143047) do
   end
 
   add_index "lookup_subsidiaries", ["fca_number"], name: "index_lookup_subsidiaries_on_fca_number", using: :btree
+
+  create_table "offices", force: :cascade do |t|
+    t.string   "address_line_one",                 null: false
+    t.string   "address_line_two"
+    t.string   "address_town",                     null: false
+    t.string   "address_county"
+    t.string   "address_postcode",                 null: false
+    t.string   "email_address"
+    t.string   "telephone_number"
+    t.boolean  "disabled_access",  default: false, null: false
+    t.integer  "firm_id",                          null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
 
   create_table "ongoing_advice_fee_structures", force: :cascade do |t|
     t.string   "name",                   null: false

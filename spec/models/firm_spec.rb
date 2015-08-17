@@ -78,6 +78,40 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#offices' do
+    let(:firm) { create(:firm) }
+    let!(:unsorted_offices) do
+      [
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'fourth', created_at: Time.zone.now),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'second', created_at: 2.days.ago),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'first',  created_at: 3.days.ago),
+        FactoryGirl.create(:office, firm: firm, address_line_one: 'third',  created_at: 1.day.ago)
+      ]
+    end
+
+    describe 'default sort order' do
+      subject { firm.offices.map(&:address_line_one) }
+      it { is_expected.to eq(%w{first second third fourth}) }
+    end
+  end
+
+  describe '#main_office' do
+    let(:firm) { create(:firm) }
+    subject { firm.main_office }
+
+    context 'when the firm has no offices' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the firm has offices' do
+      before { FactoryGirl.create_list(:office, 3, firm: firm) }
+      # We implement using #first (which runs one query) but test against
+      # offices[0]. Both should return the same value or things are not
+      # correct.
+      it { is_expected.to eq(firm.offices[0]) }
+    end
+  end
+
   describe 'validation' do
     it 'is valid with valid attributes' do
       expect(firm).to be_valid
