@@ -14,8 +14,6 @@ class Adviser < ActiveRecord::Base
 
   before_validation :upcase_postcode
 
-  validates_acceptance_of :confirmed_disclaimer, accept: true
-
   validates :travel_distance,
     presence: true,
     inclusion: { in: TravelDistance.all.values }
@@ -60,8 +58,7 @@ class Adviser < ActiveRecord::Base
     [
       :reference_number,
       :postcode,
-      :travel_distance,
-      :confirmed_disclaimer
+      :travel_distance
     ]
   end
 
@@ -100,7 +97,7 @@ class Adviser < ActiveRecord::Base
     unless Lookup::Adviser.exists?(reference_number: reference_number)
       errors.add(
         :reference_number,
-        I18n.t('questionnaire.adviser.reference_number_un_matched')
+        I18n.t('adviser.reference_number_unmatched')
       )
     end
   end
