@@ -38,6 +38,7 @@ class Firm < ActiveRecord::Base
   before_validation :clear_inapplicable_advice_methods,
                     if: -> { primary_advice_method == :remote }
   before_validation :clear_blank_languages
+  before_validation :deduplicate_languages
 
   validates :email_address,
     presence: true,
@@ -221,5 +222,9 @@ class Firm < ActiveRecord::Base
 
   def clear_blank_languages
     languages.reject! &:blank?
+  end
+
+  def deduplicate_languages
+    languages.uniq!
   end
 end

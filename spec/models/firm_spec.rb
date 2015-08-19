@@ -230,6 +230,14 @@ RSpec.describe Firm do
           expect(firm.languages).to be_empty
         end
       end
+
+      context 'when it contains duplicate values' do
+        before { firm.languages = ['fr', 'fr', 'de'] }
+        it 'filters them out pre-validation' do
+          firm.valid?
+          expect(firm.languages).to eq ['fr', 'de']
+        end
+      end
     end
 
     describe 'in person advice methods' do
