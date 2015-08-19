@@ -17,6 +17,14 @@ RSpec.describe Firm do
     end
   end
 
+  describe '.available_languages' do
+    it 'returns a list of common languages minus English' do
+      expect(Firm.available_languages).to eq(
+        LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
+      )
+    end
+  end
+
   describe '#registered?' do
     it 'is false if the firm has no email address' do
       firm.email_address = nil

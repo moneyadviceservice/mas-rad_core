@@ -125,6 +125,10 @@ class Firm < ActiveRecord::Base
   after_commit :geocode, if: :valid?
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
+  def self.available_languages
+    LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
+  end
+
   def registered?
     email_address.present?
   end
