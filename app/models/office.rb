@@ -44,5 +44,9 @@ class Office < ActiveRecord::Base
       :disabled_access
     ]
   end
+
+  def telephone_number
+    super.try { |x| x.gsub(' ', '') }
+  end
 end
 

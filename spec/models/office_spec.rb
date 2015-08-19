@@ -3,6 +3,24 @@ RSpec.describe Office do
 
   subject(:office) { FactoryGirl.build(:office) }
 
+  describe '#telephone_number' do
+    context 'when `nil`' do
+      before { office.telephone_number = nil }
+
+      it 'returns `nil`' do
+        expect(office.telephone_number).to be_nil
+      end
+    end
+
+    context 'when provided' do
+      before { office.telephone_number = ' 07715 930 457  ' }
+
+      it 'removes whitespace' do
+        expect(office.telephone_number).to eq('07715930457')
+      end
+    end
+  end
+
   describe 'validation' do
     it 'is valid with valid attributes' do
       expect(office).to be_valid
