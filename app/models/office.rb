@@ -22,9 +22,13 @@ class Office < ActiveRecord::Base
     presence: true,
     format: { with: /\A[A-Z\d]{1,4} [A-Z\d]{1,3}\z/ }
 
-  validates :address_town, presence: true
+  validates :address_town,
+    presence: true,
+    length: { maximum: 100 }
 
-  validates :address_county, presence: true
+  validates :address_county,
+    presence: true,
+    length: { maximum: 100 }
 
   validates :disabled_access, inclusion: { in: [true, false] }
 

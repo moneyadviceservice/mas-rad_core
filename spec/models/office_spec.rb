@@ -1,4 +1,6 @@
 RSpec.describe Office do
+  include FieldLengthValidationHelpers
+
   subject(:office) { FactoryGirl.build(:office) }
 
   describe 'validation' do
@@ -22,6 +24,11 @@ RSpec.describe Office do
 
         it { is_expected.to_not be_valid }
       end
+
+      context 'length' do
+        specify { expect_length_of(office, :email_address, 50).to be_valid }
+        specify { expect_length_of(office, :email_address, 51).not_to be_valid }
+      end
     end
 
     describe 'telephone number' do
@@ -36,6 +43,11 @@ RSpec.describe Office do
 
         it { is_expected.to_not be_valid }
       end
+
+      context 'length' do
+        specify { expect_length_of(office, :telephone_number, 30, fill_char: '0').to be_valid }
+        specify { expect_length_of(office, :telephone_number, 31, fill_char: '0').not_to be_valid }
+      end
     end
 
     describe 'address line 1' do
@@ -43,6 +55,11 @@ RSpec.describe Office do
         before { office.address_line_one = nil }
 
         it { is_expected.not_to be_valid }
+      end
+
+      context 'length' do
+        specify { expect_length_of(office, :address_line_one, 100).to be_valid }
+        specify { expect_length_of(office, :address_line_one, 101).not_to be_valid }
       end
     end
 
@@ -52,6 +69,11 @@ RSpec.describe Office do
 
         it { is_expected.not_to be_valid }
       end
+
+      context 'length' do
+        specify { expect_length_of(office, :address_town, 100).to be_valid }
+        specify { expect_length_of(office, :address_town, 101).not_to be_valid }
+      end
     end
 
     describe 'address county' do
@@ -59,6 +81,11 @@ RSpec.describe Office do
         before { office.address_county = nil }
 
         it { is_expected.not_to be_valid }
+      end
+
+      context 'length' do
+        specify { expect_length_of(office, :address_county, 100).to be_valid }
+        specify { expect_length_of(office, :address_county, 101).not_to be_valid }
       end
     end
 
