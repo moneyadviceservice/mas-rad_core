@@ -217,12 +217,12 @@ RSpec.describe Firm do
 
     describe 'languages' do
       context 'when it contains valid language strings' do
-        before { firm.languages = ['en', 'fr', 'en-GB'] }
+        before { firm.languages = ['fr', 'de'] }
         it { is_expected.to be_valid }
       end
 
       context 'when it contains invalid language strings' do
-        before { firm.languages = ['no_language', 'en-GB'] }
+        before { firm.languages = ['no_language', 'fr'] }
         it { is_expected.to be_invalid }
       end
 

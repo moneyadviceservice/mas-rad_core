@@ -105,8 +105,7 @@ class Firm < ActiveRecord::Base
     presence: true
 
   validate :languages do
-    # TODO: create central list of all valid languages, match against that
-    if languages.any? { |lang| lang !~ /^[a-z]{2,3}(?:\-[a-z]{2,3})?$/i }
+    unless languages.all? { |lang| Firm.available_languages.find { |l| l.iso_639_1 == lang } }
       errors.add(:languages, :invalid)
     end
   end
