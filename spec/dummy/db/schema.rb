@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20150817141257) do
     t.string   "website_address"
     t.boolean  "ethical_investing_flag",                   default: false, null: false
     t.boolean  "sharia_investing_flag",                    default: false, null: false
+    t.text     "languages",                                default: [],    null: false, array: true
     t.integer  "status"
   end
 

@@ -11,6 +11,10 @@ RSpec.describe Firm do
     it 'sets sharia_investing_flag to false' do
       expect(Firm.new.sharia_investing_flag).to be_falsey
     end
+
+    it 'sets languages to an array with empty set' do
+      expect(Firm.new.languages).to eq []
+    end
   end
 
   describe '#registered?' do
@@ -200,6 +204,31 @@ RSpec.describe Firm do
         before { firm.address_postcode = nil }
 
         it { is_expected.not_to be_valid }
+      end
+    end
+
+    describe 'languages' do
+      context 'when it contains valid language strings' do
+        before { firm.languages = ['en', 'fr', 'en-GB'] }
+        it { is_expected.to be_valid }
+      end
+
+      context 'when it contains invalid language strings' do
+        before { firm.languages = ['no_language', 'en-GB'] }
+        it { is_expected.to be_invalid }
+      end
+
+      context 'when it is empty' do
+        before { firm.languages = [] }
+        it { is_expected.to be_valid }
+      end
+
+      context 'when it contains blank values' do
+        before { firm.languages = [''] }
+        it 'filters them out pre-validation' do
+          firm.valid?
+          expect(firm.languages).to be_empty
+        end
       end
     end
 

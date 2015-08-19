@@ -37,6 +37,7 @@ class Firm < ActiveRecord::Base
   before_validation :upcase_postcode
   before_validation :clear_inapplicable_advice_methods,
                     if: -> { primary_advice_method == :remote }
+  before_validation :clear_blank_languages
 
   validates :email_address,
     presence: true,
@@ -102,6 +103,13 @@ class Firm < ActiveRecord::Base
   validates :primary_advice_method,
     presence: true
 
+  validate :languages do
+    # TODO: create central list of all valid languages, match against that
+    if languages.any? { |lang| lang !~ /^[a-z]{2,3}(?:\-[a-z]{2,3})?$/i }
+      errors.add(:languages, :invalid)
+    end
+  end
+
   validate do
     unless advice_types.values.any?
       errors.add(:advice_types, :invalid)
@@ -164,6 +172,7 @@ class Firm < ActiveRecord::Base
       *ADVICE_TYPES_ATTRIBUTES,
       :ethical_investing_flag,
       :sharia_investing_flag,
+      :languages,
       :investment_sizes
     ]
   end
@@ -208,5 +217,9 @@ class Firm < ActiveRecord::Base
 
   def clear_inapplicable_advice_methods
     self.in_person_advice_methods = []
+  end
+
+  def clear_blank_languages
+    languages.reject! &:blank?
   end
 end
