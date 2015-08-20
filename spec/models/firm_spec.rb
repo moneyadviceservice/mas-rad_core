@@ -329,6 +329,32 @@ RSpec.describe Firm do
         it { is_expected.not_to be_valid }
       end
     end
+
+    describe 'status' do
+      context 'without a status' do
+        it 'is not valid' do
+          expect(build(:firm, status: nil)).to_not be_valid
+        end
+      end
+
+      context 'with a garbage status' do
+        it 'throws an exception' do
+          expect { build(:firm, status: :horse) }.to raise_error
+        end
+      end
+
+      context 'with status "independent"' do
+        it 'is valid' do
+          expect(build(:firm, status: :independent)).to be_valid
+        end
+      end
+
+      context 'with status "restricted"' do
+        it 'is valid' do
+          expect(build(:firm, status: :restricted)).to be_valid
+        end
+      end
+    end
   end
 
   describe '#full_street_address' do

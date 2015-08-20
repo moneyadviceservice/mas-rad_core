@@ -28,6 +28,7 @@ FactoryGirl.define do
     wills_and_probate_flag true
     latitude { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
+    status :independent
 
     factory :firm_with_remote_advice do
       other_advice_methods { create_list(:other_advice_method, rand(1..3)) }

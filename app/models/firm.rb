@@ -108,6 +108,8 @@ class Firm < ActiveRecord::Base
     end
   end
 
+  validates :status, presence: true
+
   validates :investment_sizes,
     length: { minimum: 1 }
 
@@ -117,6 +119,8 @@ class Firm < ActiveRecord::Base
   def registered?
     email_address.present?
   end
+
+  enum status: { independent: 1, restricted: 2 }
 
   def telephone_number
     return nil unless self[:telephone_number]

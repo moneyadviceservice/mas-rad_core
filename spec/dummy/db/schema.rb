@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812140642) do
+ActiveRecord::Schema.define(version: 20150817141257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20150812140642) do
     t.string   "website_address"
     t.boolean  "ethical_investing_flag",                   default: false, null: false
     t.boolean  "sharia_investing_flag",                    default: false, null: false
+    t.integer  "status"
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
