@@ -105,7 +105,7 @@ class Firm < ActiveRecord::Base
     presence: true
 
   validate :languages do
-    unless languages.all? { |lang| Firm.available_languages.find { |l| l.iso_639_1 == lang } }
+    unless languages.all? { |lang| AVAILABLE_LANGUAGES_ISO_639_1_CODES.include?(lang) }
       errors.add(:languages, :invalid)
     end
   end
@@ -124,8 +124,12 @@ class Firm < ActiveRecord::Base
   after_commit :geocode, if: :valid?
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
+  AVAILABLE_LANGUAGES = LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')].freeze
+  AVAILABLE_LANGUAGES_ISO_639_1_CODES = Set.new(AVAILABLE_LANGUAGES.map(&:iso_639_1)).freeze
+
+  # Maintains existing interface
   def self.available_languages
-    LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
+    AVAILABLE_LANGUAGES
   end
 
   def registered?
