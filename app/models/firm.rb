@@ -37,6 +37,8 @@ class Firm < ActiveRecord::Base
   before_validation :upcase_postcode
   before_validation :clear_inapplicable_advice_methods,
                     if: -> { primary_advice_method == :remote }
+  before_validation :clear_blank_languages
+  before_validation :deduplicate_languages
 
   validates :email_address,
     presence: true,
@@ -102,6 +104,12 @@ class Firm < ActiveRecord::Base
   validates :primary_advice_method,
     presence: true
 
+  validate :languages do
+    unless languages.all? { |lang| Firm.available_languages.find { |l| l.iso_639_1 == lang } }
+      errors.add(:languages, :invalid)
+    end
+  end
+
   validate do
     unless advice_types.values.any?
       errors.add(:advice_types, :invalid)
@@ -115,6 +123,10 @@ class Firm < ActiveRecord::Base
 
   after_commit :geocode, if: :valid?
   after_commit :delete_elastic_search_entry, if: :destroyed?
+
+  def self.available_languages
+    LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
+  end
 
   def registered?
     email_address.present?
@@ -164,6 +176,7 @@ class Firm < ActiveRecord::Base
       *ADVICE_TYPES_ATTRIBUTES,
       :ethical_investing_flag,
       :sharia_investing_flag,
+      :languages,
       :investment_sizes
     ]
   end
@@ -208,5 +221,13 @@ class Firm < ActiveRecord::Base
 
   def clear_inapplicable_advice_methods
     self.in_person_advice_methods = []
+  end
+
+  def clear_blank_languages
+    languages.reject! &:blank?
+  end
+
+  def deduplicate_languages
+    languages.uniq!
   end
 end

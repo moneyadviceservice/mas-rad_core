@@ -2,6 +2,7 @@ require 'active_job'
 require 'active_model_serializers'
 require 'geocoder'
 require 'httpclient'
+require 'language_list'
 require 'statsd'
 
 module MAS

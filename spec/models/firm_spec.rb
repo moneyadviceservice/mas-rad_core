@@ -11,6 +11,18 @@ RSpec.describe Firm do
     it 'sets sharia_investing_flag to false' do
       expect(Firm.new.sharia_investing_flag).to be_falsey
     end
+
+    it 'sets languages to an array with empty set' do
+      expect(Firm.new.languages).to eq []
+    end
+  end
+
+  describe '.available_languages' do
+    it 'returns a list of common languages minus English' do
+      expect(Firm.available_languages).to eq(
+        LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
+      )
+    end
   end
 
   describe '#registered?' do
@@ -200,6 +212,39 @@ RSpec.describe Firm do
         before { firm.address_postcode = nil }
 
         it { is_expected.not_to be_valid }
+      end
+    end
+
+    describe 'languages' do
+      context 'when it contains valid language strings' do
+        before { firm.languages = ['fr', 'de'] }
+        it { is_expected.to be_valid }
+      end
+
+      context 'when it contains invalid language strings' do
+        before { firm.languages = ['no_language', 'fr'] }
+        it { is_expected.to be_invalid }
+      end
+
+      context 'when it is empty' do
+        before { firm.languages = [] }
+        it { is_expected.to be_valid }
+      end
+
+      context 'when it contains blank values' do
+        before { firm.languages = [''] }
+        it 'filters them out pre-validation' do
+          firm.valid?
+          expect(firm.languages).to be_empty
+        end
+      end
+
+      context 'when it contains duplicate values' do
+        before { firm.languages = ['fr', 'fr', 'de'] }
+        it 'filters them out pre-validation' do
+          firm.valid?
+          expect(firm.languages).to eq ['fr', 'de']
+        end
       end
     end
 
