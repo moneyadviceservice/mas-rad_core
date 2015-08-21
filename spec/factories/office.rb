@@ -7,5 +7,6 @@ FactoryGirl.define do
     address_postcode 'EC1N 2TD'
     email_address { Faker::Internet.email }
     telephone_number { Faker::Base.numerify('##### ### ###') }
+    disabled_access { [true, false].sample }
   end
 end
