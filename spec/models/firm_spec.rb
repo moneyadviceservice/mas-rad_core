@@ -478,11 +478,22 @@ RSpec.describe Firm do
     context 'when the firm has subsidiaries' do
       let(:firm) { create(:firm_with_trading_names) }
 
-      it 'cascades destroy to subsidiaries' do
+      it 'cascades to destroy the subsidiaries too' do
         subsidiary = firm.subsidiaries.first
         firm.destroy
         firm.run_callbacks(:commit)
         expect(Firm.where(id: subsidiary.id)).to be_empty
+      end
+    end
+
+    context 'when the firm has offices' do
+      let(:firm) { create(:firm_with_offices, offices_count: 1) }
+
+      it 'cascades to destroy the offices too' do
+        office = firm.offices.first
+        firm.destroy
+        firm.run_callbacks(:commit)
+        expect(Office.where(id: office.id)).to be_empty
       end
     end
 

@@ -69,5 +69,17 @@ FactoryGirl.define do
     factory :firm_with_principal do
       principal { create(:principal) }
     end
+
+    trait :with_offices do
+      transient do
+        offices_count 3
+      end
+
+      after(:create) do |firm, evaluator|
+        create_list(:office, evaluator.offices_count, firm: firm)
+      end
+    end
+
+    factory :firm_with_offices, traits: [:with_offices]
   end
 end

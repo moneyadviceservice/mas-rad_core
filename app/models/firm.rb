@@ -25,7 +25,7 @@ class Firm < ActiveRecord::Base
   belongs_to :parent, class_name: 'Firm'
 
   has_many :advisers, dependent: :destroy
-  has_many :offices, -> { order created_at: :asc }
+  has_many :offices, -> { order created_at: :asc }, dependent: :destroy
   has_many :subsidiaries, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :trading_names, class_name: 'Firm', foreign_key: :parent_id, dependent: :destroy
   has_many :qualifications, -> { reorder('').uniq }, through: :advisers
