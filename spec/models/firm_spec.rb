@@ -453,8 +453,6 @@ RSpec.describe Firm do
       it 'cascades destroy to advisers' do
         adviser = firm.advisers.first
         firm.destroy
-        firm.run_callbacks(:commit)
-        adviser.run_callbacks(:commit)
         expect(Adviser.where(id: adviser.id)).to be_empty
       end
 
@@ -473,7 +471,6 @@ RSpec.describe Firm do
       it 'cascades to destroy the subsidiaries too' do
         subsidiary = firm.subsidiaries.first
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Firm.where(id: subsidiary.id)).to be_empty
       end
     end
@@ -484,7 +481,6 @@ RSpec.describe Firm do
       it 'cascades to destroy the offices too' do
         office = firm.offices.first
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Office.where(id: office.id)).to be_empty
       end
     end
@@ -495,7 +491,6 @@ RSpec.describe Firm do
       it 'does not destroy the principal' do
         principal = firm.principal
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Principal.where(token: principal.id)).not_to be_empty
       end
     end
