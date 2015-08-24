@@ -25,6 +25,15 @@ FactoryGirl.define do
     longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
+    factory :onboarded_firm do
+      parent factory: Firm
+    end
+
+    factory :not_onboarded_firm do
+      parent factory: Firm
+      email_address nil
+    end
+
     factory :trading_name, aliases: [:subsidiary] do
       parent factory: Firm
     end

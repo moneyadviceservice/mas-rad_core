@@ -86,6 +86,10 @@ class Principal < ActiveRecord::Base
     end
   end
 
+  def onboarded?
+    next_onboarding_action == :onboarded
+  end
+
   private
 
   def any_remote_firms?(firm_list)

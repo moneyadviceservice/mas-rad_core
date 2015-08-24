@@ -203,6 +203,30 @@ RSpec.describe Principal do
     end
   end
 
+  describe '#onboarded?' do
+    context 'when a principal has been onboarded' do
+      before :each do
+        principal.firm.update_attributes(FactoryGirl.attributes_for :onboarded_firm, fca_number: principal.fca_number)
+        create(:adviser, firm: principal.firm)
+      end
+
+      it 'returns true' do
+        expect(principal).to be_onboarded
+      end
+    end
+
+    context 'when a principal has not been onboarded' do
+      before :each do
+        attrs = FactoryGirl.attributes_for :not_onboarded_firm, fca_number: principal.fca_number
+        principal.firm.update_attributes(attrs)
+      end
+
+      it 'returns false' do
+        expect(principal).not_to be_onboarded
+      end
+    end
+  end
+
   describe '#next_onboarding_action' do
     context 'when principal has no firms or trading names' do
       before :each do
