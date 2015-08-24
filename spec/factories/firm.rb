@@ -70,7 +70,7 @@ FactoryGirl.define do
       principal { create(:principal) }
     end
 
-    factory :firm_with_offices do
+    trait :with_offices do
       transient do
         offices_count 3
       end
@@ -79,5 +79,7 @@ FactoryGirl.define do
         create_list(:office, evaluator.offices_count, firm: firm)
       end
     end
+
+    factory :firm_with_offices, traits: [:with_offices]
   end
 end
