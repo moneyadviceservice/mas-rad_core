@@ -55,21 +55,6 @@ class Firm < ActiveRecord::Base
     length: { maximum: 100 },
     format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
 
-  validates :address_line_one,
-    presence: true,
-    length: { maximum: 100 }
-
-  validates :address_line_two,
-    length: { maximum: 100 }
-
-  validates :address_postcode,
-    presence: true,
-    format: { with: /\A[A-Z\d]{1,4} [A-Z\d]{1,3}\z/ }
-
-  validates :address_town,
-    :address_county,
-    presence: true
-
   validates :free_initial_meeting,
     inclusion: { in: [true, false] }
 
@@ -121,8 +106,20 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_commit :geocode, if: :valid?
+  def geocodable?
+    valid? && main_office.present?
+  end
+
+  after_commit :geocode, if: :geocodable?
   after_commit :delete_elastic_search_entry, if: :destroyed?
+
+  delegate :address_line_one,
+           :address_line_two,
+           :address_town,
+           :address_county,
+           :address_postcode,
+           to: :main_office,
+           allow_nil: true
 
   def registered?
     email_address.present?
@@ -137,7 +134,7 @@ class Firm < ActiveRecord::Base
   end
 
   def full_street_address
-    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
+    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
   end
 
   def in_person_advice?

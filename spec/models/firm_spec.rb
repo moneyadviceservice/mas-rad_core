@@ -169,44 +169,6 @@ RSpec.describe Firm do
       end
     end
 
-    describe 'address line 1' do
-      context 'when missing' do
-        before { firm.address_line_one = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address town' do
-      context 'when missing' do
-        before { firm.address_town = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address county' do
-      context 'when missing' do
-        before { firm.address_county = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address postcode' do
-      context 'when missing' do
-        before { firm.address_postcode = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-
-      context 'when invalid' do
-        before { firm.address_postcode = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
     describe 'languages' do
       context 'when it contains valid language strings' do
         before { firm.languages = ['fra', 'deu'] }
@@ -395,18 +357,19 @@ RSpec.describe Firm do
   end
 
   describe '#full_street_address' do
+    let(:firm) { FactoryGirl.create(:firm_with_offices, offices_count: 1) }
     subject { firm.full_street_address }
 
     it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}, United Kingdom"}
 
     context 'when line two is nil' do
-      before { firm.address_line_two = nil }
+      before { firm.main_office.update!(address_line_two: nil) }
 
       it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
     end
 
     context 'when line two is an empty string' do
-      before { firm.address_line_two = '' }
+      before { firm.main_office.update!(address_line_two: '') }
 
       it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
     end
@@ -417,31 +380,58 @@ RSpec.describe Firm do
     let(:job_class) { GeocodeFirmJob }
   end
 
-  describe 'geocoding' do
-    context 'when the address is present' do
-      it 'the firm is scheduled for geocoding' do
-        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.run_callbacks(:commit)
+  describe '#geocodable?' do
+    context 'when the firm is not valid' do
+      before { firm.email_address = nil }
+
+      it 'is not geocodable' do
+        expect(firm).not_to be_geocodable
       end
     end
 
-    context 'when the firm is not valid' do
-      before { firm.address_line_one = nil }
+    context 'when the firm is valid' do
+      context 'but it does not have a main office' do
+        before { expect(firm.offices.any?).to be_falsey }
+
+        it 'is not geocodable' do
+          expect(firm).not_to be_geocodable
+        end
+      end
+
+      context 'and it has a main office' do
+        let(:office) { FactoryGirl.build(:office) }
+
+        before do
+          allow(firm).to receive(:main_office).and_return(office)
+        end
+
+        it 'is geocodable' do
+          expect(firm).to be_geocodable
+        end
+      end
+    end
+  end
+
+  describe 'geocoding' do
+    before :each do
+      allow(firm).to receive(:geocodable?) { geocodable }
+      allow(GeocodeFirmJob).to receive(:perform_later)
+      firm.run_callbacks(:commit)
+    end
+
+    context 'when the firm is geocodable' do
+      let(:geocodable) { true }
+
+      it 'the firm is scheduled for geocoding' do
+        expect(GeocodeFirmJob).to have_received(:perform_later).with(firm)
+      end
+    end
+
+    context 'when the firm is not geocodable' do
+      let(:geocodable) { false }
 
       it 'the firm is not scheduled for geocoding' do
-        expect(GeocodeFirmJob).not_to receive(:perform_later)
-        firm.run_callbacks(:commit)
-      end
-    end
-
-    context 'when the address has changed' do
-      let(:firm) { create(:firm) }
-
-      before { firm.address_postcode = 'ABCD 123' }
-
-      it 'the firm is scheduled for geocoding' do
-        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.run_callbacks(:commit)
+        expect(GeocodeFirmJob).not_to have_received(:perform_later)
       end
     end
   end
