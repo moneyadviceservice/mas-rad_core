@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150817141257) do
+ActiveRecord::Schema.define(version: 20150825090822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,11 +84,6 @@ ActiveRecord::Schema.define(version: 20150817141257) do
     t.string   "telephone_number"
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
-    t.string   "address_line_one"
-    t.string   "address_line_two"
-    t.string   "address_town"
-    t.string   "address_county"
-    t.string   "address_postcode"
     t.boolean  "free_initial_meeting"
     t.integer  "initial_meeting_duration_id"
     t.integer  "minimum_fixed_fee"
@@ -104,8 +99,8 @@ ActiveRecord::Schema.define(version: 20150817141257) do
     t.string   "website_address"
     t.boolean  "ethical_investing_flag",                   default: false, null: false
     t.boolean  "sharia_investing_flag",                    default: false, null: false
-    t.text     "languages",                                default: [],    null: false, array: true
     t.integer  "status"
+    t.text     "languages",                                default: [],    null: false, array: true
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
