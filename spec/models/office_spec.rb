@@ -150,4 +150,24 @@ RSpec.describe Office do
       end
     end
   end
+
+  describe '#full_street_address' do
+    let(:office) { FactoryGirl.build(:office) }
+
+    subject { office.full_street_address }
+
+    it { is_expected.to eql "#{office.address_line_one}, #{office.address_line_two}, #{office.address_postcode}, United Kingdom"}
+
+    context 'when line two is nil' do
+      before { office.address_line_two = nil }
+
+      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
+    end
+
+    context 'when line two is an empty string' do
+      before { office.address_line_two = '' }
+
+      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
+    end
+  end
 end

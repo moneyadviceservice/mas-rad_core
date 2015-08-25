@@ -112,11 +112,13 @@ class Firm < ActiveRecord::Base
   after_commit :geocode, if: :geocodable?
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
+  # Maintains existing address interface
   delegate :address_line_one,
            :address_line_two,
            :address_town,
            :address_county,
            :address_postcode,
+           :full_street_address,
            to: :main_office,
            allow_nil: true
 
@@ -130,10 +132,6 @@ class Firm < ActiveRecord::Base
     return nil unless self[:telephone_number]
 
     self[:telephone_number].gsub(' ', '')
-  end
-
-  def full_street_address
-    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
   end
 
   def in_person_advice?

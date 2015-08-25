@@ -51,6 +51,10 @@ class Office < ActiveRecord::Base
     super.try { |x| x.gsub(' ', '') }
   end
 
+  def full_street_address
+    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
+  end
+
   private
 
   def upcase_postcode

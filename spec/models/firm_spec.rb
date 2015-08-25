@@ -356,25 +356,6 @@ RSpec.describe Firm do
     end
   end
 
-  describe '#full_street_address' do
-    let(:firm) { FactoryGirl.create(:firm_with_offices, offices_count: 1) }
-    subject { firm.full_street_address }
-
-    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}, United Kingdom"}
-
-    context 'when line two is nil' do
-      before { firm.main_office.update!(address_line_two: nil) }
-
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
-    end
-
-    context 'when line two is an empty string' do
-      before { firm.main_office.update!(address_line_two: '') }
-
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
-    end
-  end
-
   it_should_behave_like 'geocodable' do
     subject(:firm) { create(:firm) }
     let(:job_class) { GeocodeFirmJob }
