@@ -3,6 +3,7 @@ ENV['RAILS_ENV'] = 'test'
 require_relative 'dummy/config/environment'
 
 require 'rspec/rails'
+require 'rspec/collection_matchers'
 require 'factory_girl_rails'
 require 'faker'
 require 'pry'

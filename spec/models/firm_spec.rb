@@ -17,14 +17,6 @@ RSpec.describe Firm do
     end
   end
 
-  describe '.available_languages' do
-    it 'returns a list of common languages minus English' do
-      expect(Firm.available_languages).to eq(
-        LanguageList::COMMON_LANGUAGES - [LanguageList::LanguageInfo.find('en')]
-      )
-    end
-  end
-
   describe '#registered?' do
     it 'is false if the firm has no email address' do
       firm.email_address = nil
@@ -217,12 +209,12 @@ RSpec.describe Firm do
 
     describe 'languages' do
       context 'when it contains valid language strings' do
-        before { firm.languages = ['fr', 'de'] }
+        before { firm.languages = ['fra', 'deu'] }
         it { is_expected.to be_valid }
       end
 
       context 'when it contains invalid language strings' do
-        before { firm.languages = ['no_language', 'fr'] }
+        before { firm.languages = ['no_language', 'fra'] }
         it { is_expected.to be_invalid }
       end
 
@@ -240,10 +232,10 @@ RSpec.describe Firm do
       end
 
       context 'when it contains duplicate values' do
-        before { firm.languages = ['fr', 'fr', 'de'] }
+        before { firm.languages = ['fra', 'fra', 'deu'] }
         it 'filters them out pre-validation' do
           firm.valid?
-          expect(firm.languages).to eq ['fr', 'de']
+          expect(firm.languages).to eq ['fra', 'deu']
         end
       end
     end
