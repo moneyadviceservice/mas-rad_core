@@ -105,11 +105,6 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  def geocodable?
-    valid? && main_office.present?
-  end
-
-  after_commit :geocode, if: :geocodable?
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
   # Maintains existing address interface

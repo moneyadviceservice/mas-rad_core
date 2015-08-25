@@ -361,62 +361,6 @@ RSpec.describe Firm do
     let(:job_class) { GeocodeFirmJob }
   end
 
-  describe '#geocodable?' do
-    context 'when the firm is not valid' do
-      before { firm.email_address = nil }
-
-      it 'is not geocodable' do
-        expect(firm).not_to be_geocodable
-      end
-    end
-
-    context 'when the firm is valid' do
-      context 'but it does not have a main office' do
-        before { expect(firm.offices.any?).to be_falsey }
-
-        it 'is not geocodable' do
-          expect(firm).not_to be_geocodable
-        end
-      end
-
-      context 'and it has a main office' do
-        let(:office) { FactoryGirl.build(:office) }
-
-        before do
-          allow(firm).to receive(:main_office).and_return(office)
-        end
-
-        it 'is geocodable' do
-          expect(firm).to be_geocodable
-        end
-      end
-    end
-  end
-
-  describe 'geocoding' do
-    before :each do
-      allow(firm).to receive(:geocodable?) { geocodable }
-      allow(GeocodeFirmJob).to receive(:perform_later)
-      firm.run_callbacks(:commit)
-    end
-
-    context 'when the firm is geocodable' do
-      let(:geocodable) { true }
-
-      it 'the firm is scheduled for geocoding' do
-        expect(GeocodeFirmJob).to have_received(:perform_later).with(firm)
-      end
-    end
-
-    context 'when the firm is not geocodable' do
-      let(:geocodable) { false }
-
-      it 'the firm is not scheduled for geocoding' do
-        expect(GeocodeFirmJob).not_to have_received(:perform_later)
-      end
-    end
-  end
-
   describe 'destroying' do
     context 'when the firm has advisers' do
       let(:firm) { create(:firm_with_advisers) }
