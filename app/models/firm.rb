@@ -34,7 +34,6 @@ class Firm < ActiveRecord::Base
   attr_accessor :percent_total
   attr_accessor :primary_advice_method
 
-  before_validation :upcase_postcode
   before_validation :clear_inapplicable_advice_methods,
                     if: -> { primary_advice_method == :remote }
   before_validation :clear_blank_languages
@@ -196,10 +195,6 @@ class Firm < ActiveRecord::Base
 
   def delete_elastic_search_entry
     DeleteFirmJob.perform_later(id)
-  end
-
-  def upcase_postcode
-    address_postcode.upcase! if address_postcode.present?
   end
 
   def infer_primary_advice_method

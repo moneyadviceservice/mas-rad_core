@@ -119,6 +119,15 @@ RSpec.describe Office do
 
         it { is_expected.not_to be_valid }
       end
+
+      context 'when not all upper cased' do
+        before { office.address_postcode.downcase! }
+
+        it 'upcases it before validating' do
+          expect(office).to be_valid
+          expect(office.address_postcode).to eq(office.address_postcode.upcase)
+        end
+      end
     end
 
     describe 'disabled access' do

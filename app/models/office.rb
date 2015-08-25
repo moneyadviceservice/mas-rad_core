@@ -1,6 +1,8 @@
 class Office < ActiveRecord::Base
   belongs_to :firm
 
+  before_validation :upcase_postcode
+
   validates :email_address,
     presence: true,
     length: { maximum: 50 },
@@ -47,6 +49,12 @@ class Office < ActiveRecord::Base
 
   def telephone_number
     super.try { |x| x.gsub(' ', '') }
+  end
+
+  private
+
+  def upcase_postcode
+    address_postcode.upcase! if address_postcode.present?
   end
 end
 
