@@ -94,7 +94,7 @@ RSpec.describe Firm do
     end
 
     describe 'default sort order' do
-      subject { firm.offices.map(&:address_line_one) }
+      subject { firm.reload.offices.map(&:address_line_one) }
       it { is_expected.to eq(%w{first second third fourth}) }
     end
   end

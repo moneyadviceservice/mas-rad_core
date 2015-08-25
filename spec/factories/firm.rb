@@ -72,6 +72,7 @@ FactoryGirl.define do
 
       after(:create) do |firm, evaluator|
         create_list(:office, evaluator.offices_count, firm: firm)
+        firm.reload
       end
     end
 
