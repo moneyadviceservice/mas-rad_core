@@ -116,6 +116,19 @@ RSpec.describe Firm do
     end
   end
 
+  describe '#publishable?' do
+    subject { create(:firm) }
+
+    context 'when the firm has no main office' do
+      it { expect(subject).not_to be_publishable }
+    end
+
+    context 'when the firm has a main office' do
+      before { FactoryGirl.create(:office, firm: subject) }
+      it { expect(subject).to be_publishable }
+    end
+  end
+
   describe 'validation' do
     it 'is valid with valid attributes' do
       expect(firm).to be_valid

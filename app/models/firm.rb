@@ -179,6 +179,10 @@ class Firm < ActiveRecord::Base
     offices.first
   end
 
+  def publishable?
+    main_office.present?
+  end
+
   private
 
   def delete_elastic_search_entry
