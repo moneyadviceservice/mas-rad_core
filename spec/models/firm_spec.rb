@@ -453,17 +453,7 @@ RSpec.describe Firm do
       it 'cascades destroy to advisers' do
         adviser = firm.advisers.first
         firm.destroy
-        firm.run_callbacks(:commit)
-        adviser.run_callbacks(:commit)
         expect(Adviser.where(id: adviser.id)).to be_empty
-      end
-
-      it 'does not geocode the firm' do
-        expect(GeocodeFirmJob).not_to receive(:perform_later)
-        adviser = firm.advisers.first
-        firm.destroy
-        firm.run_callbacks(:commit)
-        adviser.run_callbacks(:commit)
       end
     end
 
@@ -473,7 +463,6 @@ RSpec.describe Firm do
       it 'cascades to destroy the subsidiaries too' do
         subsidiary = firm.subsidiaries.first
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Firm.where(id: subsidiary.id)).to be_empty
       end
     end
@@ -484,7 +473,6 @@ RSpec.describe Firm do
       it 'cascades to destroy the offices too' do
         office = firm.offices.first
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Office.where(id: office.id)).to be_empty
       end
     end
@@ -495,16 +483,34 @@ RSpec.describe Firm do
       it 'does not destroy the principal' do
         principal = firm.principal
         firm.destroy
-        firm.run_callbacks(:commit)
         expect(Principal.where(token: principal.id)).not_to be_empty
       end
     end
 
     describe 'deleting in elastic search' do
+      let(:firm) do
+        create(:firm,
+               :with_offices,
+               :with_advisers,
+               :with_principal,
+               offices_count: 1,
+               advisers_count: 1)
+      end
+
       context 'when the firm is destroyed' do
         it 'the firm is scheduled for deletion' do
           expect(DeleteFirmJob).to receive(:perform_later).with(firm.id)
           firm.destroy
+          firm.run_callbacks(:commit)
+        end
+
+        it 'does not trigger geocoding of the firm' do
+          expect(GeocodeFirmJob).not_to receive(:perform_later)
+          adviser = firm.advisers.first
+          office = firm.offices.first
+          firm.destroy
+          adviser.run_callbacks(:commit)
+          office.run_callbacks(:commit)
           firm.run_callbacks(:commit)
         end
       end

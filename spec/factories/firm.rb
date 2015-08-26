@@ -30,18 +30,19 @@ FactoryGirl.define do
     longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
-    factory :firm_with_remote_advice do
-      other_advice_methods { create_list(:other_advice_method, rand(1..3)) }
-      in_person_advice_methods []
-    end
-
-    factory :trading_name do
+    factory :trading_name, aliases: [:subsidiary] do
       parent factory: Firm
-
-      factory :subsidiary
     end
 
-    factory :firm_with_no_business_split do
+    factory :firm_with_advisers, traits: [:with_advisers]
+    factory :firm_with_offices, traits: [:with_offices]
+    factory :firm_with_principal, traits: [:with_principal]
+    factory :firm_with_no_business_split, traits: [:with_no_business_split]
+    factory :firm_with_remote_advice, traits: [:with_remote_advice]
+    factory :firm_with_subsidiaries, traits: [:with_trading_names]
+    factory :firm_with_trading_names, traits: [:with_trading_names]
+
+    trait :with_no_business_split do
       retirement_income_products_flag false
       pension_transfer_flag false
       long_term_care_flag false
@@ -50,7 +51,7 @@ FactoryGirl.define do
       wills_and_probate_flag false
     end
 
-    factory :firm_with_advisers do
+    trait :with_advisers do
       transient do
         advisers_count 3
       end
@@ -60,13 +61,7 @@ FactoryGirl.define do
       end
     end
 
-    factory :firm_with_trading_names do
-      subsidiaries { create_list(:trading_name, 3, fca_number: fca_number) }
-
-      factory :firm_with_subsidiaries
-    end
-
-    factory :firm_with_principal do
+    trait :with_principal do
       principal { create(:principal) }
     end
 
@@ -80,6 +75,13 @@ FactoryGirl.define do
       end
     end
 
-    factory :firm_with_offices, traits: [:with_offices]
+    trait :with_remote_advice do
+      other_advice_methods { create_list(:other_advice_method, rand(1..3)) }
+      in_person_advice_methods []
+    end
+
+    trait :with_trading_names do
+      subsidiaries { create_list(:trading_name, 3, fca_number: fca_number) }
+    end
   end
 end
