@@ -374,6 +374,34 @@ RSpec.describe Firm do
     let(:job_class) { GeocodeFirmJob }
   end
 
+  describe 'after_commit:publish_firm' do
+    context 'when a firm is created' do
+      it 'the firm is published' do
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm = create :firm
+        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
+      end
+    end
+
+    context 'when a firm is updated' do
+      it 'the firm is published' do
+        firm = create :firm
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm.update_attributes(email_address: 'bill@example.com')
+        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
+      end
+    end
+
+    context 'when a firm is destroyed' do
+      it 'the firm is not published' do
+        firm = create :firm
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm.destroy
+        expect(IndexFirmJob).not_to have_received(:perform_later)
+      end
+    end
+  end
+
   describe 'destroying' do
     context 'when the firm has advisers' do
       let(:firm) { create(:firm_with_advisers) }
