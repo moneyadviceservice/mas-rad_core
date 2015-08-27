@@ -167,8 +167,7 @@ class Firm < ActiveRecord::Base
   end
 
   def geocode_and_reindex
-    return if destroyed?
-    GeocodeFirmJob.perform_later(self)
+    GeocodeFirmJob.perform_later(self) unless destroyed?
   end
 
   def advice_types

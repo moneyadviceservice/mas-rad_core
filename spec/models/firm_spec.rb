@@ -374,6 +374,21 @@ RSpec.describe Firm do
     let(:job_class) { GeocodeFirmJob }
   end
 
+  describe '#geocode_and_reindex' do
+    # does the reindexing inside the GeocodeFirmJob, tests for that are there
+
+    it 'performs a geocode firm job' do
+      firm.geocode_and_reindex
+      expect(GeocodeFirmJob).to have_received(:perform_later).with(firm)
+    end
+
+    it 'does not perform a geocode firm job when the firm has been destroyed' do
+      firm.destroy
+      firm.geocode_and_reindex
+      expect(GeocodeFirmJob).not_to have_received(:perform_later).with(firm)
+    end
+  end
+
   describe 'after_commit:publish_firm' do
     context 'when a firm is created' do
       it 'the firm is published' do
