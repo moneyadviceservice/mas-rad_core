@@ -5,7 +5,7 @@ RSpec.describe Office do
 
   subject(:office) { FactoryGirl.build(:office, firm: firm) }
 
-  describe 'after_commit :geocode' do
+  describe 'after_commit :geocode_and_reindex_firm' do
     let(:firm) { FactoryGirl.build(:firm, id: 123) }
 
     before do

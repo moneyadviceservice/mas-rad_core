@@ -34,7 +34,7 @@ class Office < ActiveRecord::Base
 
   validates :disabled_access, inclusion: { in: [true, false] }
 
-  after_commit :geocode
+  after_commit :geocode_and_reindex_firm
 
   def field_order
     [
@@ -63,10 +63,10 @@ class Office < ActiveRecord::Base
     address_postcode.upcase! if address_postcode.present?
   end
 
-  def geocode
+  def geocode_and_reindex_firm
     return if destroyed?
     if valid? and firm.try(:main_office) == self
-      firm.geocode # until we move the geocoding to offices, geocode the firm if this is the main office
+      firm.geocode_and_reindex # until we move the geocoding to offices, geocode the firm if this is the main office
     end
   end
 end

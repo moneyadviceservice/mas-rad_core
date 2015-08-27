@@ -129,7 +129,7 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after_commit :geocode' do
+  describe 'after_commit :geocode_and_reindex' do
     let(:adviser) { create(:adviser) }
 
     context 'when the postcode is present' do

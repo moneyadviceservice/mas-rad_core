@@ -31,7 +31,7 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_commit :geocode
+  after_commit :geocode_and_reindex_firm
   after_commit :reindex_old_firm, if: :firm_id_changed?
 
   scope :sorted_by_name, -> { order(:name) }
@@ -63,9 +63,9 @@ class Adviser < ActiveRecord::Base
 
   private
 
-  def geocode
+  def geocode_and_reindex_firm
     if destroyed?
-      firm.geocode
+      firm.geocode_and_reindex
     elsif valid?
       GeocodeAdviserJob.perform_later(self)
     end
