@@ -39,6 +39,7 @@ class FirmResult
     source = data['_source']
     @id    = source['_id']
     @name  = source['registered_name']
+    @advisers         = source['advisers']
     @total_advisers   = source['advisers'].count
     @closest_adviser  = data['sort'].first
     @telephone_number = source['telephone_number']
@@ -46,6 +47,10 @@ class FirmResult
     (DIRECTLY_MAPPED_FIELDS + TYPES_OF_ADVICE_FIELDS).each do |field|
       instance_variable_set("@#{field}", source[field.to_s])
     end
+  end
+
+  def advisers
+    @advisers.map { |adviser_data| AdviserResult.new(adviser_data) }
   end
 
   def types_of_advice
