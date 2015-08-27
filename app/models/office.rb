@@ -65,9 +65,13 @@ class Office < ActiveRecord::Base
 
   def geocode_and_reindex_firm
     return if destroyed?
-    if valid? and firm.try(:main_office) == self
+    if valid? and main_office?
       firm.geocode_and_reindex # until we move the geocoding to offices, geocode the firm if this is the main office
     end
+  end
+
+  def main_office?
+    firm.try(:main_office) == self
   end
 end
 
