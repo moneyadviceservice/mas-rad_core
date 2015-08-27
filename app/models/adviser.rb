@@ -31,9 +31,8 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_save :flag_changes_for_after_commit
   after_commit :geocode
-  after_commit :reindex_old_firm
+  after_commit :reindex_old_firm, if: :firm_id_changed?
 
   scope :sorted_by_name, -> { order(:name) }
 
@@ -64,12 +63,6 @@ class Adviser < ActiveRecord::Base
 
   private
 
-  # All record of what changed is gone by the time we get to the after_commit
-  # hooks, so we need to store any important changes here to be actioned later.
-  def flag_changes_for_after_commit
-    @old_firm_id = firm_id_change.first if firm_id_changed?
-  end
-
   def geocode
     if destroyed?
       firm.geocode
@@ -79,8 +72,7 @@ class Adviser < ActiveRecord::Base
   end
 
   def reindex_old_firm
-    IndexFirmJob.perform_later(Firm.find(@old_firm_id)) if @old_firm_id.present?
-    @old_firm_id = nil
+    IndexFirmJob.perform_later(Firm.find(attribute_was(:firm_id)))
   end
 
   def upcase_postcode

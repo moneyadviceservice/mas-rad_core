@@ -1,4 +1,18 @@
 RSpec.describe Adviser do
+  before do
+    clear_job_queue
+  end
+
+  def clear_job_queue
+    ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+  end
+
+  def queue_contains_a_job_for(job_class)
+    ActiveJob::Base.queue_adapter.enqueued_jobs.any? do |elem|
+      elem[:job] == job_class
+    end
+  end
+
   describe '#geocoded?' do
     context 'when the adviser has lat/long' do
       it 'is classed as geocoded' do
@@ -118,10 +132,6 @@ RSpec.describe Adviser do
   describe 'after_commit :geocode' do
     let(:adviser) { create(:adviser) }
 
-    before do
-      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
-    end
-
     context 'when the postcode is present' do
       it 'the adviser is scheduled for geocoding' do
         expect { adviser.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
@@ -142,35 +152,12 @@ RSpec.describe Adviser do
         adviser.run_callbacks(:commit)
       end
 
-      def queue_contains_a_job_for(job_class)
-        ActiveJob::Base.queue_adapter.enqueued_jobs.any? do |elem|
-          elem[:job] == job_class
-        end
-      end
-
       it 'the adviser is not scheduled for geocoding' do
         expect(queue_contains_a_job_for(GeocodeAdviserJob)).to be_falsey
       end
 
       it 'the adviser\'s firm is scheduled for geocoding/indexing' do
         expect(queue_contains_a_job_for(GeocodeFirmJob)).to be_truthy
-      end
-    end
-  end
-
-  describe 'after_save :flag_changes_for_after_commit' do
-    let(:original_firm) { create(:firm) }
-    let(:receiving_firm) { create(:firm) }
-    subject { create(:adviser, firm: original_firm) }
-
-    before do
-      subject.firm = receiving_firm
-      subject.save!
-    end
-
-    context 'when the firm has changed' do
-      it 'stores the original firm id so it can be reindexed in an after_commit hook' do
-        expect(subject.old_firm_id).to eq(original_firm.id)
       end
     end
   end
@@ -186,19 +173,19 @@ RSpec.describe Adviser do
     end
 
     context 'when the firm has changed' do
-      it 'triggers reindexing of the adviser and new firm' do
-        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+      it 'triggers reindexing of the original firm the first time' do
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
+        expect(queue_contains_a_job_for(IndexFirmJob)).to be_truthy
       end
 
-      it 'triggers reindexing of the original firm (once)' do
-        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm)
+      it 'does not trigger reindexing of the original firm thereafter' do
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
 
-        # Trigger a second time
+        clear_job_queue
         subject.run_callbacks(:commit)
+        expect(queue_contains_a_job_for(IndexFirmJob)).to be_falsey
       end
     end
   end
