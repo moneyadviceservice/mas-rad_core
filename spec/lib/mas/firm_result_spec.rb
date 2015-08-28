@@ -128,6 +128,17 @@ RSpec.describe FirmResult do
       expect(subject.adviser_qualification_ids).to eq([3])
     end
 
+    describe '#advisers' do
+      it 'returns an array containing the advisers' do
+        expect(subject.advisers).to be_an(Array)
+        expect(subject.advisers.length).to eq(1)
+      end
+
+      it 'returns AdviserResult objects' do
+        expect(subject.advisers.first).to be_an(AdviserResult)
+      end
+    end
+
     describe '#minimum_pot_size?' do
       context 'when £50k or less' do
         it 'is false' do
