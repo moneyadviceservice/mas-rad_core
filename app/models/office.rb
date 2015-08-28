@@ -4,12 +4,12 @@ class Office < ActiveRecord::Base
   before_validation :upcase_postcode
 
   validates :email_address,
-    presence: true,
+    presence: false,
     length: { maximum: 50 },
     format: { with: /.+@.+\..+/ }
 
   validates :telephone_number,
-    presence: true,
+    presence: false,
     length: { maximum: 30 },
     format: { with: /\A[0-9 ]+\z/ }
 
@@ -29,7 +29,7 @@ class Office < ActiveRecord::Base
     length: { maximum: 100 }
 
   validates :address_county,
-    presence: true,
+    presence: false,
     length: { maximum: 100 }
 
   validates :disabled_access, inclusion: { in: [true, false] }

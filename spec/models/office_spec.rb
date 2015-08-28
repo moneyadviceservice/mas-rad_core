@@ -139,7 +139,7 @@ RSpec.describe Office do
       context 'when missing' do
         before { office.address_county = nil }
 
-        it { is_expected.not_to be_valid }
+        it { is_expected.to be_valid }
       end
 
       context 'length' do
