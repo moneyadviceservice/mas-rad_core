@@ -5,7 +5,7 @@ namespace :firms do
     confirmation = STDIN.gets.chomp
     if confirmation.downcase == 'yes'
       puts 'Building firms index...'
-      Firm.all.each {|f| IndexFirmJob.perform_later(f) }
+      Firm.registered.each {|f| IndexFirmJob.perform_later(f) }
       puts '...indexing done.'
     else
       puts 'Indexing aborted.'
