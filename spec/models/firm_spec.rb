@@ -94,7 +94,7 @@ RSpec.describe Firm do
     end
 
     describe 'default sort order' do
-      subject { firm.offices.map(&:address_line_one) }
+      subject { firm.reload.offices.map(&:address_line_one) }
       it { is_expected.to eq(%w{first second third fourth}) }
     end
   end
@@ -113,6 +113,19 @@ RSpec.describe Firm do
       # offices[0]. Both should return the same value or things are not
       # correct.
       it { is_expected.to eq(firm.offices[0]) }
+    end
+  end
+
+  describe '#publishable?' do
+    subject { create(:firm) }
+
+    context 'when the firm has no main office' do
+      it { expect(subject).not_to be_publishable }
+    end
+
+    context 'when the firm has a main office' do
+      before { FactoryGirl.create(:office, firm: subject) }
+      it { expect(subject).to be_publishable }
     end
   end
 
@@ -166,44 +179,6 @@ RSpec.describe Firm do
         it 'must be a reasonably valid URL' do
           expect(build(:firm, website_address: 'http://a')).not_to be_valid
         end
-      end
-    end
-
-    describe 'address line 1' do
-      context 'when missing' do
-        before { firm.address_line_one = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address town' do
-      context 'when missing' do
-        before { firm.address_town = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address county' do
-      context 'when missing' do
-        before { firm.address_county = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-    end
-
-    describe 'address postcode' do
-      context 'when missing' do
-        before { firm.address_postcode = nil }
-
-        it { is_expected.not_to be_valid }
-      end
-
-      context 'when invalid' do
-        before { firm.address_postcode = nil }
-
-        it { is_expected.not_to be_valid }
       end
     end
 
@@ -394,54 +369,50 @@ RSpec.describe Firm do
     end
   end
 
-  describe '#full_street_address' do
-    subject { firm.full_street_address }
-
-    it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_line_two}, #{firm.address_postcode}, United Kingdom"}
-
-    context 'when line two is nil' do
-      before { firm.address_line_two = nil }
-
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
-    end
-
-    context 'when line two is an empty string' do
-      before { firm.address_line_two = '' }
-
-      it { is_expected.to eql "#{firm.address_line_one}, #{firm.address_postcode}, United Kingdom"}
-    end
-  end
-
   it_should_behave_like 'geocodable' do
     subject(:firm) { create(:firm) }
     let(:job_class) { GeocodeFirmJob }
   end
 
-  describe 'geocoding' do
-    context 'when the address is present' do
-      it 'the firm is scheduled for geocoding' do
-        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.run_callbacks(:commit)
+  describe '#geocode_and_reindex' do
+    # does the reindexing inside the GeocodeFirmJob, tests for that are there
+
+    it 'performs a geocode firm job' do
+      firm.geocode_and_reindex
+      expect(GeocodeFirmJob).to have_received(:perform_later).with(firm)
+    end
+
+    it 'does not perform a geocode firm job when the firm has been destroyed' do
+      firm.destroy
+      firm.geocode_and_reindex
+      expect(GeocodeFirmJob).not_to have_received(:perform_later).with(firm)
+    end
+  end
+
+  describe 'after_commit:publish_firm' do
+    context 'when a firm is created' do
+      it 'the firm is published' do
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm = create :firm
+        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
       end
     end
 
-    context 'when the firm is not valid' do
-      before { firm.address_line_one = nil }
-
-      it 'the firm is not scheduled for geocoding' do
-        expect(GeocodeFirmJob).not_to receive(:perform_later)
-        firm.run_callbacks(:commit)
+    context 'when a firm is updated' do
+      it 'the firm is published' do
+        firm = create :firm
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm.update_attributes(email_address: 'bill@example.com')
+        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
       end
     end
 
-    context 'when the address has changed' do
-      let(:firm) { create(:firm) }
-
-      before { firm.address_postcode = 'ABCD 123' }
-
-      it 'the firm is scheduled for geocoding' do
-        expect(GeocodeFirmJob).to receive(:perform_later).with(firm)
-        firm.run_callbacks(:commit)
+    context 'when a firm is destroyed' do
+      it 'the firm is not published' do
+        firm = create :firm
+        allow(IndexFirmJob).to receive(:perform_later)
+        firm.destroy
+        expect(IndexFirmJob).not_to have_received(:perform_later)
       end
     end
   end

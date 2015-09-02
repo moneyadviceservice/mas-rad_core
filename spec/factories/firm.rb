@@ -7,11 +7,6 @@ FactoryGirl.define do
     email_address { Faker::Internet.email }
     telephone_number { Faker::Base.numerify('##### ### ###') }
     website_address { Faker::Internet.url }
-    address_line_one { Faker::Address.street_address }
-    address_line_two { Faker::Address.secondary_address }
-    address_town { Faker::Address.city }
-    address_county { Faker::Address.state }
-    address_postcode 'EC1N 2TD'
     in_person_advice_methods { create_list(:in_person_advice_method, rand(1..3)) }
     free_initial_meeting { [true, false].sample }
     initial_meeting_duration { create(:initial_meeting_duration) }
@@ -72,6 +67,7 @@ FactoryGirl.define do
 
       after(:create) do |firm, evaluator|
         create_list(:office, evaluator.offices_count, firm: firm)
+        firm.reload
       end
     end
 

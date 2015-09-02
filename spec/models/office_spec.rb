@@ -1,7 +1,48 @@
 RSpec.describe Office do
   include FieldLengthValidationHelpers
 
-  subject(:office) { FactoryGirl.build(:office) }
+  let(:firm) { nil }
+
+  subject(:office) { FactoryGirl.build(:office, firm: firm) }
+
+  describe 'after_commit :geocode_and_reindex_firm' do
+    let(:firm) { FactoryGirl.build(:firm, id: 123) }
+
+    before do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+    end
+
+    context 'when the address_postcode is not valid' do
+      before { office.address_postcode = nil }
+
+      it 'does not schedule the firm for geocoding' do
+        expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+      end
+    end
+
+    context 'when the address_postcode is valid' do
+      context 'but the office is not the main office for the firm' do
+        it 'does not schedule the firm for geocoding' do
+          expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+        end
+      end
+
+      context 'and the office is the main office for the firm' do
+        before { allow(firm).to receive(:main_office).and_return(office) }
+
+        it 'schedules the firm for geocoding' do
+          expect { office.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+        end
+
+        context 'when the office has been destroyed' do
+          it 'does not schedule the firm for geocoding' do
+            office.destroy
+            expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+          end
+        end
+      end
+    end
+  end
 
   describe '#telephone_number' do
     context 'when `nil`' do
@@ -98,7 +139,7 @@ RSpec.describe Office do
       context 'when missing' do
         before { office.address_county = nil }
 
-        it { is_expected.not_to be_valid }
+        it { is_expected.to be_valid }
       end
 
       context 'length' do
@@ -118,6 +159,15 @@ RSpec.describe Office do
         before { office.address_postcode = 'not-valid' }
 
         it { is_expected.not_to be_valid }
+      end
+
+      context 'when not all upper cased' do
+        before { office.address_postcode.downcase! }
+
+        it 'upcases it before validating' do
+          expect(office).to be_valid
+          expect(office.address_postcode).to eq(office.address_postcode.upcase)
+        end
       end
     end
 
@@ -139,6 +189,26 @@ RSpec.describe Office do
 
         it { is_expected.to be_valid }
       end
+    end
+  end
+
+  describe '#full_street_address' do
+    let(:office) { FactoryGirl.build(:office) }
+
+    subject { office.full_street_address }
+
+    it { is_expected.to eql "#{office.address_line_one}, #{office.address_line_two}, #{office.address_postcode}, United Kingdom"}
+
+    context 'when line two is nil' do
+      before { office.address_line_two = nil }
+
+      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
+    end
+
+    context 'when line two is an empty string' do
+      before { office.address_line_two = '' }
+
+      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
     end
   end
 end

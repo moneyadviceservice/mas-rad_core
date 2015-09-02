@@ -3,12 +3,14 @@ require 'geocoder'
 RSpec.describe GeocodeFirmJob do
   let(:job) { GeocodeFirmJob.new }
 
-  subject(:firm) do
-    create(:firm,
-      address_line_one: address_line_one,
-      address_line_two: address_line_two,
-      address_postcode: address_postcode
-    )
+  subject(:firm) { create(:firm) }
+
+  before do
+    create(:office, firm: firm,
+                    address_line_one: address_line_one,
+                    address_line_two: address_line_two,
+                    address_postcode: address_postcode)
+    firm.reload
   end
 
   describe '#perform' do

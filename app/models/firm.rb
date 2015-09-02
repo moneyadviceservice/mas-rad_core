@@ -34,7 +34,6 @@ class Firm < ActiveRecord::Base
   attr_accessor :percent_total
   attr_accessor :primary_advice_method
 
-  before_validation :upcase_postcode
   before_validation :clear_inapplicable_advice_methods,
                     if: -> { primary_advice_method == :remote }
   before_validation :clear_blank_languages
@@ -54,21 +53,6 @@ class Firm < ActiveRecord::Base
     allow_blank: true,
     length: { maximum: 100 },
     format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
-
-  validates :address_line_one,
-    presence: true,
-    length: { maximum: 100 }
-
-  validates :address_line_two,
-    length: { maximum: 100 }
-
-  validates :address_postcode,
-    presence: true,
-    format: { with: /\A[A-Z\d]{1,4} [A-Z\d]{1,3}\z/ }
-
-  validates :address_town,
-    :address_county,
-    presence: true
 
   validates :free_initial_meeting,
     inclusion: { in: [true, false] }
@@ -121,8 +105,22 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_commit :geocode, if: :valid?
+  after_save :publish_to_elastic_search
   after_commit :delete_elastic_search_entry, if: :destroyed?
+
+  def publish_to_elastic_search
+    IndexFirmJob.perform_later self
+  end
+
+  # Maintains existing address interface
+  delegate :address_line_one,
+           :address_line_two,
+           :address_town,
+           :address_county,
+           :address_postcode,
+           :full_street_address,
+           to: :main_office,
+           allow_nil: true
 
   def registered?
     email_address.present?
@@ -134,10 +132,6 @@ class Firm < ActiveRecord::Base
     return nil unless self[:telephone_number]
 
     self[:telephone_number].gsub(' ', '')
-  end
-
-  def full_street_address
-    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].delete_if(&:blank?).join(', ')
   end
 
   def in_person_advice?
@@ -155,11 +149,6 @@ class Firm < ActiveRecord::Base
     [
       :email_address,
       :telephone_number,
-      :address_line_one,
-      :address_line_two,
-      :address_town,
-      :address_county,
-      :address_postcode,
       :in_person_advice_methods,
       :other_advice_methods,
       :free_initial_meeting,
@@ -177,9 +166,8 @@ class Firm < ActiveRecord::Base
     ]
   end
 
-  def geocode
-    return if destroyed?
-    GeocodeFirmJob.perform_later(self)
+  def geocode_and_reindex
+    GeocodeFirmJob.perform_later(self) unless destroyed?
   end
 
   def advice_types
@@ -195,14 +183,14 @@ class Firm < ActiveRecord::Base
     offices.first
   end
 
+  def publishable?
+    main_office.present?
+  end
+
   private
 
   def delete_elastic_search_entry
     DeleteFirmJob.perform_later(id)
-  end
-
-  def upcase_postcode
-    address_postcode.upcase! if address_postcode.present?
   end
 
   def infer_primary_advice_method

@@ -4,6 +4,6 @@ class IndexFirmJob < ActiveJob::Base
   end
 
   def perform(firm)
-    FirmRepository.new.store(firm)
+    FirmRepository.new.store(firm) if firm.publishable?
   end
 end

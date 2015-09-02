@@ -1,7 +1,7 @@
 RSpec.describe GeocodeAdviserJob do
   let(:job) { GeocodeAdviserJob.new }
 
-  subject(:adviser) { create(:adviser, postcode: postcode) }
+  let!(:adviser) { create(:adviser, postcode: postcode) }
 
   describe '#perform' do
     context 'when the adviser postcode can be geocoded' do
