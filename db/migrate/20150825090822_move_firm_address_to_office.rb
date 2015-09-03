@@ -6,7 +6,7 @@ class MoveFirmAddressToOffice < ActiveRecord::Migration
   class Office < ActiveRecord::Base; belongs_to :firm; end
 
   def up
-    Firm.where.not(address_line_one: nil) do |firm|
+    Firm.where.not(address_line_one: nil).each do |firm|
       next if firm.offices.any?
 
       firm.offices.create!(

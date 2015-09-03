@@ -99,8 +99,8 @@ ActiveRecord::Schema.define(version: 20150825090822) do
     t.string   "website_address"
     t.boolean  "ethical_investing_flag",                   default: false, null: false
     t.boolean  "sharia_investing_flag",                    default: false, null: false
-    t.integer  "status"
     t.text     "languages",                                default: [],    null: false, array: true
+    t.integer  "status"
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
