@@ -72,7 +72,11 @@ class Firm < ActiveRecord::Base
 
   validates :minimum_fixed_fee,
     allow_blank: true,
-    numericality: { only_integer: true }
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than: 2147483648 # max value for postgres integer type
+    }
 
   validates :in_person_advice_methods,
     presence: true,
@@ -149,6 +153,13 @@ class Firm < ActiveRecord::Base
     [
       :email_address,
       :telephone_number,
+      :website_address,
+      :address_line_one,
+      :address_line_two,
+      :address_town,
+      :address_county,
+      :address_postcode,
+      :primary_advice_method,
       :in_person_advice_methods,
       :other_advice_methods,
       :free_initial_meeting,
