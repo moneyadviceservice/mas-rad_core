@@ -117,16 +117,27 @@ RSpec.describe Firm do
   end
 
   describe '#publishable?' do
-    subject { create(:firm, offices_count: offices_count) }
+    context 'when the firm is not valid' do
+      subject do
+        FactoryGirl.create(:firm).tap do |f|
+          f.email_address = nil
+          f.save(validate: false)
+        end
+      end
 
-    context 'when the firm has no main office' do
-      let(:offices_count) { 0 }
-      it { expect(subject).not_to be_publishable }
+      it { is_expected.not_to be_publishable }
     end
 
-    context 'when the firm has a main office' do
-      let(:offices_count) { 1 }
-      it { expect(subject).to be_publishable }
+    context 'when the firm has no main office' do
+      subject { FactoryGirl.create(:firm, offices_count: 0) }
+
+      it { is_expected.not_to be_publishable }
+    end
+
+    context 'when the firm is valid and has a main office' do
+      subject { FactoryGirl.create(:firm) }
+
+      it { is_expected.to be_publishable }
     end
   end
 

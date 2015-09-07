@@ -195,7 +195,7 @@ class Firm < ActiveRecord::Base
   end
 
   def publishable?
-    main_office.present?
+    valid? && main_office.present?
   end
 
   private
