@@ -25,11 +25,12 @@ FactoryGirl.define do
     longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
-    factory :onboarded_firm
-
-    factory :not_onboarded_firm do
-      email_address nil
+    factory :onboarded_firm, traits: [:with_advisers, :with_offices], aliases: [:publishable_firm] do
+      advisers_count 1
+      offices_count 1
     end
+
+    factory :not_onboarded_firm, traits: [:invalid]
 
     factory :trading_name, aliases: [:subsidiary] do
       parent factory: Firm
@@ -42,6 +43,11 @@ FactoryGirl.define do
     factory :firm_with_remote_advice, traits: [:with_remote_advice]
     factory :firm_with_subsidiaries, traits: [:with_trading_names]
     factory :firm_with_trading_names, traits: [:with_trading_names]
+    factory :invalid_firm, traits: [:invalid]
+
+    trait :invalid do
+      email_address nil
+    end
 
     trait :with_no_business_split do
       retirement_income_products_flag false
