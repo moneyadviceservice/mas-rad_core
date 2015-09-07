@@ -25,12 +25,9 @@ FactoryGirl.define do
     longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
-    factory :onboarded_firm do
-      parent factory: Firm
-    end
+    factory :onboarded_firm
 
     factory :not_onboarded_firm do
-      parent factory: Firm
       email_address nil
     end
 
