@@ -1,7 +1,7 @@
 class AdviserSerializer < ActiveModel::Serializer
   self.root = false
 
-  attributes :_id, :name, :range, :location, :range_location
+  attributes :_id, :name, :postcode, :range, :location, :range_location
 
   def _id
     object.id

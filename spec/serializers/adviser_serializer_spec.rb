@@ -12,6 +12,10 @@ RSpec.describe AdviserSerializer do
       expect(subject[:name]).to eql(adviser.name)
     end
 
+    it 'exposes `postcode`' do
+      expect(subject[:postcode]).to eql(adviser.postcode)
+    end
+
     it 'exposes `range`' do
       expect(subject[:range]).to eql(adviser.travel_distance)
     end
