@@ -15,6 +15,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -33,6 +34,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -51,6 +53,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).not_to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -69,6 +72,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -87,6 +91,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -105,6 +110,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -126,6 +132,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
@@ -147,6 +154,7 @@ RSpec.describe 'Firm factory' do
       expect(subject).not_to be_valid
       expect(subject).not_to be_publishable
       expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
