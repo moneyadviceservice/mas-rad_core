@@ -87,6 +87,9 @@ RSpec.describe 'Firm factory' do
 
     context 'associations' do
       it { expect(subject.principal).to be_present }
+      it { expect(subject.principal.fca_number).to eq(subject.fca_number) }
+      # it { expect(subject.principal.firm).to eq(subject) } # @todo fails. Creates principal with 2 main firms !!!
+
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
     end
