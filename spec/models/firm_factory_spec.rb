@@ -58,23 +58,6 @@ RSpec.describe 'Firm factory' do
     end
   end
 
-  describe 'factory :invalid_firm' do
-    let(:factory) { :invalid_firm }
-
-    context 'expected status' do
-      it { is_expected.not_to be_persisted }
-      it { is_expected.not_to be_valid }
-      it { is_expected.not_to be_publishable }
-      it { is_expected.not_to be_trading_name }
-    end
-
-    context 'associations' do
-      it { expect(subject.principal).not_to be_present }
-      it { is_expected.to have(:no).offices }
-      it { is_expected.to have(:no).advisers }
-    end
-  end
-
   describe 'factory :firm_with_principal' do
     let(:factory) { :firm_with_principal }
 
@@ -90,6 +73,23 @@ RSpec.describe 'Firm factory' do
       it { expect(subject.principal.fca_number).to eq(subject.fca_number) }
       # it { expect(subject.principal.firm).to eq(subject) } # @todo fails. Creates principal with 2 main firms !!!
 
+      it { is_expected.to have(:no).offices }
+      it { is_expected.to have(:no).advisers }
+    end
+  end
+
+  describe 'factory :invalid_firm' do
+    let(:factory) { :invalid_firm }
+
+    context 'expected status' do
+      it { is_expected.not_to be_persisted }
+      it { is_expected.not_to be_valid }
+      it { is_expected.not_to be_publishable }
+      it { is_expected.not_to be_trading_name }
+    end
+
+    context 'associations' do
+      it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
     end
