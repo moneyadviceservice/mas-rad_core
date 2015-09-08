@@ -18,6 +18,7 @@ RSpec.describe 'Firm factory' do
     end
 
     context 'associations' do
+      it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
     end
@@ -34,6 +35,7 @@ RSpec.describe 'Firm factory' do
     end
 
     context 'associations' do
+      it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(1).offices }
       it { is_expected.to have(1).advisers }
     end
@@ -50,6 +52,7 @@ RSpec.describe 'Firm factory' do
     end
 
     context 'associations' do
+      it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
     end
@@ -66,6 +69,24 @@ RSpec.describe 'Firm factory' do
     end
 
     context 'associations' do
+      it { expect(subject.principal).not_to be_present }
+      it { is_expected.to have(:no).offices }
+      it { is_expected.to have(:no).advisers }
+    end
+  end
+
+  describe 'factory :firm_with_principal' do
+    let(:factory) { :firm_with_principal }
+
+    context 'expected status' do
+      it { is_expected.to be_persisted }
+      it { is_expected.to be_valid }
+      it { is_expected.not_to be_publishable }
+      it { is_expected.not_to be_trading_name }
+    end
+
+    context 'associations' do
+      it { expect(subject.principal).to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
     end
