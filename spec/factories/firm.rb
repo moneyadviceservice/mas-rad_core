@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
-  factory :firm do
+  factory :firm, aliases: [:publishable_firm] do
     fca_number
     registered_name
     email_address { Faker::Internet.email }
@@ -25,9 +25,17 @@ FactoryGirl.define do
     longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
-    factory :onboarded_firm, traits: [:with_advisers, :with_offices], aliases: [:publishable_firm] do
-      advisers_count 1
+    transient do
       offices_count 1
+    end
+
+    after(:create) do |firm, evaluator|
+      create_list(:office, evaluator.offices_count, firm: firm)
+      firm.reload
+    end
+
+    factory :onboarded_firm, traits: [:with_advisers] do
+      advisers_count 1
     end
 
     factory :not_onboarded_firm, traits: [:invalid]
@@ -73,14 +81,7 @@ FactoryGirl.define do
     end
 
     trait :with_offices do
-      transient do
-        offices_count 3
-      end
-
-      after(:create) do |firm, evaluator|
-        create_list(:office, evaluator.offices_count, firm: firm)
-        firm.reload
-      end
+      offices_count 3
     end
 
     trait :with_remote_advice do
