@@ -6,10 +6,9 @@ RSpec.describe GeocodeFirmJob do
   subject(:firm) { create(:firm) }
 
   before do
-    create(:office, firm: firm,
-                    address_line_one: address_line_one,
-                    address_line_two: address_line_two,
-                    address_postcode: address_postcode)
+    firm.main_office.update!(address_line_one: address_line_one,
+                             address_line_two: address_line_two,
+                             address_postcode: address_postcode)
     firm.reload
   end
 
