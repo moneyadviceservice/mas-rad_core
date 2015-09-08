@@ -146,6 +146,25 @@ RSpec.describe 'Firm factory' do
     end
   end
 
+  describe 'factory :firm_with_remote_advice' do
+    let(:factory) { :firm_with_remote_advice }
+
+    specify 'expected status' do
+      expect(subject).to be_persisted
+      expect(subject).to be_valid
+      expect(subject).not_to be_publishable
+      expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:remote)
+    end
+
+    specify 'associations' do
+      expect(subject.principal).not_to be_present
+      expect(subject).to have(:no).offices
+      expect(subject).to have(:no).advisers
+      expect(subject).to have(:no).trading_names
+    end
+  end
+
   describe 'factory :invalid_firm' do
     let(:factory) { :invalid_firm }
 
