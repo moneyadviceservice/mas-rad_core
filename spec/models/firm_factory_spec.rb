@@ -138,7 +138,10 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).to be_present
       expect(subject.principal.fca_number).to eq(subject.fca_number)
-      # expect(subject.principal.firm).to eq(subject) # @todo fails. Creates principal with 2 main firms !!!
+      # @todo fails. Creates principal with 2 main firms !!!
+      # Note: we need to wait until rad_consumer is updated to run with the latest version of this Gem
+      # so that we can check that nothing gets broken by fixing this
+      # expect(subject.principal.firm).to eq(subject)
 
       expect(subject).to have(:no).offices
       expect(subject).to have(:no).advisers
