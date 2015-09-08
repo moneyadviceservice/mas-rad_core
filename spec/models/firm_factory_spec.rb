@@ -21,6 +21,7 @@ RSpec.describe 'Firm factory' do
       it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
+      it { is_expected.to have(:no).trading_names }
     end
   end
 
@@ -38,6 +39,7 @@ RSpec.describe 'Firm factory' do
       it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(1).offices }
       it { is_expected.to have(1).advisers }
+      it { is_expected.to have(:no).trading_names }
     end
   end
 
@@ -55,6 +57,7 @@ RSpec.describe 'Firm factory' do
       it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
+      it { is_expected.to have(:no).trading_names }
     end
   end
 
@@ -75,6 +78,7 @@ RSpec.describe 'Firm factory' do
 
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
+      it { is_expected.to have(:no).trading_names }
     end
   end
 
@@ -92,6 +96,7 @@ RSpec.describe 'Firm factory' do
       it { expect(subject.principal).not_to be_present }
       it { is_expected.to have(:no).offices }
       it { is_expected.to have(:no).advisers }
+      it { is_expected.to have(:no).trading_names }
     end
   end
 end
