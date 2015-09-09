@@ -15,14 +15,14 @@ RSpec.describe 'Firm factory' do
     specify 'expected status' do
       expect(subject).to be_persisted
       expect(subject).to be_valid
-      expect(subject).not_to be_publishable
+      expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
       expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
       expect(subject.principal).not_to be_present
-      expect(subject).to have(:no).offices
+      expect(subject).to have(1).offices
       expect(subject).to have(:no).advisers
       expect(subject).to have(:no).trading_names
     end
@@ -72,14 +72,14 @@ RSpec.describe 'Firm factory' do
     specify 'expected status' do
       expect(subject).to be_persisted
       expect(subject).to be_valid
-      expect(subject).not_to be_publishable
+      expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
       expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
       expect(subject.principal).not_to be_present
-      expect(subject).to have(:no).offices
+      expect(subject).to have(1).offices
       expect(subject).to have(3).advisers
       expect(subject).to have(:no).trading_names
     end
@@ -110,14 +110,14 @@ RSpec.describe 'Firm factory' do
     specify 'expected status' do
       expect(subject).to be_persisted
       expect(subject).to be_valid
-      expect(subject).not_to be_publishable
+      expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
       expect(subject.primary_advice_method).to be(:local)
     end
 
     specify 'associations' do
       expect(subject.principal).not_to be_present
-      expect(subject).to have(:no).offices
+      expect(subject).to have(1).offices
       expect(subject).to have(:no).advisers
 
       expect(subject).to have(3).trading_names
@@ -132,7 +132,7 @@ RSpec.describe 'Firm factory' do
     specify 'expected status' do
       expect(subject).to be_persisted
       expect(subject).to be_valid
-      expect(subject).not_to be_publishable
+      expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
       expect(subject.primary_advice_method).to be(:local)
     end
@@ -145,7 +145,7 @@ RSpec.describe 'Firm factory' do
       # so that we can check that nothing gets broken by fixing this
       # expect(subject.principal.firm).to eq(subject)
 
-      expect(subject).to have(:no).offices
+      expect(subject).to have(1).offices
       expect(subject).to have(:no).advisers
       expect(subject).to have(:no).trading_names
     end
@@ -157,14 +157,14 @@ RSpec.describe 'Firm factory' do
     specify 'expected status' do
       expect(subject).to be_persisted
       expect(subject).to be_valid
-      expect(subject).not_to be_publishable
+      expect(subject).to be_publishable
       expect(subject).not_to be_trading_name
       expect(subject.primary_advice_method).to be(:remote)
     end
 
     specify 'associations' do
       expect(subject.principal).not_to be_present
-      expect(subject).to have(:no).offices
+      expect(subject).to have(1).offices
       expect(subject).to have(:no).advisers
       expect(subject).to have(:no).trading_names
     end

@@ -83,7 +83,7 @@ RSpec.describe Firm do
   end
 
   describe '#offices' do
-    let(:firm) { create(:firm) }
+    let(:firm) { create(:firm, offices_count: 0) }
     let!(:unsorted_offices) do
       [
         FactoryGirl.create(:office, firm: firm, address_line_one: 'fourth', created_at: Time.zone.now),
@@ -100,7 +100,7 @@ RSpec.describe Firm do
   end
 
   describe '#main_office' do
-    let(:firm) { create(:firm) }
+    let(:firm) { create(:firm, offices_count: 0) }
     subject { firm.main_office }
 
     context 'when the firm has no offices' do
@@ -117,14 +117,15 @@ RSpec.describe Firm do
   end
 
   describe '#publishable?' do
-    subject { create(:firm) }
+    subject { create(:firm, offices_count: offices_count) }
 
     context 'when the firm has no main office' do
+      let(:offices_count) { 0 }
       it { expect(subject).not_to be_publishable }
     end
 
     context 'when the firm has a main office' do
-      before { FactoryGirl.create(:office, firm: subject) }
+      let(:offices_count) { 1 }
       it { expect(subject).to be_publishable }
     end
   end
