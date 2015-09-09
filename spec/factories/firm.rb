@@ -34,6 +34,14 @@ FactoryGirl.define do
       firm.reload
     end
 
+    transient do
+      advisers_count 1
+    end
+
+    after(:create) do |firm, evaluator|
+      create_list(:adviser, evaluator.advisers_count, firm: firm)
+    end
+
     factory :onboarded_firm, traits: [:with_advisers] do
       advisers_count 1
     end
@@ -67,13 +75,7 @@ FactoryGirl.define do
     end
 
     trait :with_advisers do
-      transient do
-        advisers_count 3
-      end
-
-      after(:create) do |firm, evaluator|
-        create_list(:adviser, evaluator.advisers_count, firm: firm)
-      end
+      advisers_count 3
     end
 
     trait :with_principal do

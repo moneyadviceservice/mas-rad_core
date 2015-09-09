@@ -117,6 +117,12 @@ RSpec.describe Firm do
   end
 
   describe '#publishable?' do
+    subject { FactoryGirl.create(:firm) }
+
+    context 'when the firm is valid, has a main office and is not missing advisers' do
+      it { is_expected.to be_publishable }
+    end
+
     context 'when the firm is not valid' do
       subject do
         FactoryGirl.create(:firm).tap do |f|
@@ -134,10 +140,41 @@ RSpec.describe Firm do
       it { is_expected.not_to be_publishable }
     end
 
-    context 'when the firm is valid and has a main office' do
-      subject { FactoryGirl.create(:firm) }
+    context 'when the firm is missing advisers' do
+      before { allow(subject).to receive(:missing_advisers?).and_return(true) }
 
-      it { is_expected.to be_publishable }
+      it { is_expected.not_to be_publishable }
+    end
+  end
+
+  describe '#missing_advisers?' do
+    let(:factory) { :firm }
+    subject { FactoryGirl.create(factory, advisers_count: advisers_count).missing_advisers? }
+
+    context 'when the firm offers face-to-face advice' do
+      context 'when the firm has advisers' do
+        let(:advisers_count) { 1 }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the firm has no advisers' do
+        let(:advisers_count) { 0 }
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the firm offers remote advice' do
+      let(:factory) { :firm_with_remote_advice }
+
+      context 'when the firm has advisers' do
+        let(:advisers_count) { 1 }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the firm has no advisers' do
+        let(:advisers_count) { 0 }
+        it { is_expected.to be_falsey }
+      end
     end
   end
 

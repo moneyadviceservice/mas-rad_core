@@ -23,7 +23,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -99,7 +99,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(3).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -118,7 +118,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
 
       expect(subject).to have(3).trading_names
       expect(subject.trading_names).to all(have_attributes(fca_number: subject.fca_number))
@@ -146,7 +146,7 @@ RSpec.describe 'Firm factory' do
       # expect(subject.principal.firm).to eq(subject)
 
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
