@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
-  factory :firm, aliases: [:publishable_firm] do
+  factory :firm, aliases: [:publishable_firm, :onboarded_firm] do
     fca_number
     registered_name
     email_address { Faker::Internet.email }
@@ -42,12 +42,6 @@ FactoryGirl.define do
       create_list(:adviser, evaluator.advisers_count, firm: firm)
     end
 
-    factory :onboarded_firm, traits: [:with_advisers] do
-      advisers_count 1
-    end
-
-    factory :not_onboarded_firm, traits: [:invalid]
-
     factory :trading_name, aliases: [:subsidiary] do
       parent factory: Firm
     end
@@ -60,7 +54,7 @@ FactoryGirl.define do
     factory :firm_with_remote_advice, traits: [:with_remote_advice]
     factory :firm_with_subsidiaries, traits: [:with_trading_names]
     factory :firm_with_trading_names, traits: [:with_trading_names]
-    factory :invalid_firm, traits: [:invalid]
+    factory :invalid_firm, traits: [:invalid], aliases: [:not_onboarded_firm]
 
     trait :invalid do
       email_address nil
