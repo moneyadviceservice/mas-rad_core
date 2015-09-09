@@ -12,7 +12,7 @@ FactoryGirl.define do
     travel_distance '650'
     latitude  { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
-    firm
+    firm factory: :firm_without_advisers
 
     after(:build) do |a, evaluator|
       if a.reference_number? && evaluator.create_linked_lookup_advisor

@@ -246,10 +246,12 @@ RSpec.describe Adviser do
 
   describe '#on_firms_with_fca_number' do
     it 'returns advisers on firm and its trading names' do
-      firm = FactoryGirl.create(:firm)
-      trading_name = FactoryGirl.create(:trading_name, fca_number: firm.fca_number)
-      advisers = [FactoryGirl.create(:adviser, firm_id: firm.id),
-                  FactoryGirl.create(:adviser, firm_id: trading_name.id)]
+      firm = FactoryGirl.create(:firm_with_advisers, advisers_count: 1)
+      trading_name = FactoryGirl.create(:trading_name,
+                                        :with_advisers,
+                                        advisers_count: 1,
+                                        fca_number: firm.fca_number)
+      advisers = [firm.advisers.first, trading_name.advisers.first]
 
       returned_advisers = Adviser.on_firms_with_fca_number(firm.fca_number)
       expect(returned_advisers.length).to eq(2)
