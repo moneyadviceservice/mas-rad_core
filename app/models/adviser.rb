@@ -64,7 +64,8 @@ class Adviser < ActiveRecord::Base
   private
 
   # All record of what changed is gone by the time we get to the after_commit
-  # hooks, so we need to store any important changes here to be actioned later.
+  # hooks. So we cannot use #firm_id_changed? at that point. To work around
+  # this we flag any important changes here to be actioned later.
   def flag_changes_for_after_commit
     @old_firm_id = firm_id_change.first if firm_id_changed?
   end
