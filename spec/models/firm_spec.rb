@@ -395,6 +395,7 @@ RSpec.describe Firm do
       it 'the firm is published' do
         allow(IndexFirmJob).to receive(:perform_later)
         firm = create :firm
+        firm.run_callbacks(:commit)
         expect(IndexFirmJob).to have_received(:perform_later).with(firm)
       end
     end
@@ -404,6 +405,7 @@ RSpec.describe Firm do
         firm = create :firm
         allow(IndexFirmJob).to receive(:perform_later)
         firm.update_attributes(email_address: 'bill@example.com')
+        firm.run_callbacks(:commit)
         expect(IndexFirmJob).to have_received(:perform_later).with(firm)
       end
     end

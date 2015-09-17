@@ -109,7 +109,7 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_save :publish_to_elastic_search
+  after_commit :publish_to_elastic_search
   after_commit :delete_elastic_search_entry, if: :destroyed?
 
   def publish_to_elastic_search
