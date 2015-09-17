@@ -478,8 +478,9 @@ RSpec.describe Firm do
           firm.run_callbacks(:commit)
         end
 
-        it 'does not trigger geocoding of the firm' do
+        it 'does not trigger geocoding/reindexing of the firm' do
           expect(GeocodeFirmJob).not_to receive(:perform_later)
+          expect(IndexFirmJob).not_to receive(:perform_later)
           adviser = firm.advisers.first
           office = firm.offices.first
           firm.destroy
