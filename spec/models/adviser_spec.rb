@@ -154,6 +154,23 @@ RSpec.describe Adviser do
     end
   end
 
+  describe 'after_save :flag_changes_for_after_commit' do
+    let(:original_firm) { create(:firm) }
+    let(:receiving_firm) { create(:firm) }
+    subject { create(:adviser, firm: original_firm) }
+
+    before do
+      subject.firm = receiving_firm
+      subject.save!
+    end
+
+    context 'when the firm has changed' do
+      it 'stores the original firm id so it can be reindexed in an after_commit hook' do
+        expect(subject.old_firm_id).to eq(original_firm.id)
+      end
+    end
+  end
+
   describe 'after_commit :reindex_old_firm' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }
@@ -165,19 +182,19 @@ RSpec.describe Adviser do
     end
 
     context 'when the firm has changed' do
-      it 'triggers reindexing of the original firm the first time' do
+      it 'triggers reindexing of the adviser and new firm' do
+        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
-        expect(queue_contains_a_job_for(IndexFirmJob)).to be_truthy
       end
 
-      it 'does not trigger reindexing of the original firm thereafter' do
+      it 'triggers reindexing of the original firm (once)' do
+        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
 
-        clear_job_queue
+        # Trigger a second time
         subject.run_callbacks(:commit)
-        expect(queue_contains_a_job_for(IndexFirmJob)).to be_falsey
       end
     end
   end
