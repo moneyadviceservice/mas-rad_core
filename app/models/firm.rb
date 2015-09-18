@@ -199,7 +199,7 @@ class Firm < ActiveRecord::Base
   end
 
   def missing_advisers?
-    primary_advice_method == :local && advisers.empty?
+    (primary_advice_method == :local) && advisers.empty?
   end
 
   private
