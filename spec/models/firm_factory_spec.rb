@@ -23,45 +23,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
-      expect(subject).to have(:no).trading_names
-    end
-  end
-
-  describe 'factory :onboarded_firm' do
-    let(:factory) { :onboarded_firm }
-
-    specify 'expected status' do
-      expect(subject).to be_persisted
-      expect(subject).to be_valid
-      expect(subject).to be_publishable
-      expect(subject).not_to be_trading_name
-      expect(subject.primary_advice_method).to be(:local)
-    end
-
-    specify 'associations' do
-      expect(subject.principal).not_to be_present
-      expect(subject).to have(1).offices
       expect(subject).to have(1).advisers
-      expect(subject).to have(:no).trading_names
-    end
-  end
-
-  describe 'factory :not_onboarded_firm' do
-    let(:factory) { :not_onboarded_firm }
-
-    specify 'expected status' do
-      expect(subject).not_to be_persisted
-      expect(subject).not_to be_valid
-      expect(subject).not_to be_publishable
-      expect(subject).not_to be_trading_name
-      expect(subject.primary_advice_method).to be(:local)
-    end
-
-    specify 'associations' do
-      expect(subject.principal).not_to be_present
-      expect(subject).to have(:no).offices
-      expect(subject).to have(:no).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -85,6 +47,25 @@ RSpec.describe 'Firm factory' do
     end
   end
 
+  describe 'factory :firm_without_advisers' do
+    let(:factory) { :firm_without_advisers }
+
+    specify 'expected status' do
+      expect(subject).to be_persisted
+      expect(subject).to be_valid
+      expect(subject).not_to be_publishable
+      expect(subject).not_to be_trading_name
+      expect(subject.primary_advice_method).to be(:local)
+    end
+
+    specify 'associations' do
+      expect(subject.principal).not_to be_present
+      expect(subject).to have(1).offices
+      expect(subject).to have(0).advisers
+      expect(subject).to have(:no).trading_names
+    end
+  end
+
   describe 'factory :firm_with_offices' do
     let(:factory) { :firm_with_offices }
 
@@ -99,7 +80,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(3).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -118,7 +99,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
 
       expect(subject).to have(3).trading_names
       expect(subject.trading_names).to all(have_attributes(fca_number: subject.fca_number))
@@ -146,7 +127,7 @@ RSpec.describe 'Firm factory' do
       # expect(subject.principal.firm).to eq(subject)
 
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end
@@ -165,7 +146,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(:no).advisers
+      expect(subject).to have(1).advisers
       expect(subject).to have(:no).trading_names
     end
   end

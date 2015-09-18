@@ -1,7 +1,7 @@
 FactoryGirl.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
-  factory :firm, aliases: [:publishable_firm] do
+  factory :firm, aliases: [:publishable_firm, :onboarded_firm] do
     fca_number
     registered_name
     email_address { Faker::Internet.email }
@@ -34,24 +34,27 @@ FactoryGirl.define do
       firm.reload
     end
 
-    factory :onboarded_firm, traits: [:with_advisers] do
+    transient do
       advisers_count 1
     end
 
-    factory :not_onboarded_firm, traits: [:invalid]
+    after(:create) do |firm, evaluator|
+      create_list(:adviser, evaluator.advisers_count, firm: firm)
+    end
 
     factory :trading_name, aliases: [:subsidiary] do
       parent factory: Firm
     end
 
     factory :firm_with_advisers, traits: [:with_advisers]
+    factory :firm_without_advisers, traits: [:without_advisers]
     factory :firm_with_offices, traits: [:with_offices]
     factory :firm_with_principal, traits: [:with_principal]
     factory :firm_with_no_business_split, traits: [:with_no_business_split]
     factory :firm_with_remote_advice, traits: [:with_remote_advice]
     factory :firm_with_subsidiaries, traits: [:with_trading_names]
     factory :firm_with_trading_names, traits: [:with_trading_names]
-    factory :invalid_firm, traits: [:invalid]
+    factory :invalid_firm, traits: [:invalid], aliases: [:not_onboarded_firm]
 
     trait :invalid do
       email_address nil
@@ -67,13 +70,11 @@ FactoryGirl.define do
     end
 
     trait :with_advisers do
-      transient do
-        advisers_count 3
-      end
+      advisers_count 3
+    end
 
-      after(:create) do |firm, evaluator|
-        create_list(:adviser, evaluator.advisers_count, firm: firm)
-      end
+    trait :without_advisers do
+      advisers_count 0
     end
 
     trait :with_principal do

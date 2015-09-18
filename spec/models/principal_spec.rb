@@ -325,7 +325,7 @@ RSpec.describe Principal do
 
     context 'when principal has a parent firm and a trading name' do
       let(:parent_firm)   { principal.firm }
-      let!(:trading_name) { create(:firm, registered_name: 'cabbage', parent_id: parent_firm.id, fca_number: principal.fca_number) }
+      let!(:trading_name) { create(:firm_without_advisers, registered_name: 'cabbage', parent_id: parent_firm.id, fca_number: principal.fca_number) }
 
       before :each do
         parent_firm.update_column(:email_address, 'acme@example.com')

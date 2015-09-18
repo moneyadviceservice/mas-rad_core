@@ -195,7 +195,11 @@ class Firm < ActiveRecord::Base
   end
 
   def publishable?
-    main_office.present?
+    valid? && main_office.present? && !missing_advisers?
+  end
+
+  def missing_advisers?
+    (primary_advice_method == :local) && advisers.empty?
   end
 
   private

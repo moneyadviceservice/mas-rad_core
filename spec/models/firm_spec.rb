@@ -117,16 +117,65 @@ RSpec.describe Firm do
   end
 
   describe '#publishable?' do
-    subject { create(:firm, offices_count: offices_count) }
+    let(:firm) { FactoryGirl.create(:firm) }
+    subject { firm.publishable? }
 
-    context 'when the firm has no main office' do
-      let(:offices_count) { 0 }
-      it { expect(subject).not_to be_publishable }
+    context 'when the firm is valid, has a main office and is not missing advisers' do
+      it { is_expected.to be_truthy }
     end
 
-    context 'when the firm has a main office' do
-      let(:offices_count) { 1 }
-      it { expect(subject).to be_publishable }
+    context 'when the firm is not valid' do
+      let(:firm) do
+        FactoryGirl.create(:firm).tap do |f|
+          f.email_address = nil
+          f.save(validate: false)
+        end
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the firm has no main office' do
+      let(:firm) { FactoryGirl.create(:firm, offices_count: 0) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the firm is missing advisers' do
+      before { allow(firm).to receive(:missing_advisers?).and_return(true) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#missing_advisers?' do
+    let(:factory) { :firm }
+    subject { FactoryGirl.create(factory, advisers_count: advisers_count).missing_advisers? }
+
+    context 'when the firm offers face-to-face advice' do
+      context 'when the firm has advisers' do
+        let(:advisers_count) { 1 }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the firm has no advisers' do
+        let(:advisers_count) { 0 }
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the firm offers remote advice' do
+      let(:factory) { :firm_with_remote_advice }
+
+      context 'when the firm has advisers' do
+        let(:advisers_count) { 1 }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the firm has no advisers' do
+        let(:advisers_count) { 0 }
+        it { is_expected.to be_falsey }
+      end
     end
   end
 
