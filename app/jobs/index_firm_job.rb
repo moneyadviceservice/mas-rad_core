@@ -4,6 +4,10 @@ class IndexFirmJob < ActiveJob::Base
   end
 
   def perform(firm)
-    FirmRepository.new.store(firm) if firm.publishable?
+    if firm.publishable?
+      FirmRepository.new.store(firm)
+    else
+      DeleteFirmJob.perform_later(firm.id)
+    end
   end
 end
