@@ -204,25 +204,35 @@ RSpec.describe Principal do
   end
 
   describe '#onboarded?' do
-    context 'when a principal has been onboarded' do
-      before :each do
-        principal.firm.update_attributes(FactoryGirl.attributes_for :onboarded_firm, fca_number: principal.fca_number)
-        create(:adviser, firm: principal.firm)
-      end
+    context 'when no firms are publishable' do
+      before do
+        FactoryGirl.build(:invalid_firm,
+                           fca_number: principal.fca_number,
+                           parent: principal.firm).save(validate: false)
 
-      it 'returns true' do
-        expect(principal).to be_onboarded
-      end
-    end
-
-    context 'when a principal has not been onboarded' do
-      before :each do
-        attrs = FactoryGirl.attributes_for :not_onboarded_firm, fca_number: principal.fca_number
-        principal.firm.update_attributes(attrs)
+        expect(principal.main_firm_with_trading_names).to have(2).items
+        expect(principal.main_firm_with_trading_names)
+          .to all(have_attributes(publishable?: false))
       end
 
       it 'returns false' do
-        expect(principal).not_to be_onboarded
+        expect(principal.onboarded?).to be(false)
+      end
+    end
+
+    context 'when one firm is publishable' do
+      before do
+        FactoryGirl.create(:publishable_firm,
+                           fca_number: principal.fca_number,
+                           parent: principal.firm)
+
+        expect(principal.main_firm_with_trading_names).to have(2).items
+        expect(principal.firm).not_to be_publishable
+        expect(principal.firm.trading_names.first).to be_publishable
+      end
+
+      it 'returns true' do
+        expect(principal.onboarded?).to be(true)
       end
     end
   end

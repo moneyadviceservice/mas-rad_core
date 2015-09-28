@@ -72,6 +72,7 @@ class Principal < ActiveRecord::Base
   end
 
   def onboarded?
+    main_firm_with_trading_names.any?(&:publishable?)
   end
 
   private
