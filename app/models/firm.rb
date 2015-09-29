@@ -199,7 +199,7 @@ class Firm < ActiveRecord::Base
   end
 
   def publishable?
-    registered? && main_office.present? && !missing_advisers?
+    registered? && offices.any? && !missing_advisers?
   end
 
   def missing_advisers?
