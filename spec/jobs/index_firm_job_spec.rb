@@ -1,6 +1,7 @@
 RSpec.describe IndexFirmJob, '#perform' do
   let(:repository) { instance_double(FirmRepository) }
-  let(:firm) { Firm.new }
+  let(:firm_id) { 3 }
+  let(:firm) { Firm.new(id: firm_id) }
 
   before do
     allow(FirmRepository).to receive(:new).and_return(repository)
@@ -24,6 +25,11 @@ RSpec.describe IndexFirmJob, '#perform' do
 
     it 'does not delegates to the firm repository' do
       expect(repository).not_to receive(:store).with(firm)
+      described_class.new.perform(firm)
+    end
+
+    it 'invokes the DeleteFirmJob to remove the firm from the directory' do
+      expect(DeleteFirmJob).to receive(:perform_later).with(firm_id)
       described_class.new.perform(firm)
     end
   end
