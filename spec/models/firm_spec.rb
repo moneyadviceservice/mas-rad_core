@@ -126,10 +126,7 @@ RSpec.describe Firm do
 
     context 'when the firm is not valid' do
       let(:firm) do
-        FactoryGirl.create(:firm).tap do |f|
-          f.email_address = nil
-          f.save(validate: false)
-        end
+        FactoryGirl.build(:invalid_firm).tap { |f| f.save(validate: false) }
       end
 
       it { is_expected.to be_falsey }
