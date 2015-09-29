@@ -126,6 +126,10 @@ class Firm < ActiveRecord::Base
            to: :main_office,
            allow_nil: true
 
+  # A heuristic that allows us to infer validity
+  #
+  # This method is basically a cheap way to answer the question: has this
+  # record ever been saved with validation enabled?
   def registered?
     email_address.present?
   end
