@@ -195,7 +195,7 @@ class Firm < ActiveRecord::Base
   end
 
   def publishable?
-    valid? && main_office.present? && !missing_advisers?
+    registered? && main_office.present? && !missing_advisers?
   end
 
   def missing_advisers?
