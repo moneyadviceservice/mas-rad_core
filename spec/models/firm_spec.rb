@@ -34,22 +34,6 @@ RSpec.describe Firm do
     end
   end
 
-  describe '#telephone_number' do
-    context 'when `nil`' do
-      it 'returns `nil`' do
-        expect(build(:firm, telephone_number: nil).telephone_number).to be_nil
-      end
-    end
-
-    context 'when provided' do
-      let(:firm) { build(:firm, telephone_number: ' 07715 930 457  ') }
-
-      it 'removes whitespace' do
-        expect(firm.telephone_number).to eq('07715930457')
-      end
-    end
-  end
-
   describe '#postcode_searchable?' do
     it 'delegates to #in_person_advice?' do
       expect(firm).to be_postcode_searchable
@@ -188,34 +172,6 @@ RSpec.describe Firm do
 
     it 'orders fields correctly for dough' do
       expect(firm.field_order).not_to be_empty
-    end
-
-    describe 'email address' do
-      context 'when not present' do
-        before { firm.email_address = nil }
-
-        it { is_expected.to_not be_valid }
-      end
-
-      context 'when badly formatted' do
-        before { firm.email_address = 'not-valid' }
-
-        it { is_expected.to_not be_valid }
-      end
-    end
-
-    describe 'telephone number' do
-      context 'when not present' do
-        before { firm.telephone_number = nil }
-
-        it { is_expected.to_not be_valid }
-      end
-
-      context 'when badly formatted' do
-        before { firm.telephone_number = 'not-valid' }
-
-        it { is_expected.to_not be_valid }
-      end
     end
 
     describe 'Website address' do
@@ -455,7 +411,7 @@ RSpec.describe Firm do
       it 'the firm is published' do
         firm = create :firm
         allow(IndexFirmJob).to receive(:perform_later)
-        firm.update_attributes(email_address: 'bill@example.com')
+        firm.update_attributes(registered_name: 'A new name')
         firm.run_callbacks(:commit)
         expect(IndexFirmJob).to have_received(:perform_later).with(firm)
       end

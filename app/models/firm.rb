@@ -39,16 +39,6 @@ class Firm < ActiveRecord::Base
   before_validation :clear_blank_languages
   before_validation :deduplicate_languages
 
-  validates :email_address,
-    presence: true,
-    length: { maximum: 50 },
-    format: { with: /.+@.+\..+/ }
-
-  validates :telephone_number,
-    presence: true,
-    length: { maximum: 30 },
-    format: { with: /\A[0-9 ]+\z/ }
-
   validates :website_address,
     allow_blank: true,
     length: { maximum: 100 },
@@ -137,12 +127,6 @@ class Firm < ActiveRecord::Base
 
   enum status: { independent: 1, restricted: 2 }
 
-  def telephone_number
-    return nil unless self[:telephone_number]
-
-    self[:telephone_number].gsub(' ', '')
-  end
-
   def in_person_advice?
     in_person_advice_methods.present?
   end
@@ -156,8 +140,6 @@ class Firm < ActiveRecord::Base
 
   def field_order
     [
-      :email_address,
-      :telephone_number,
       :website_address,
       :address_line_one,
       :address_line_two,

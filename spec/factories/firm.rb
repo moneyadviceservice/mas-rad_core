@@ -4,8 +4,6 @@ FactoryGirl.define do
   factory :firm, aliases: [:publishable_firm, :onboarded_firm] do
     fca_number
     registered_name
-    email_address { Faker::Internet.email }
-    telephone_number { Faker::Base.numerify('##### ### ###') }
     website_address { Faker::Internet.url }
     in_person_advice_methods { create_list(:in_person_advice_method, rand(1..3)) }
     free_initial_meeting { [true, false].sample }
