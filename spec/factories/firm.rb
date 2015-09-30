@@ -57,7 +57,7 @@ FactoryGirl.define do
     factory :invalid_firm, traits: [:invalid], aliases: [:not_onboarded_firm]
 
     trait :invalid do
-      email_address nil
+      free_initial_meeting nil
     end
 
     trait :with_no_business_split do

@@ -10,7 +10,7 @@ class Firm < ActiveRecord::Base
     :wills_and_probate_flag
   ]
 
-  scope :registered, -> { where.not(email_address: nil) }
+  scope :registered, -> { where.not(free_initial_meeting: nil) }
   scope :sorted_by_registered_name, -> { order(:registered_name) }
 
   has_and_belongs_to_many :in_person_advice_methods
@@ -131,7 +131,8 @@ class Firm < ActiveRecord::Base
   # This method is basically a cheap way to answer the question: has this
   # record ever been saved with validation enabled?
   def registered?
-    email_address.present?
+    # free_initial_meeting may be false when set so we cannot use `.present?`
+    !free_initial_meeting.nil?
   end
 
   enum status: { independent: 1, restricted: 2 }

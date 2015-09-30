@@ -18,13 +18,18 @@ RSpec.describe Firm do
   end
 
   describe '#registered?' do
-    it 'is false if the firm has no email address' do
-      firm.email_address = nil
+    it 'is false if the free_initial_meeting field is nil' do
+      firm.free_initial_meeting = nil
       expect(firm).not_to be_registered
     end
 
-    it 'is true if the firm has an email address' do
-      firm.email_address = 'acme@example.com'
+    it 'is true if the free_initial_meeting field is false' do
+      firm.free_initial_meeting = false
+      expect(firm).to be_registered
+    end
+
+    it 'is true if the free_initial_meeting field is true' do
+      firm.free_initial_meeting = true
       expect(firm).to be_registered
     end
   end
