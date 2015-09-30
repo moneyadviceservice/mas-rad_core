@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825090822) do
+ActiveRecord::Schema.define(version: 20150930140851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,8 +80,6 @@ ActiveRecord::Schema.define(version: 20150825090822) do
   create_table "firms", force: :cascade do |t|
     t.integer  "fca_number",                                               null: false
     t.string   "registered_name",                                          null: false
-    t.string   "email_address"
-    t.string   "telephone_number"
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
     t.boolean  "free_initial_meeting"
@@ -99,8 +97,8 @@ ActiveRecord::Schema.define(version: 20150825090822) do
     t.string   "website_address"
     t.boolean  "ethical_investing_flag",                   default: false, null: false
     t.boolean  "sharia_investing_flag",                    default: false, null: false
-    t.text     "languages",                                default: [],    null: false, array: true
     t.integer  "status"
+    t.text     "languages",                                default: [],    null: false, array: true
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
