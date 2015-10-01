@@ -131,6 +131,15 @@ class Firm < ActiveRecord::Base
     !(send(REGISTERED_MARKER_FIELD).nil?)
   end
 
+  if Rails.env.test?
+    # A helper to shield tests from modifying the marker field directly
+    def __set_registered(state)
+      new_value = (state) ? REGISTERED_MARKER_FIELD_VALID_VALUES.first : nil
+      send("#{REGISTERED_MARKER_FIELD}=", new_value)
+    end
+    alias_method :__registered=, :__set_registered
+  end
+
   enum status: { independent: 1, restricted: 2 }
 
   def in_person_advice?
