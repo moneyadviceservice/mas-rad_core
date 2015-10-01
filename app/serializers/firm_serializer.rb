@@ -40,6 +40,14 @@ class FirmSerializer < ActiveModel::Serializer
     object.advisers.geocoded
   end
 
+  def telephone_number
+    object.main_office.telephone_number
+  end
+
+  def email_address
+    object.main_office.email_address
+  end
+
   def postcode_searchable
     object.postcode_searchable?
   end

@@ -39,7 +39,7 @@ RSpec.describe FirmSerializer do
     end
 
     it 'exposes `telephone_number`' do
-      expect(subject[:telephone_number]).to eql(firm.telephone_number)
+      expect(subject[:telephone_number]).to eql(firm.main_office.telephone_number)
     end
 
     it 'exposes `website_address`' do
@@ -47,7 +47,7 @@ RSpec.describe FirmSerializer do
     end
 
     it 'exposes `email_address`' do
-      expect(subject[:email_address]).to eql(firm.email_address)
+      expect(subject[:email_address]).to eql(firm.main_office.email_address)
     end
 
     it 'exposes `free_initial_meeting`' do

@@ -10,7 +10,7 @@ class Firm < ActiveRecord::Base
     :wills_and_probate_flag
   ]
 
-  scope :registered, -> { where.not(email_address: nil) }
+  scope :registered, -> { where.not(free_initial_meeting: nil) }
   scope :sorted_by_registered_name, -> { order(:registered_name) }
 
   has_and_belongs_to_many :in_person_advice_methods
@@ -38,16 +38,6 @@ class Firm < ActiveRecord::Base
                     if: -> { primary_advice_method == :remote }
   before_validation :clear_blank_languages
   before_validation :deduplicate_languages
-
-  validates :email_address,
-    presence: true,
-    length: { maximum: 50 },
-    format: { with: /.+@.+\..+/ }
-
-  validates :telephone_number,
-    presence: true,
-    length: { maximum: 30 },
-    format: { with: /\A[0-9 ]+\z/ }
 
   validates :website_address,
     allow_blank: true,
@@ -131,16 +121,11 @@ class Firm < ActiveRecord::Base
   # This method is basically a cheap way to answer the question: has this
   # record ever been saved with validation enabled?
   def registered?
-    email_address.present?
+    # free_initial_meeting may be false when set so we cannot use `.present?`
+    !free_initial_meeting.nil?
   end
 
   enum status: { independent: 1, restricted: 2 }
-
-  def telephone_number
-    return nil unless self[:telephone_number]
-
-    self[:telephone_number].gsub(' ', '')
-  end
 
   def in_person_advice?
     in_person_advice_methods.present?
@@ -155,8 +140,6 @@ class Firm < ActiveRecord::Base
 
   def field_order
     [
-      :email_address,
-      :telephone_number,
       :website_address,
       :address_line_one,
       :address_line_two,
