@@ -1,6 +1,12 @@
 class Firm < ActiveRecord::Base
   include Geocodable
 
+  FREE_INITIAL_MEETING_VALID_VALUES = [true, false].freeze
+
+  # We use a scalar required field as a marker to detect a record saved with validation
+  REGISTERED_MARKER_FIELD = :free_initial_meeting
+  REGISTERED_MARKER_FIELD_VALID_VALUES = FREE_INITIAL_MEETING_VALID_VALUES
+
   ADVICE_TYPES_ATTRIBUTES = [
     :retirement_income_products_flag,
     :pension_transfer_flag,
@@ -10,7 +16,7 @@ class Firm < ActiveRecord::Base
     :wills_and_probate_flag
   ]
 
-  scope :registered, -> { where.not(free_initial_meeting: nil) }
+  scope :registered, -> { where.not(REGISTERED_MARKER_FIELD => nil) }
   scope :sorted_by_registered_name, -> { order(:registered_name) }
 
   has_and_belongs_to_many :in_person_advice_methods
@@ -45,7 +51,7 @@ class Firm < ActiveRecord::Base
     format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
 
   validates :free_initial_meeting,
-    inclusion: { in: [true, false] }
+    inclusion: { in: FREE_INITIAL_MEETING_VALID_VALUES }
 
   validates :initial_meeting_duration,
     presence: true,
@@ -121,8 +127,8 @@ class Firm < ActiveRecord::Base
   # This method is basically a cheap way to answer the question: has this
   # record ever been saved with validation enabled?
   def registered?
-    # free_initial_meeting may be false when set so we cannot use `.present?`
-    !free_initial_meeting.nil?
+    # false is a valid value so we cannot use `.present?`
+    !(send(REGISTERED_MARKER_FIELD).nil?)
   end
 
   enum status: { independent: 1, restricted: 2 }
