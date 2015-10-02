@@ -61,7 +61,7 @@ RSpec.describe 'Firm factory' do
     specify 'associations' do
       expect(subject.principal).not_to be_present
       expect(subject).to have(1).offices
-      expect(subject).to have(0).advisers
+      expect(subject).to have(:no).advisers
       expect(subject).to have(:no).trading_names
     end
   end
