@@ -55,7 +55,8 @@ FactoryGirl.define do
     factory :invalid_firm, traits: [:invalid], aliases: [:not_onboarded_firm]
 
     trait :invalid do
-      free_initial_meeting nil
+      # Invalidate the marker field without referencing it directly
+      __registered false
     end
 
     trait :with_no_business_split do

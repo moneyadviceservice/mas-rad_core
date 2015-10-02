@@ -18,19 +18,20 @@ RSpec.describe Firm do
   end
 
   describe '#registered?' do
-    it 'is false if the free_initial_meeting field is nil' do
-      firm.free_initial_meeting = nil
+    def set_marker_field(firm, value)
+      firm.send("#{Firm::REGISTERED_MARKER_FIELD}=", value)
+    end
+
+    it 'is false if the REGISTERED_MARKER_FIELD field is nil' do
+      set_marker_field(firm, nil)
       expect(firm).not_to be_registered
     end
 
-    it 'is true if the free_initial_meeting field is false' do
-      firm.free_initial_meeting = false
-      expect(firm).to be_registered
-    end
-
-    it 'is true if the free_initial_meeting field is true' do
-      firm.free_initial_meeting = true
-      expect(firm).to be_registered
+    it 'is true if the REGISTERED_MARKER_FIELD field has a valid value' do
+      Firm::REGISTERED_MARKER_FIELD_VALID_VALUES.each do |value|
+        set_marker_field(firm, value)
+        expect(firm).to be_registered
+      end
     end
   end
 
