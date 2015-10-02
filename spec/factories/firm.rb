@@ -47,6 +47,7 @@ FactoryGirl.define do
     factory :firm_with_advisers, traits: [:with_advisers]
     factory :firm_without_advisers, traits: [:without_advisers]
     factory :firm_with_offices, traits: [:with_offices]
+    factory :firm_without_offices, traits: [:without_offices]
     factory :firm_with_principal, traits: [:with_principal]
     factory :firm_with_no_business_split, traits: [:with_no_business_split]
     factory :firm_with_remote_advice, traits: [:with_remote_advice]
@@ -82,6 +83,10 @@ FactoryGirl.define do
 
     trait :with_offices do
       offices_count 3
+    end
+
+    trait :without_offices do
+      offices_count 0
     end
 
     trait :with_remote_advice do
