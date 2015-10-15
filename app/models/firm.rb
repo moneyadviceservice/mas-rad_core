@@ -100,8 +100,6 @@ class Firm < ActiveRecord::Base
     end
   end
 
-  validates :status, presence: true
-
   validates :investment_sizes,
     length: { minimum: 1 }
 
