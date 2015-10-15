@@ -353,8 +353,8 @@ RSpec.describe Firm do
 
     describe 'status' do
       context 'without a status' do
-        it 'is not valid' do
-          expect(build(:firm, status: nil)).to_not be_valid
+        it 'is valid' do
+          expect(build(:firm, status: nil)).to be_valid
         end
       end
 
