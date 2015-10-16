@@ -4,43 +4,6 @@ RSpec.describe Office do
   let(:firm) { FactoryGirl.create(:firm_with_offices, id: 123) }
   subject(:office) { firm.offices.first }
 
-  describe 'after_commit :geocode_and_reindex_firm' do
-    before do
-      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
-    end
-
-    context 'when the address_postcode is not valid' do
-      before { office.address_postcode = nil }
-
-      it 'does not schedule the firm for geocoding' do
-        expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-      end
-    end
-
-    context 'when the address_postcode is valid' do
-      context 'but the office is not the main office for the firm' do
-        it 'does not schedule the firm for geocoding' do
-          expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-        end
-      end
-
-      context 'and the office is the main office for the firm' do
-        before { allow(firm).to receive(:main_office).and_return(office) }
-
-        it 'schedules the firm for geocoding' do
-          expect { office.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-        end
-
-        context 'when the office has been destroyed' do
-          it 'does not schedule the firm for geocoding' do
-            office.destroy
-            expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-          end
-        end
-      end
-    end
-  end
-
   describe '#telephone_number' do
     context 'when `nil`' do
       before { office.telephone_number = nil }
