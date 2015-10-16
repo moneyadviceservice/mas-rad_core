@@ -4,6 +4,10 @@ RSpec.describe Office do
   let(:firm) { FactoryGirl.create(:firm_with_offices, id: 123) }
   subject(:office) { firm.offices.first }
 
+  it_should_behave_like 'geocodable' do
+    let(:job_class) { double }
+  end
+
   describe '#telephone_number' do
     context 'when `nil`' do
       before { office.telephone_number = nil }

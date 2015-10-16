@@ -1,4 +1,6 @@
 class Office < ActiveRecord::Base
+  include Geocodable
+
   belongs_to :firm
 
   before_validation :upcase_postcode
