@@ -5,20 +5,6 @@ RSpec.describe Adviser do
     clear_job_queue
   end
 
-  describe '#geocoded?' do
-    context 'when the adviser has lat/long' do
-      it 'is classed as geocoded' do
-        expect(build(:adviser)).to be_geocoded
-      end
-    end
-
-    context 'when the adviser does not have lat/long' do
-      it 'is not classed as geocoded' do
-        expect(build(:adviser, latitude: nil, longitude: nil)).to_not be_geocoded
-      end
-    end
-  end
-
   describe 'before validation' do
     context 'when a reference number is present' do
       let(:attributes) { attributes_for(:adviser) }
