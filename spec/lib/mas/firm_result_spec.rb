@@ -177,5 +177,31 @@ RSpec.describe FirmResult do
         end
       end
     end
+
+    describe 'includes_advice_type?' do
+      let(:data) { { 'sort' => [1], '_source' => { 'advisers' => [], key => value } } }
+
+      FirmResult::TYPES_OF_ADVICE_FIELDS.each do |advice_type|
+        describe "attribute [#{advice_type}]" do
+          let(:key) { advice_type.to_s }
+
+          context 'has a value of 0 (false)' do
+            let(:value) { 0 }
+
+            it 'returns false' do
+              expect(subject.includes_advice_type?(key)).to eq(false)
+            end
+          end
+
+          context 'has a value of 100 (true)' do
+            let(:value) { 100 }
+
+            it 'returns true' do
+              expect(subject.includes_advice_type?(key)).to eq(true)
+            end
+          end
+        end
+      end
+    end
   end
 end
