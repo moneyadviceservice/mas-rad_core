@@ -1,6 +1,8 @@
 require 'uk_phone_numbers'
 
 class FirmResult
+  PERCENTAGE_FOR_TRUE = 100
+
   LESS_THAN_FIFTY_K_ID = 1
 
   DIRECTLY_MAPPED_FIELDS = [
@@ -51,6 +53,10 @@ class FirmResult
 
   def advisers
     @advisers.map { |adviser_data| AdviserResult.new(adviser_data) }
+  end
+
+  def includes_advice_type?(advice_type)
+    public_send(advice_type) == PERCENTAGE_FOR_TRUE
   end
 
   def types_of_advice
