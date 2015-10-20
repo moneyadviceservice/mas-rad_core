@@ -3,7 +3,7 @@ RSpec.describe ModelGeocoder do
     Class.new do
       attr_accessor :address_line_one, :address_line_two, :address_postcode, :longitude, :latitude
 
-      def geocode!(*args); end
+      def update_coordinates!(*args); end
 
       def full_street_address
         [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
@@ -52,8 +52,8 @@ RSpec.describe ModelGeocoder do
         allow(ModelGeocoder).to receive(:geocode).and_return(expected_coordinates)
       end
 
-      it 'calls model.geocode! with the coordinates' do
-        expect(model).to receive(:geocode!).with(expected_coordinates)
+      it 'calls model.update_coordinates! with the coordinates' do
+        expect(model).to receive(:update_coordinates!).with(expected_coordinates)
         ModelGeocoder.geocode!(model)
       end
 
@@ -68,8 +68,8 @@ RSpec.describe ModelGeocoder do
       end
 
       # This side effect is required while the geocoding is done on a background job
-      it 'calls model.geocode! with nil' do
-        expect(model).to receive(:geocode!).with(nil)
+      it 'calls model.update_coordinates! with nil' do
+        expect(model).to receive(:update_coordinates!).with(nil)
         ModelGeocoder.geocode!(model)
       end
 

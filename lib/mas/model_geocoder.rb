@@ -5,7 +5,7 @@ module ModelGeocoder
 
   def self.geocode!(geocodable)
     coordinates = geocode(geocodable)
-    geocodable.geocode!(coordinates)
+    geocodable.update_coordinates!(coordinates)
     coordinates.present?
   end
 end
