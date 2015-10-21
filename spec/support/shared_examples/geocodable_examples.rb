@@ -35,12 +35,12 @@ RSpec.shared_examples 'geocodable' do
     end
   end
 
-  describe '#geocode!' do
+  describe '#update_coordinates!' do
     let(:coordinates) { [Faker::Address.latitude, Faker::Address.longitude] }
 
     before do
       expect(job_class).not_to receive(:perform_later)
-      subject.geocode!(coordinates)
+      subject.update_coordinates!(coordinates)
       subject.reload
     end
 

@@ -21,7 +21,7 @@ module Geocodable
     [latitude, longitude]
   end
 
-  def geocode!(coordinates)
+  def update_coordinates!(coordinates)
     self.latitude, self.longitude = coordinates
     update_columns(latitude: latitude, longitude: longitude)
   end
