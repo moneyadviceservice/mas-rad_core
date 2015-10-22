@@ -156,25 +156,10 @@ RSpec.describe FirmResult do
     end
 
     describe '#closest_adviser' do
-      let(:text) { 'less than a mile away' }
+      before { data['sort'] = [1.23456789, 2.34567890] }
 
-      before do
-        I18n.backend.store_translations :en,
-          search: { result: { miles_away_alt: text, miles_away: 'miles away' } }
-      end
-
-      context 'when it is less than 1 mile away' do
-        it 'returns `less than a mile away` localised text' do
-          expect(subject.closest_adviser).to eq(text)
-        end
-      end
-
-      context 'when it is a mile away or more' do
-        before { data['sort'] = [1.23456789] }
-
-        it 'returns the formatted distance' do
-          expect(subject.closest_adviser).to eq('1.2 miles away')
-        end
+      it 'returns the first distance' do
+        expect(subject.closest_adviser).to eq(1.23456789)
       end
     end
 

@@ -34,6 +34,7 @@ class FirmResult
   attr_reader :id,
     :name,
     :total_advisers,
+    :closest_adviser,
     *DIRECTLY_MAPPED_FIELDS,
     *TYPES_OF_ADVICE_FIELDS
 
@@ -73,14 +74,6 @@ class FirmResult
 
   def minimum_pot_size?
     minimum_pot_size_id > LESS_THAN_FIFTY_K_ID
-  end
-
-  def closest_adviser
-    if @closest_adviser < 1
-      I18n.t('search.result.miles_away_alt')
-    else
-      "#{format('%.1f', @closest_adviser)} #{I18n.t('search.result.miles_away')}"
-    end
   end
 
   def telephone_number
