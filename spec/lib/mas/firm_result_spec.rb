@@ -178,8 +178,8 @@ RSpec.describe FirmResult do
             end
           end
 
-          context 'has a value of 100 (true)' do
-            let(:value) { 100 }
+          context 'has a value > 0 (true)' do
+            let(:value) { 1 }
 
             it 'returns true' do
               expect(subject.includes_advice_type?(key)).to eq(true)

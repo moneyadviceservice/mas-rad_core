@@ -1,7 +1,7 @@
 require 'uk_phone_numbers'
 
 class FirmResult
-  PERCENTAGE_FOR_TRUE = 100
+  ADVICE_TYPE_NOT_SELECTED_VALUE = 0
 
   LESS_THAN_FIFTY_K_ID = 1
 
@@ -57,7 +57,7 @@ class FirmResult
   end
 
   def includes_advice_type?(advice_type)
-    public_send(advice_type) == PERCENTAGE_FOR_TRUE
+    public_send(advice_type) > ADVICE_TYPE_NOT_SELECTED_VALUE
   end
 
   def types_of_advice
