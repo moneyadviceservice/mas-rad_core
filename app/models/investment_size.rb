@@ -7,4 +7,12 @@ class InvestmentSize < ActiveRecord::Base
   validates_presence_of :name
 
   default_scope { order(:order) }
+
+  def self.lowest
+    first
+  end
+
+  def lowest?
+    self == self.class.lowest
+  end
 end
