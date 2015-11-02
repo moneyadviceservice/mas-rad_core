@@ -324,10 +324,38 @@ RSpec.describe Firm do
     end
 
     describe 'minimum fixed fee' do
+      context 'default value' do
+        it { expect(Firm.new.minimum_fixed_fee).to eq(0) }
+      end
+
       context 'when not numeric' do
         before { firm.minimum_fixed_fee = 'not-numeric' }
 
         it { is_expected.not_to be_valid }
+      end
+
+      context 'when blank' do
+        before { firm.minimum_fixed_fee = nil }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when less than zero' do
+        before { firm.minimum_fixed_fee = -1 }
+
+        it { is_expected.to be_invalid }
+      end
+
+      context 'when zero' do
+        before { firm.minimum_fixed_fee = 0 }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when more than zero' do
+        before { firm.minimum_fixed_fee = 1 }
+
+        it { is_expected.to be_valid }
       end
     end
 

@@ -8,7 +8,6 @@ FactoryGirl.define do
     in_person_advice_methods { create_list(:in_person_advice_method, rand(1..3)) }
     free_initial_meeting { [true, false].sample }
     initial_meeting_duration { create(:initial_meeting_duration) }
-    minimum_fixed_fee { Faker::Number.number(4) }
     initial_advice_fee_structures { create_list(:initial_advice_fee_structure, rand(1..3)) }
     ongoing_advice_fee_structures { create_list(:ongoing_advice_fee_structure, rand(1..3)) }
     allowed_payment_methods { create_list(:allowed_payment_method, rand(1..3)) }
