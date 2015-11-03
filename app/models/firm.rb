@@ -67,7 +67,7 @@ class Firm < ActiveRecord::Base
     length: { minimum: 1 }
 
   validates :minimum_fixed_fee,
-    allow_blank: true,
+    allow_blank: false,
     numericality: {
       only_integer: true,
       greater_than_or_equal_to: 0,

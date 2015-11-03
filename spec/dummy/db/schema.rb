@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150930140851) do
+ActiveRecord::Schema.define(version: 20151102113518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20150930140851) do
     t.datetime "updated_at",                                               null: false
     t.boolean  "free_initial_meeting"
     t.integer  "initial_meeting_duration_id"
-    t.integer  "minimum_fixed_fee"
+    t.integer  "minimum_fixed_fee",                        default: 0
     t.integer  "parent_id"
     t.float    "latitude"
     t.float    "longitude"
