@@ -82,6 +82,15 @@ class Office < ActiveRecord::Base
     ADDRESS_FIELDS.any? { |field| changed_attributes.include? field }
   end
 
+  def save_with_geocoding
+    geocode && save
+  end
+
+  def update_with_geocoding(office_params)
+    self.attributes = office_params
+    save_with_geocoding
+  end
+
   private
 
   def upcase_postcode

@@ -133,6 +133,62 @@ RSpec.describe Office do
     end
   end
 
+  describe '#save_with_geocoding' do
+    before { allow(office).to receive(:geocode).and_return(result_of_geocoding) }
+    subject { office.save_with_geocoding }
+
+    context 'when geocoding fails' do
+      let(:result_of_geocoding) { false }
+
+      it { is_expected.to be(false) }
+
+      it 'does not call save' do
+        expect(office).not_to receive(:save)
+        subject
+      end
+    end
+
+    context 'when geocoding succeeds' do
+      let(:result_of_geocoding) { true }
+      let(:result_of_saving) { true }
+      before { allow(office).to receive(:save).and_return(result_of_saving) }
+
+      it 'calls save' do
+        expect(office).to receive(:save)
+        subject
+      end
+
+      context 'when saving fails' do
+        let(:result_of_saving) { false }
+        it { is_expected.to be(false) }
+      end
+
+      context 'when saving succeeds' do
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
+  describe '#update_with_geocoding' do
+    subject { office.update_with_geocoding(address_line_one: '123 xyz street') }
+
+    it 'updates the office with new attributes' do
+      allow(office).to receive(:save_with_geocoding)
+      subject
+      expect(office.changed_attributes).to include(:address_line_one)
+    end
+
+    it 'calls #save_with_geocoding' do
+      expect(office).to receive(:save_with_geocoding)
+      subject
+    end
+
+    it 'returns the return value of #save_with_geocoding' do
+      allow(office).to receive(:save_with_geocoding).and_return(:return_marker)
+      expect(subject).to eq(:return_marker)
+    end
+  end
+
   describe '#telephone_number' do
     context 'when `nil`' do
       before { office.telephone_number = nil }
