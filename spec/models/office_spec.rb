@@ -59,6 +59,24 @@ RSpec.describe Office do
             subject.geocode
             expect(subject.errors.count).to be(0)
           end
+
+          context 'no persistence' do
+            before do
+              subject.save!
+              expect(subject).not_to be_changed
+              expect(subject.coordinates).to eq([nil, nil])
+              subject.geocode
+            end
+
+            it 'sets the new coordinates on the in-memory instance' do
+              expect(subject.coordinates).to eq([1.0, 1.0])
+            end
+
+            it 'does not persist the changed fields' do
+              expect(subject).to be_changed
+              expect(subject.reload.coordinates).to eq([nil, nil])
+            end
+          end
         end
 
         context 'when geocoding fails' do
@@ -73,6 +91,24 @@ RSpec.describe Office do
 
           it 'returns false' do
             expect(subject.geocode).to be(false)
+          end
+
+          context 'no persistence' do
+            before do
+              subject.coordinates = [1.0, 1.0]
+              subject.save!
+              subject.address_postcode = 'SO31 1PY'
+              subject.geocode
+            end
+
+            it 'blanks out the in-memory instance coordinates' do
+              expect(subject.coordinates).to eq([nil, nil])
+            end
+
+            it 'does not persist the changed fields' do
+              expect(subject).to be_changed
+              expect(subject.reload.coordinates).to eq([1.0, 1.0])
+            end
           end
         end
       end
