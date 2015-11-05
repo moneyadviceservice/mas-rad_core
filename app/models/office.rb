@@ -95,7 +95,7 @@ class Office < ActiveRecord::Base
   private
 
   def add_geocoding_failed_error
-    errors.add(:address, 'could not be geocoded')
+    errors.add(:address, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
 
   def upcase_postcode
