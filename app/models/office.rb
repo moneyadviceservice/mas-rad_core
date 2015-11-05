@@ -1,5 +1,6 @@
 class Office < ActiveRecord::Base
   include Geocodable
+  include GeocodableSync
 
   ADDRESS_FIELDS = [
     :address_line_one,
@@ -65,38 +66,15 @@ class Office < ActiveRecord::Base
     [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
   end
 
-  def geocode
-    return false unless valid?
-    return true unless needs_to_be_geocoded?
-
-    self.coordinates = ModelGeocoder.geocode(self)
-    add_geocoding_failed_error unless geocoded?
-
-    geocoded?
-  end
-
-  def needs_to_be_geocoded?
-    !geocoded? || has_address_changes?
-  end
-
   def has_address_changes?
     ADDRESS_FIELDS.any? { |field| changed_attributes.include? field }
   end
 
-  def save_with_geocoding
-    geocode && save
-  end
-
-  def update_with_geocoding(office_params)
-    self.attributes = office_params
-    save_with_geocoding
-  end
-
-  private
-
   def add_geocoding_failed_error
     errors.add(:address, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
+
+  private
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?
