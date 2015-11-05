@@ -115,6 +115,10 @@ RSpec.describe FirmResult do
       expect(subject.total_advisers).to eq(1)
     end
 
+    it 'maps the total_offices' do
+      expect(subject.total_offices).to eq(1)
+    end
+
     it 'maps the `types_of_advice` that are greater than 0 percent' do
       expect(subject.types_of_advice).to eq(
         FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
@@ -188,7 +192,7 @@ RSpec.describe FirmResult do
     end
 
     describe 'includes_advice_type?' do
-      let(:data) { { 'sort' => [1], '_source' => { 'advisers' => [], key => value } } }
+      let(:data) { { 'sort' => [1], '_source' => { 'advisers' => [], 'offices' => [], key => value } } }
 
       FirmResult::TYPES_OF_ADVICE_FIELDS.each do |advice_type|
         describe "attribute [#{advice_type}]" do
