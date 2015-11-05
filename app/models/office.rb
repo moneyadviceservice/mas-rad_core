@@ -70,6 +70,7 @@ class Office < ActiveRecord::Base
     return true unless needs_to_be_geocoded?
 
     self.coordinates = ModelGeocoder.geocode(self)
+    add_geocoding_failed_error unless geocoded?
 
     geocoded?
   end
@@ -92,6 +93,10 @@ class Office < ActiveRecord::Base
   end
 
   private
+
+  def add_geocoding_failed_error
+    errors.add(:address, 'could not be geocoded')
+  end
 
   def upcase_postcode
     address_postcode.upcase! if address_postcode.present?

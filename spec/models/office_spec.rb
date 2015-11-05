@@ -58,11 +58,21 @@ RSpec.describe Office do
           it 'returns true' do
             expect(subject.geocode).to be(true)
           end
+
+          specify 'subject.errors.count is 0' do
+            subject.geocode
+            expect(subject.errors.count).to be(0)
+          end
         end
 
         context 'when geocoding fails' do
           before do
             allow(ModelGeocoder).to receive(:geocode).and_return(nil)
+          end
+
+          it 'adds an error to subject.errors' do
+            subject.geocode
+            expect(subject.errors).to have_key(:address)
           end
 
           it 'returns false' do
