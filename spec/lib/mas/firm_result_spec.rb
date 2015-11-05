@@ -37,6 +37,19 @@ RSpec.describe FirmResult do
             'range'    => 50,
             'location' => { 'lat' => 51.428473, 'lon' => -0.943616 }
           }
+        ],
+        'offices' => [
+          {
+            '_id'              => 123,
+            'address_line_one' => 'c/o Postman Pat',
+            'address_line_two' => 'Forge Cottage',
+            'address_town'     => 'Greendale',
+            'address_county'   => 'Cumbria',
+            'address_postcode' => 'LA8 9BE',
+            'email_address'    => 'postie@example.com',
+            'telephone_number' => '5555 555 5555',
+            'disabled_access'  => true
+          }
         ]
       },
       'sort' => [0.7794549719530739]
@@ -136,6 +149,17 @@ RSpec.describe FirmResult do
 
       it 'returns AdviserResult objects' do
         expect(subject.advisers.first).to be_an(AdviserResult)
+      end
+    end
+
+    describe '#offices' do
+      it 'returns an array containing the offices' do
+        expect(subject.offices).to be_an(Array)
+        expect(subject.offices.length).to eq(1)
+      end
+
+      it 'returns OfficeResult objects' do
+        expect(subject.offices.first).to be_an(OfficeResult)
       end
     end
 
