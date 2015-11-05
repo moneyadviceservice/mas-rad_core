@@ -27,7 +27,8 @@ RSpec.describe Office do
 
       context 'when the subject does not need to be geocoded' do
         before do
-          allow(subject).to receive(:needs_to_be_geocoded?).and_return(false)
+          subject.coordinates = [1.0, 1.0]
+          subject.save!
         end
 
         it 'does not call the geocoder' do
@@ -42,12 +43,7 @@ RSpec.describe Office do
 
       context 'when the subject needs to be geocoded' do
         before do
-          allow(subject).to receive(:needs_to_be_geocoded?).and_return(true)
-        end
-
-        it 'calls the geocoder passing itself' do
-          expect(ModelGeocoder).to receive(:geocode).with(subject)
-          subject.geocode
+          subject.coordinates = nil
         end
 
         context 'when geocoding succeeds' do
