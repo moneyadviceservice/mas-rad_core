@@ -109,5 +109,13 @@ RSpec.describe FirmSerializer do
         expect(subject[:advisers].count).to eq(1)
       end
     end
+
+    describe 'offices' do
+      before { create(:office, firm: firm) }
+
+      it 'includes offices (main and additionally created one)' do
+        expect(subject[:offices].count).to eq(2)
+      end
+    end
   end
 end
