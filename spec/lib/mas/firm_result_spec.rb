@@ -37,6 +37,19 @@ RSpec.describe FirmResult do
             'range'    => 50,
             'location' => { 'lat' => 51.428473, 'lon' => -0.943616 }
           }
+        ],
+        'offices' => [
+          {
+            '_id'              => 123,
+            'address_line_one' => 'c/o Postman Pat',
+            'address_line_two' => 'Forge Cottage',
+            'address_town'     => 'Greendale',
+            'address_county'   => 'Cumbria',
+            'address_postcode' => 'LA8 9BE',
+            'email_address'    => 'postie@example.com',
+            'telephone_number' => '5555 555 5555',
+            'disabled_access'  => true
+          }
         ]
       },
       'sort' => [0.7794549719530739]
@@ -102,6 +115,10 @@ RSpec.describe FirmResult do
       expect(subject.total_advisers).to eq(1)
     end
 
+    it 'maps the total_offices' do
+      expect(subject.total_offices).to eq(1)
+    end
+
     it 'maps the `types_of_advice` that are greater than 0 percent' do
       expect(subject.types_of_advice).to eq(
         FirmResult::TYPES_OF_ADVICE_FIELDS - [:wills_and_probate]
@@ -139,6 +156,17 @@ RSpec.describe FirmResult do
       end
     end
 
+    describe '#offices' do
+      it 'returns an array containing the offices' do
+        expect(subject.offices).to be_an(Array)
+        expect(subject.offices.length).to eq(1)
+      end
+
+      it 'returns OfficeResult objects' do
+        expect(subject.offices.first).to be_an(OfficeResult)
+      end
+    end
+
     describe '#minimum_pot_size?' do
       context 'when £50k or less' do
         it 'is false' do
@@ -164,7 +192,7 @@ RSpec.describe FirmResult do
     end
 
     describe 'includes_advice_type?' do
-      let(:data) { { 'sort' => [1], '_source' => { 'advisers' => [], key => value } } }
+      let(:data) { { 'sort' => [1], '_source' => { 'advisers' => [], 'offices' => [], key => value } } }
 
       FirmResult::TYPES_OF_ADVICE_FIELDS.each do |advice_type|
         describe "attribute [#{advice_type}]" do

@@ -34,6 +34,7 @@ class FirmResult
   attr_reader :id,
     :name,
     :total_advisers,
+    :total_offices,
     :closest_adviser,
     *DIRECTLY_MAPPED_FIELDS,
     *TYPES_OF_ADVICE_FIELDS
@@ -46,6 +47,8 @@ class FirmResult
     @total_advisers   = source['advisers'].count
     @closest_adviser  = data['sort'].first
     @telephone_number = source['telephone_number']
+    @offices = source['offices']
+    @total_offices = source['offices'].count
 
     (DIRECTLY_MAPPED_FIELDS + TYPES_OF_ADVICE_FIELDS).each do |field|
       instance_variable_set("@#{field}", source[field.to_s])
@@ -54,6 +57,10 @@ class FirmResult
 
   def advisers
     @advisers.map { |adviser_data| AdviserResult.new(adviser_data) }
+  end
+
+  def offices
+    @offices.map { |office_data| OfficeResult.new(office_data) }
   end
 
   def includes_advice_type?(advice_type)

@@ -27,6 +27,7 @@ class FirmSerializer < ActiveModel::Serializer
     :adviser_accreditation_ids
 
   has_many :advisers
+  has_many :offices
 
   def adviser_accreditation_ids
     object.accreditation_ids
