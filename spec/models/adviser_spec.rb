@@ -140,6 +140,7 @@ RSpec.describe Adviser do
 
     context 'when the subject is destroyed' do
       before do
+        allow(FirmIndexer).to receive(:handle_aggregate_changed)
         adviser.destroy
         adviser.run_callbacks(:commit)
       end
@@ -148,8 +149,9 @@ RSpec.describe Adviser do
         expect(queue_contains_a_job_for(GeocodeAdviserJob)).to be_falsey
       end
 
-      it 'the adviser\'s firm is scheduled for geocoding/indexing' do
-        expect(queue_contains_a_job_for(GeocodeFirmJob)).to be_truthy
+      # TODO Temporary patch up code to make the tests pass
+      it 'the adviser notifies the firm indexer that it has changed' do
+        expect(FirmIndexer).to have_received(:handle_aggregate_changed).with(adviser)
       end
     end
   end

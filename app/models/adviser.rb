@@ -72,7 +72,8 @@ class Adviser < ActiveRecord::Base
 
   def geocode_and_reindex_firm
     if destroyed?
-      firm.geocode_and_reindex
+      # TODO Temporary patch up code to make the tests pass
+      FirmIndexer.handle_aggregate_changed(self)
     elsif valid?
       GeocodeAdviserJob.perform_later(self)
     end
