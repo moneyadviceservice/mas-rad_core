@@ -11,6 +11,9 @@ module FirmIndexer
     index_firm(firm)
   end
 
+  def self.handle_aggregate_changed(aggregate)
+  end
+
   def self.store_firm(firm)
     FirmRepository.new.store(firm)
   end
