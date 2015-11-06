@@ -12,6 +12,7 @@ module FirmIndexer
   end
 
   def self.handle_aggregate_changed(aggregate)
+    index_firm(aggregate.firm) if firm_exists?(aggregate.firm)
   end
 
   def self.store_firm(firm)
@@ -20,5 +21,10 @@ module FirmIndexer
 
   def self.delete_firm(firm)
     FirmRepository.new.delete(firm.id)
+  end
+
+  def self.firm_exists?(firm)
+    return false if (firm.nil? || firm.destroyed?)
+    Firm.exists?(firm.id)
   end
 end
