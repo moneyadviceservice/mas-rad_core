@@ -1,6 +1,6 @@
 module FirmIndexer
   def self.index_firm(firm)
-    if firm.publishable?
+    if !firm.destroyed? && firm.publishable?
       store_firm(firm)
     else
       delete_firm(firm)
@@ -8,7 +8,6 @@ module FirmIndexer
   end
 
   def self.handle_firm_changed(firm)
-    return delete_firm(firm) if firm.destroyed?
     index_firm(firm)
   end
 

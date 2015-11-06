@@ -14,10 +14,9 @@ RSpec.describe FirmIndexer do
 
   describe '#index_firm' do
     subject { described_class.index_firm(firm) }
+    let(:firm) { FactoryGirl.create(:publishable_firm) }
 
     context 'when the firm is publishable' do
-      let(:firm) { FactoryGirl.create(:publishable_firm) }
-
       it 'stores the firm in the index' do
         expect_store
         subject
@@ -32,26 +31,6 @@ RSpec.describe FirmIndexer do
         subject
       end
     end
-  end
-
-  describe '#handle_firm_changed' do
-    let(:firm) { FactoryGirl.create(:firm) }
-    subject { described_class.handle_firm_changed(firm) }
-
-    context 'when the firm has been created' do
-      it 'indexes the firm' do
-        expect_store
-        subject
-      end
-    end
-
-    context 'when the firm has been updated' do
-      it 'indexes the firm' do
-        firm.update!(registered_name: 'hello')
-        expect_store
-        subject
-      end
-    end
 
     context 'when the firm has been destroyed' do
       it 'deletes the firm from the index' do
@@ -59,6 +38,15 @@ RSpec.describe FirmIndexer do
         firm.destroy
         subject
       end
+    end
+  end
+
+  describe '#handle_firm_changed' do
+    let(:firm) { FactoryGirl.create(:firm) }
+
+    it 'delegates to #index_firm' do
+      expect(described_class).to receive(:index_firm).with(firm)
+      described_class.handle_firm_changed(firm)
     end
   end
 end
