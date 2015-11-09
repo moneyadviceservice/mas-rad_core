@@ -136,6 +136,15 @@ RSpec.describe Adviser do
     end
   end
 
+  describe '#notify_indexer' do
+    subject { FactoryGirl.create(:adviser) }
+
+    it 'notifies the indexer that the office has changed' do
+      expect(FirmIndexer).to receive(:handle_aggregate_changed).with(subject)
+      subject.notify_indexer
+    end
+  end
+
   describe 'after_save :flag_changes_for_after_commit' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }

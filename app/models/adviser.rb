@@ -35,7 +35,12 @@ class Adviser < ActiveRecord::Base
   scope :sorted_by_name, -> { order(:name) }
 
   after_save :flag_changes_for_after_commit
+  after_commit :notify_indexer
   after_commit :reindex_old_firm
+
+  def notify_indexer
+    FirmIndexer.handle_aggregate_changed(self)
+  end
 
   def self.on_firms_with_fca_number(fca_number)
     firms = Firm.where(fca_number: fca_number)
