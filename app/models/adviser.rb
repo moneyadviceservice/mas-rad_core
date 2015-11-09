@@ -1,5 +1,6 @@
 class Adviser < ActiveRecord::Base
   include Geocodable
+  include GeocodableSync
 
   attr_reader :old_firm_id
 
@@ -51,6 +52,14 @@ class Adviser < ActiveRecord::Base
 
   def full_street_address
     "#{postcode}, United Kingdom"
+  end
+
+  def has_address_changes?
+    changed_attributes.include? :postcode
+  end
+
+  def add_geocoding_failed_error
+    errors.add(:address, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
 
   def field_order

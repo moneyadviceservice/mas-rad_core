@@ -107,6 +107,35 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
+  it_should_behave_like 'synchronously geocodable' do
+    let(:invalid_geocodable) { Adviser.new }
+    let(:valid_new_geocodable) { FactoryGirl.build(:adviser) }
+    let(:saved_geocodable) { FactoryGirl.create(:adviser) }
+    let(:address_field_name) { :postcode }
+    let(:address_field_updated_value) { 'S032 2AY' }
+    let(:updated_address_params) { { address_field_name => address_field_updated_value } }
+  end
+
+  describe '#has_address_changes?' do
+    subject { FactoryGirl.create(:adviser) }
+
+    context 'when none of the address fields have changed' do
+      it 'returns false' do
+        expect(subject.has_address_changes?).to be(false)
+      end
+    end
+
+    context "when the model postcode field has changed" do
+      before do
+        subject.postcode = 'S032 2AY'
+      end
+
+      it 'returns true' do
+        expect(subject.has_address_changes?).to be(true)
+      end
+    end
+  end
+
   describe 'after_save :flag_changes_for_after_commit' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }
