@@ -107,41 +107,6 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after_commit :geocode_and_reindex' do
-    let(:adviser) { create(:adviser) }
-
-    context 'when the postcode is present' do
-      it 'the adviser is scheduled for geocoding' do
-        expect { adviser.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-      end
-    end
-
-    context 'when the postcode is not valid' do
-      before { adviser.postcode = 'not-valid' }
-
-      it 'the adviser is not scheduled for geocoding' do
-        expect { adviser.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-      end
-    end
-
-    context 'when the subject is destroyed' do
-      before do
-        allow(FirmIndexer).to receive(:handle_aggregate_changed)
-        adviser.destroy
-        adviser.run_callbacks(:commit)
-      end
-
-      it 'the adviser is not scheduled for geocoding' do
-        expect(queue_contains_a_job_for(GeocodeAdviserJob)).to be_falsey
-      end
-
-      # TODO Temporary patch up code to make the tests pass
-      it 'the adviser notifies the firm indexer that it has changed' do
-        expect(FirmIndexer).to have_received(:handle_aggregate_changed).with(adviser)
-      end
-    end
-  end
-
   describe 'after_save :flag_changes_for_after_commit' do
     let(:original_firm) { create(:firm) }
     let(:receiving_firm) { create(:firm) }
