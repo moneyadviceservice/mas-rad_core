@@ -11,12 +11,17 @@ module FirmIndexer
     alias_method :handle_firm_changed, :index_firm
 
     def handle_aggregate_changed(aggregate)
-      index_firm(aggregate.firm) if firm_exists?(aggregate.firm)
+      # This method may be invoked as part of a cascade delete, in which case
+      # we should do nothing here. The firm change notification will handle
+      # the change.
+      return if associated_firm_destroyed?(aggregate)
+      index_firm(aggregate.firm)
     end
 
-    def firm_exists?(firm)
-      return false if (firm.nil? || firm.destroyed?)
-      Firm.exists?(firm.id)
+    def associated_firm_destroyed?(aggregate)
+      firm = aggregate.firm
+      return true if (firm.nil? || firm.destroyed?)
+      !Firm.exists?(firm.id)
     end
 
     private

@@ -85,30 +85,39 @@ RSpec.describe FirmIndexer do
     end
   end
 
-  describe '#firm_exists?' do
-    subject { described_class.firm_exists?(firm) }
-    let(:firm) { FactoryGirl.create(:firm) }
+  describe '#associated_firm_destroyed?' do
+    let(:firm) { FactoryGirl.create(:firm_with_offices) }
+    let(:aggregate) { firm.offices.first }
+    subject { described_class.associated_firm_destroyed?(aggregate) }
 
     context 'when the firm instance and db record exist' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when firm has been destroyed before the association has been loaded' do
+      before do
+        aggregate # load the aggregate, but not the aggregate.firm association
+        firm.destroy
+        expect(aggregate.firm).to be_nil
+      end
+
       it { is_expected.to be(true) }
     end
 
-    context 'when nil passed' do
-      let(:firm) { nil }
-      it { is_expected.to be(false) }
-    end
-
-    context 'when the firm instance has been destroyed' do
-      before { firm.destroy }
-      it { is_expected.to be(false) }
+    context 'when the aggregate.firm instance has been destroyed' do
+      before { aggregate.firm.destroy }
+      it { is_expected.to be(true) }
     end
 
     context 'when another instance of this firm has been destroyed' do
-      let(:firm) { FactoryGirl.create(:firm) }
       let(:other_instance) { Firm.find(firm.id) }
 
-      before { other_instance.destroy }
-      it { is_expected.to be(false) }
+      before do
+        aggregate.firm # Load the aggregate.firm instance into memory
+        other_instance.destroy
+      end
+
+      it { is_expected.to be(true) }
     end
   end
 end
