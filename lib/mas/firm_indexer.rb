@@ -8,9 +8,7 @@ module FirmIndexer
       end
     end
 
-    def handle_firm_changed(firm)
-      index_firm(firm)
-    end
+    alias_method :handle_firm_changed, :index_firm
 
     def handle_aggregate_changed(aggregate)
       index_firm(aggregate.firm) if firm_exists?(aggregate.firm)

@@ -47,11 +47,11 @@ RSpec.describe FirmIndexer do
   end
 
   describe '#handle_firm_changed' do
-    let(:firm) { FactoryGirl.create(:firm) }
+    let(:handle_firm_changed) { described_class.method(:handle_firm_changed) }
+    let(:index_firm) { described_class.method(:index_firm) }
 
     it 'delegates to #index_firm' do
-      expect(described_class).to receive(:index_firm).with(firm)
-      described_class.handle_firm_changed(firm)
+      expect(handle_firm_changed).to eq(index_firm)
     end
   end
 
