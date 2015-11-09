@@ -12,6 +12,9 @@ RSpec.describe Office do
     let(:invalid_geocodable) { Office.new }
     let(:valid_new_geocodable) { FactoryGirl.build(:office, firm: firm) }
     let(:saved_geocodable) { office }
+    let(:address_field_name) { :address_postcode }
+    let(:address_field_updated_value) { 'S032 2AY' }
+    let(:updated_address_params) { { address_line_one: 'A new place' } }
   end
 
   describe '#notify_indexer' do

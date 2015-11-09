@@ -12,6 +12,10 @@ RSpec.shared_examples 'synchronously geocodable' do
     it { is_expected.to respond_to(:add_geocoding_failed_error) }
   end
 
+  def modify_address(subject)
+    subject.send("#{address_field_name}=", address_field_updated_value)
+  end
+
   describe '#geocode' do
     context 'when the subject is not valid' do
       subject { invalid_geocodable }
@@ -101,7 +105,7 @@ RSpec.shared_examples 'synchronously geocodable' do
             before do
               subject.coordinates = [1.0, 1.0]
               subject.save!
-              subject.address_postcode = 'SO31 1PY'
+              modify_address(subject)
               subject.geocode
             end
 
@@ -151,7 +155,7 @@ RSpec.shared_examples 'synchronously geocodable' do
 
       context 'when the model address fields have changed' do
         before do
-          subject.address_postcode = 'SO31 2AY'
+          modify_address(subject)
           expect(subject).to have_address_changes
         end
 
@@ -199,12 +203,12 @@ RSpec.shared_examples 'synchronously geocodable' do
   end
 
   describe '#update_with_geocoding' do
-    subject { saved_geocodable.update_with_geocoding(address_line_one: '123 xyz street') }
+    subject { saved_geocodable.update_with_geocoding(updated_address_params) }
 
     it 'updates the geocodable with new attributes' do
       allow(saved_geocodable).to receive(:save_with_geocoding)
       subject
-      expect(saved_geocodable.changed_attributes).to include(:address_line_one)
+      expect(saved_geocodable.changed_attributes).to include(updated_address_params.keys.first)
     end
 
     it 'calls #save_with_geocoding' do
