@@ -172,20 +172,21 @@ RSpec.describe Adviser do
       model.run_callbacks(:commit)
     end
 
-    context 'when the firm has changed' do
-      it 'triggers reindexing of the adviser and new firm' do
-        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+    before { allow(FirmIndexer).to receive(:handle_aggregate_changed) }
+
+    context 'when the associated firm has changed' do
+      it 'triggers reindexing of the original firm' do
+        expect(FirmIndexer).to receive(:handle_firm_changed).with(original_firm)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
       end
+    end
 
-      it 'triggers reindexing of the original firm (once)' do
-        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm)
-        subject.firm = receiving_firm
+    context 'when the associated firm has not changed' do
+      it 'does not trigger reindexing of the original firm' do
+        expect(FirmIndexer).not_to receive(:handle_firm_changed).with(original_firm)
+        subject.name = 'A different name'
         save_with_commit_callback(subject)
-
-        # Trigger a second time
-        subject.run_callbacks(:commit)
       end
     end
   end
