@@ -6,16 +6,12 @@ RSpec.describe GeocodeFirmJob do
   subject(:firm) { create(:firm) }
 
   before do
-    firm.main_office.update!(address_line_one: address_line_one,
-                             address_line_two: address_line_two,
-                             address_postcode: address_postcode)
+    firm.main_office.update!(address_postcode: address_postcode)
     firm.reload
   end
 
   describe '#perform' do
     context 'when the firm address can be geocoded' do
-      let(:address_line_one) { '120 Holborn' }
-      let(:address_line_two) { 'London' }
       let(:address_postcode) { 'EC1N 2TD' }
 
       subject do
@@ -36,9 +32,7 @@ RSpec.describe GeocodeFirmJob do
     end
 
     context 'when firm address cannot be geocoded' do
-      let(:address_line_one) { '1000 Fantasy Ave' }
-      let(:address_line_two) { 'Neverland' }
-      let(:address_postcode) { 'ABC 123' }
+      let(:address_postcode) { 'XX1 1XX' }
 
       subject do
         VCR.use_cassette('geocode-no-results') do
