@@ -1,44 +1,71 @@
 RSpec.describe Office do
   include FieldLengthValidationHelpers
 
-  let(:firm) { nil }
+  let(:firm) { FactoryGirl.create(:firm_with_offices, id: 123) }
+  subject(:office) { firm.offices.first }
 
-  subject(:office) { FactoryGirl.build(:office, firm: firm) }
+  it_should_behave_like 'geocodable' do
+    let(:job_class) { double }
+  end
 
-  describe 'after_commit :geocode_and_reindex_firm' do
-    let(:firm) { FactoryGirl.build(:firm, id: 123) }
+  it_should_behave_like 'synchronously geocodable' do
+    let(:invalid_geocodable) { Office.new }
+    let(:valid_new_geocodable) { FactoryGirl.build(:office, firm: firm) }
+    let(:saved_geocodable) { office }
+    let(:address_field_name) { :address_postcode }
+    let(:address_field_updated_value) { 'S032 2AY' }
+    let(:updated_address_params) { { address_line_one: 'A new place' } }
+  end
 
-    before do
-      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+  describe '#notify_indexer' do
+    it 'notifies the indexer that the office has changed' do
+      expect(FirmIndexer).to receive(:handle_aggregate_changed).with(subject)
+      subject.notify_indexer
     end
+  end
 
-    context 'when the address_postcode is not valid' do
-      before { office.address_postcode = nil }
+  describe 'after_commit' do
+    before { expect(subject).to receive(:notify_indexer) }
 
-      it 'does not schedule the firm for geocoding' do
-        expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+    context 'when a new office is saved' do
+      subject { FactoryGirl.build(:office, firm: firm) }
+
+      it 'calls notify_indexer' do
+        subject.save
+        subject.run_callbacks(:commit)
       end
     end
 
-    context 'when the address_postcode is valid' do
-      context 'but the office is not the main office for the firm' do
-        it 'does not schedule the firm for geocoding' do
-          expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-        end
+    context 'when an office is updated' do
+      it 'calls notify_indexer' do
+        subject.update_attributes(address_line_one: 'A new street')
+        subject.run_callbacks(:commit)
       end
+    end
 
-      context 'and the office is the main office for the firm' do
-        before { allow(firm).to receive(:main_office).and_return(office) }
+    context 'when an office is destroyed' do
+      it 'calls notify_indexer' do
+        office.destroy
+        subject.run_callbacks(:commit)
+      end
+    end
+  end
 
-        it 'schedules the firm for geocoding' do
-          expect { office.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+  describe '#has_address_changes?' do
+    context 'when none of the address fields have changed' do
+      it 'returns false' do
+        expect(subject.has_address_changes?).to be(false)
+      end
+    end
+
+    described_class::ADDRESS_FIELDS.each do |field|
+      context "when the model #{field} field has changed" do
+        before do
+          subject.send("#{field}=", 'changed')
         end
 
-        context 'when the office has been destroyed' do
-          it 'does not schedule the firm for geocoding' do
-            office.destroy
-            expect { office.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-          end
+        it 'returns true' do
+          expect(subject.has_address_changes?).to be(true)
         end
       end
     end
@@ -193,8 +220,6 @@ RSpec.describe Office do
   end
 
   describe '#full_street_address' do
-    let(:office) { FactoryGirl.build(:office) }
-
     subject { office.full_street_address }
 
     it { is_expected.to eql "#{office.address_line_one}, #{office.address_line_two}, #{office.address_postcode}, United Kingdom"}

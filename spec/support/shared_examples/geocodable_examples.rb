@@ -70,4 +70,26 @@ RSpec.shared_examples 'geocodable' do
       end
     end
   end
+
+  describe '#geocoded?' do
+    context 'when the subject has lat/long' do
+      before do
+        subject.latitude, subject.longitude = [1.0, 1.0]
+      end
+
+      it 'is classed as geocoded' do
+        expect(subject.geocoded?).to be(true)
+      end
+    end
+
+    context 'when the subject does not have lat/long' do
+      before do
+        subject.latitude, subject.longitude = [nil, nil]
+      end
+
+      it 'is not classed as geocoded' do
+        expect(subject.geocoded?).to be(false)
+      end
+    end
+  end
 end
