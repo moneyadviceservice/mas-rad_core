@@ -2,14 +2,6 @@ class Office < ActiveRecord::Base
   include Geocodable
   include GeocodableSync
 
-  ADDRESS_FIELDS = [
-    :address_line_one,
-    :address_line_two,
-    :address_town,
-    :address_county,
-    :address_postcode
-  ].freeze
-
   belongs_to :firm
 
   before_validation :upcase_postcode
@@ -69,11 +61,11 @@ class Office < ActiveRecord::Base
   end
 
   def full_street_address
-    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
+    "#{address_postcode}, United Kingdom"
   end
 
   def has_address_changes?
-    ADDRESS_FIELDS.any? { |field| changed_attributes.include? field }
+    changed_attributes.include? :address_postcode
   end
 
   def add_geocoding_failed_error
