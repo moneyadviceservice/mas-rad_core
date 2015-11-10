@@ -5,20 +5,6 @@ RSpec.describe Adviser do
     clear_job_queue
   end
 
-  describe '#geocoded?' do
-    context 'when the adviser has lat/long' do
-      it 'is classed as geocoded' do
-        expect(build(:adviser)).to be_geocoded
-      end
-    end
-
-    context 'when the adviser does not have lat/long' do
-      it 'is not classed as geocoded' do
-        expect(build(:adviser, latitude: nil, longitude: nil)).to_not be_geocoded
-      end
-    end
-  end
-
   describe 'before validation' do
     context 'when a reference number is present' do
       let(:attributes) { attributes_for(:adviser) }
@@ -121,38 +107,41 @@ RSpec.describe Adviser do
     let(:job_class) { GeocodeAdviserJob }
   end
 
-  describe 'after_commit :geocode_and_reindex' do
-    let(:adviser) { create(:adviser) }
+  it_should_behave_like 'synchronously geocodable' do
+    let(:invalid_geocodable) { Adviser.new }
+    let(:valid_new_geocodable) { FactoryGirl.build(:adviser) }
+    let(:saved_geocodable) { FactoryGirl.create(:adviser) }
+    let(:address_field_name) { :postcode }
+    let(:address_field_updated_value) { 'S032 2AY' }
+    let(:updated_address_params) { { address_field_name => address_field_updated_value } }
+  end
 
-    context 'when the postcode is present' do
-      it 'the adviser is scheduled for geocoding' do
-        expect { adviser.run_callbacks(:commit) }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
+  describe '#has_address_changes?' do
+    subject { FactoryGirl.create(:adviser) }
+
+    context 'when none of the address fields have changed' do
+      it 'returns false' do
+        expect(subject.has_address_changes?).to be(false)
       end
     end
 
-    context 'when the postcode is not valid' do
-      before { adviser.postcode = 'not-valid' }
-
-      it 'the adviser is not scheduled for geocoding' do
-        expect { adviser.run_callbacks(:commit) }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs }
-      end
-    end
-
-    context 'when the subject is destroyed' do
+    context "when the model postcode field has changed" do
       before do
-        allow(FirmIndexer).to receive(:handle_aggregate_changed)
-        adviser.destroy
-        adviser.run_callbacks(:commit)
+        subject.postcode = 'S032 2AY'
       end
 
-      it 'the adviser is not scheduled for geocoding' do
-        expect(queue_contains_a_job_for(GeocodeAdviserJob)).to be_falsey
+      it 'returns true' do
+        expect(subject.has_address_changes?).to be(true)
       end
+    end
+  end
 
-      # TODO Temporary patch up code to make the tests pass
-      it 'the adviser notifies the firm indexer that it has changed' do
-        expect(FirmIndexer).to have_received(:handle_aggregate_changed).with(adviser)
-      end
+  describe '#notify_indexer' do
+    subject { FactoryGirl.create(:adviser) }
+
+    it 'notifies the indexer that the office has changed' do
+      expect(FirmIndexer).to receive(:handle_aggregate_changed).with(subject)
+      subject.notify_indexer
     end
   end
 
@@ -183,20 +172,21 @@ RSpec.describe Adviser do
       model.run_callbacks(:commit)
     end
 
-    context 'when the firm has changed' do
-      it 'triggers reindexing of the adviser and new firm' do
-        expect(GeocodeAdviserJob).to receive(:perform_later).with(subject)
+    before { allow(FirmIndexer).to receive(:handle_aggregate_changed) }
+
+    context 'when the associated firm has changed' do
+      it 'triggers reindexing of the original firm' do
+        expect(FirmIndexer).to receive(:handle_firm_changed).with(original_firm)
         subject.firm = receiving_firm
         save_with_commit_callback(subject)
       end
+    end
 
-      it 'triggers reindexing of the original firm (once)' do
-        expect(IndexFirmJob).to receive(:perform_later).once().with(original_firm)
-        subject.firm = receiving_firm
+    context 'when the associated firm has not changed' do
+      it 'does not trigger reindexing of the original firm' do
+        expect(FirmIndexer).not_to receive(:handle_firm_changed).with(original_firm)
+        subject.name = 'A different name'
         save_with_commit_callback(subject)
-
-        # Trigger a second time
-        subject.run_callbacks(:commit)
       end
     end
   end

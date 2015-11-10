@@ -1,5 +1,6 @@
 class Adviser < ActiveRecord::Base
   include Geocodable
+  include GeocodableSync
 
   attr_reader :old_firm_id
 
@@ -31,10 +32,15 @@ class Adviser < ActiveRecord::Base
 
   validate :match_reference_number
 
-  after_save :flag_changes_for_after_commit
-  after_commit :geocode_and_reindex_firm
-  after_commit :reindex_old_firm
   scope :sorted_by_name, -> { order(:name) }
+
+  after_save :flag_changes_for_after_commit
+  after_commit :notify_indexer
+  after_commit :reindex_old_firm
+
+  def notify_indexer
+    FirmIndexer.handle_aggregate_changed(self)
+  end
 
   def self.on_firms_with_fca_number(fca_number)
     firms = Firm.where(fca_number: fca_number)
@@ -51,6 +57,14 @@ class Adviser < ActiveRecord::Base
 
   def full_street_address
     "#{postcode}, United Kingdom"
+  end
+
+  def has_address_changes?
+    changed_attributes.include? :postcode
+  end
+
+  def add_geocoding_failed_error
+    errors.add(:address, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
 
   def field_order
@@ -70,17 +84,8 @@ class Adviser < ActiveRecord::Base
     @old_firm_id = firm_id_change.first if firm_id_changed?
   end
 
-  def geocode_and_reindex_firm
-    if destroyed?
-      # TODO Temporary patch up code to make the tests pass
-      FirmIndexer.handle_aggregate_changed(self)
-    elsif valid?
-      GeocodeAdviserJob.perform_later(self)
-    end
-  end
-
   def reindex_old_firm
-    IndexFirmJob.perform_later(Firm.find(@old_firm_id)) if @old_firm_id.present?
+    Firm.find(@old_firm_id).notify_indexer if @old_firm_id.present?
     @old_firm_id = nil
   end
 
