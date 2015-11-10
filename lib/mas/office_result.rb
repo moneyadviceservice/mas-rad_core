@@ -1,7 +1,7 @@
 class OfficeResult
   attr_reader :id, :address_line_one, :address_line_two, :address_town,
               :address_county, :address_postcode, :email_address,
-              :telephone_number, :disabled_access
+              :telephone_number, :disabled_access, :location
 
   def initialize(data)
     @id               = data['_id']
@@ -13,5 +13,6 @@ class OfficeResult
     @email_address    = data['email_address']
     @telephone_number = data['telephone_number']
     @disabled_access  = data['disabled_access']
+    @location = Location.new data['location']['lat'], data['location']['lon']
   end
 end

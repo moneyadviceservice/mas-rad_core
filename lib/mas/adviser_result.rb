@@ -1,6 +1,4 @@
 class AdviserResult
-  Location = Struct.new(:latitude, :longitude)
-
   attr_reader :id, :name, :range, :location
 
   def initialize(data)
