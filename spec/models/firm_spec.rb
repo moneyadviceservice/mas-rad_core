@@ -1,8 +1,6 @@
 RSpec.describe Firm do
   subject(:firm) { build(:firm) }
 
-  before { allow(GeocodeFirmJob).to receive(:perform_later) }
-
   describe 'default behaviour' do
     it 'sets ethical_investing_flag to false' do
       expect(Firm.new.ethical_investing_flag).to be_falsey
@@ -411,52 +409,45 @@ RSpec.describe Firm do
     let(:job_class) { GeocodeFirmJob }
   end
 
-  describe '#geocode_and_reindex' do
-    # does the reindexing inside the GeocodeFirmJob, tests for that are there
-
-    it 'performs a geocode firm job' do
-      firm.geocode_and_reindex
-      expect(GeocodeFirmJob).to have_received(:perform_later).with(firm)
-    end
-
-    it 'does not perform a geocode firm job when the firm has been destroyed' do
-      firm.destroy
-      firm.geocode_and_reindex
-      expect(GeocodeFirmJob).not_to have_received(:perform_later).with(firm)
+  describe '#notify_indexer' do
+    it 'notifies the firm indexer that the firm has changed' do
+      expect(FirmIndexer).to receive(:handle_firm_changed).with(subject)
+      subject.notify_indexer
     end
   end
 
-  describe 'after_commit:publish_firm' do
-    context 'when a firm is created' do
-      it 'the firm is published' do
-        allow(IndexFirmJob).to receive(:perform_later)
-        firm = create :firm
-        firm.run_callbacks(:commit)
-        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
+  describe 'after_commit' do
+    before { expect(subject).to receive(:notify_indexer) }
+
+    context 'when a new firm is saved' do
+      subject { FactoryGirl.build(:firm) }
+
+      it 'calls notify_indexer' do
+        subject.save
+        subject.run_callbacks(:commit)
       end
     end
 
     context 'when a firm is updated' do
-      it 'the firm is published' do
-        firm = create :firm
-        allow(IndexFirmJob).to receive(:perform_later)
-        firm.update_attributes(registered_name: 'A new name')
-        firm.run_callbacks(:commit)
-        expect(IndexFirmJob).to have_received(:perform_later).with(firm)
+      subject { FactoryGirl.create(:firm) }
+
+      it 'calls notify_indexer' do
+        subject.update_attributes(registered_name: 'A new name')
+        subject.run_callbacks(:commit)
       end
     end
 
     context 'when a firm is destroyed' do
-      it 'the firm is not published' do
-        firm = create :firm
-        allow(IndexFirmJob).to receive(:perform_later)
+      subject { FactoryGirl.create(:firm) }
+
+      it 'calls notify_indexer' do
         firm.destroy
-        expect(IndexFirmJob).not_to have_received(:perform_later)
+        subject.run_callbacks(:commit)
       end
     end
   end
 
-  describe 'destroying' do
+  describe 'destruction' do
     context 'when the firm has advisers' do
       let(:firm) { create(:firm_with_advisers) }
 
@@ -494,43 +485,6 @@ RSpec.describe Firm do
         principal = firm.principal
         firm.destroy
         expect(Principal.where(token: principal.id)).not_to be_empty
-      end
-    end
-
-    describe 'deleting in elastic search' do
-      let(:firm) do
-        create(:firm,
-               :with_offices,
-               :with_advisers,
-               :with_principal,
-               offices_count: 1,
-               advisers_count: 1)
-      end
-
-      context 'when the firm is destroyed' do
-        it 'the firm is scheduled for deletion' do
-          expect(DeleteFirmJob).to receive(:perform_later).with(firm.id)
-          firm.destroy
-          firm.run_callbacks(:commit)
-        end
-
-        it 'does not trigger geocoding/reindexing of the firm' do
-          expect(GeocodeFirmJob).not_to receive(:perform_later)
-          expect(IndexFirmJob).not_to receive(:perform_later)
-          adviser = firm.advisers.first
-          office = firm.offices.first
-          firm.destroy
-          adviser.run_callbacks(:commit)
-          office.run_callbacks(:commit)
-          firm.run_callbacks(:commit)
-        end
-      end
-
-      context 'when the firm is not destroyed' do
-        it 'the firm is not scheduled for deletion' do
-          expect(DeleteFirmJob).not_to receive(:perform_later).with(firm.id)
-          firm.run_callbacks(:commit)
-        end
       end
     end
   end

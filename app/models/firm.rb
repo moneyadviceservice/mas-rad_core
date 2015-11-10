@@ -103,11 +103,10 @@ class Firm < ActiveRecord::Base
   validates :investment_sizes,
     length: { minimum: 1 }
 
-  after_commit :publish_to_elastic_search, unless: :destroyed?
-  after_commit :delete_elastic_search_entry, if: :destroyed?
+  after_commit :notify_indexer
 
-  def publish_to_elastic_search
-    IndexFirmJob.perform_later self
+  def notify_indexer
+    FirmIndexer.handle_firm_changed(self)
   end
 
   # Maintains existing address interface
@@ -177,10 +176,6 @@ class Firm < ActiveRecord::Base
     ]
   end
 
-  def geocode_and_reindex
-    GeocodeFirmJob.perform_later(self) unless destroyed?
-  end
-
   def advice_types
     ADVICE_TYPES_ATTRIBUTES.map { |a| [a, self[a]] }.to_h
   end
@@ -203,10 +198,6 @@ class Firm < ActiveRecord::Base
   end
 
   private
-
-  def delete_elastic_search_entry
-    DeleteFirmJob.perform_later(id)
-  end
 
   def infer_primary_advice_method
     if in_person_advice_methods.any?

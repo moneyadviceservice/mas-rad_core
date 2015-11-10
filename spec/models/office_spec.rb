@@ -14,6 +14,40 @@ RSpec.describe Office do
     let(:saved_geocodable) { office }
   end
 
+  describe '#notify_indexer' do
+    it 'notifies the indexer that the office has changed' do
+      expect(FirmIndexer).to receive(:handle_aggregate_changed).with(subject)
+      subject.notify_indexer
+    end
+  end
+
+  describe 'after_commit' do
+    before { expect(subject).to receive(:notify_indexer) }
+
+    context 'when a new office is saved' do
+      subject { FactoryGirl.build(:office, firm: firm) }
+
+      it 'calls notify_indexer' do
+        subject.save
+        subject.run_callbacks(:commit)
+      end
+    end
+
+    context 'when an office is updated' do
+      it 'calls notify_indexer' do
+        subject.update_attributes(address_line_one: 'A new street')
+        subject.run_callbacks(:commit)
+      end
+    end
+
+    context 'when an office is destroyed' do
+      it 'calls notify_indexer' do
+        office.destroy
+        subject.run_callbacks(:commit)
+      end
+    end
+  end
+
   describe '#has_address_changes?' do
     context 'when none of the address fields have changed' do
       it 'returns false' do

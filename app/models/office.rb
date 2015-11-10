@@ -45,6 +45,12 @@ class Office < ActiveRecord::Base
 
   validates :disabled_access, inclusion: { in: [true, false] }
 
+  after_commit :notify_indexer
+
+  def notify_indexer
+    FirmIndexer.handle_aggregate_changed(self)
+  end
+
   def field_order
     [
       :address_line_one,
