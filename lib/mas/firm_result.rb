@@ -19,7 +19,9 @@ class FirmResult
     :in_person_advice_methods,
     :investment_sizes,
     :adviser_accreditation_ids,
-    :adviser_qualification_ids
+    :adviser_qualification_ids,
+    :ethical_investing_flag,
+    :sharia_investing_flag
   ]
 
   TYPES_OF_ADVICE_FIELDS = [
