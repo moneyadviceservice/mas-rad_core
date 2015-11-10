@@ -30,6 +30,8 @@ RSpec.describe FirmResult do
         'investment_sizes' => [1, 2],
         'adviser_accreditation_ids' => [5],
         'adviser_qualification_ids' => [3],
+        'ethical_investing_flag' => true,
+        'sharia_investing_flag' => false,
         'advisers' => [
           {
             '_id'      => 1,
@@ -97,6 +99,14 @@ RSpec.describe FirmResult do
 
     it 'maps the `free_initial_meeting`' do
       expect(subject.free_initial_meeting).to eq(true)
+    end
+
+    it 'maps the "ethical_investing_flag"' do
+      expect(subject.ethical_investing_flag).to eq(true)
+    end
+
+    it 'maps the "sharia_investing_flag"' do
+      expect(subject.sharia_investing_flag).to eq(false)
     end
 
     it 'maps the `minimum_fixed_fee`' do
