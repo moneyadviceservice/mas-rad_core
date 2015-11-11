@@ -405,8 +405,7 @@ RSpec.describe Firm do
   end
 
   it_should_behave_like 'geocodable' do
-    subject(:firm) { create(:firm) }
-    let(:job_class) { double }
+    subject { create(:firm) }
   end
 
   describe '#notify_indexer' do

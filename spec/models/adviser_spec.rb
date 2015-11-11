@@ -103,8 +103,7 @@ RSpec.describe Adviser do
   end
 
   it_should_behave_like 'geocodable' do
-    subject(:adviser) { create(:adviser) }
-    let(:job_class) { GeocodeAdviserJob }
+    subject { create(:adviser) }
   end
 
   it_should_behave_like 'synchronously geocodable' do

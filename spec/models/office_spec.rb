@@ -5,7 +5,7 @@ RSpec.describe Office do
   subject(:office) { firm.offices.first }
 
   it_should_behave_like 'geocodable' do
-    let(:job_class) { double }
+    subject { office }
   end
 
   it_should_behave_like 'synchronously geocodable' do
