@@ -1,7 +1,7 @@
 namespace :firms do
   desc 'Index all existing firms'
   task index: :environment do
-    puts 'Do you want to index all existing firms? [type `yes` to confirm]'
+    puts "Do you want to index all #{Firm.registered.count} indexable firms? [type `yes` to confirm]"
     confirmation = STDIN.gets.chomp
 
     if confirmation.downcase == 'yes'
