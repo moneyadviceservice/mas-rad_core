@@ -18,26 +18,6 @@ RSpec.describe FirmSerializer do
       expect(subject[:postcode_searchable]).to eql(firm.postcode_searchable?)
     end
 
-    it 'exposes `address_line_one`' do
-      expect(subject[:address_line_one]).to eql(firm.address_line_one)
-    end
-
-    it 'exposes `address_line_two`' do
-      expect(subject[:address_line_two]).to eql(firm.address_line_two)
-    end
-
-    it 'exposes `address_town`' do
-      expect(subject[:address_town]).to eql(firm.address_town)
-    end
-
-    it 'exposes `address_county`' do
-      expect(subject[:address_county]).to eql(firm.address_county)
-    end
-
-    it 'exposes `address_postcode`' do
-      expect(subject[:address_postcode]).to eql(firm.address_postcode)
-    end
-
     it 'exposes `telephone_number`' do
       expect(subject[:telephone_number]).to eql(firm.main_office.telephone_number)
     end
