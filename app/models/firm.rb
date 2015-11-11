@@ -1,6 +1,4 @@
 class Firm < ActiveRecord::Base
-  include Geocodable
-
   FREE_INITIAL_MEETING_VALID_VALUES = [true, false].freeze
 
   # We use a scalar required field as a marker to detect a record saved with validation
