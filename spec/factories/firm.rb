@@ -18,8 +18,6 @@ FactoryGirl.define do
     equity_release_flag true
     inheritance_tax_and_estate_planning_flag true
     wills_and_probate_flag true
-    latitude { Faker::Address.latitude.to_f.round(6) }
-    longitude { Faker::Address.longitude.to_f.round(6) }
     status :independent
 
     transient do

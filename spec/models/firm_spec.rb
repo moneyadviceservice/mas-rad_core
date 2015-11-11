@@ -404,11 +404,6 @@ RSpec.describe Firm do
     end
   end
 
-  it_should_behave_like 'geocodable' do
-    subject(:firm) { create(:firm) }
-    let(:job_class) { GeocodeFirmJob }
-  end
-
   describe '#notify_indexer' do
     it 'notifies the firm indexer that the firm has changed' do
       expect(FirmIndexer).to receive(:handle_firm_changed).with(subject)

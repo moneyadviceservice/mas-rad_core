@@ -39,7 +39,6 @@ RSpec.shared_examples 'geocodable' do
     let(:coordinates) { [Faker::Address.latitude, Faker::Address.longitude] }
 
     before do
-      expect(job_class).not_to receive(:perform_later)
       subject.update_coordinates!(coordinates)
       subject.reload
     end
