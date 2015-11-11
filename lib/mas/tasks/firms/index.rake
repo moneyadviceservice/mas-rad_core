@@ -3,10 +3,17 @@ namespace :firms do
   task index: :environment do
     puts 'Do you want to index all existing firms? [type `yes` to confirm]'
     confirmation = STDIN.gets.chomp
+
     if confirmation.downcase == 'yes'
-      puts 'Building firms index...'
-      Firm.registered.each { |f| f.notify_indexer }
-      puts '...indexing done.'
+      print 'Building firms index: '
+
+      Firm.registered.each do |f|
+        f.notify_indexer
+        putc '.'
+      end
+
+      puts
+      puts 'Indexing done.'
     else
       puts 'Indexing aborted.'
     end
