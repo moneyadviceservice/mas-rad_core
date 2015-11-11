@@ -38,6 +38,10 @@ class FirmSerializer < ActiveModel::Serializer
     object.advisers.geocoded
   end
 
+  def offices
+    object.offices.geocoded
+  end
+
   def telephone_number
     object.main_office.telephone_number
   end

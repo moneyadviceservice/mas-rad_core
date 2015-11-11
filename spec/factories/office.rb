@@ -8,5 +8,7 @@ FactoryGirl.define do
     email_address { Faker::Internet.email }
     telephone_number { Faker::Base.numerify('##### ### ###') }
     disabled_access { [true, false].sample }
+    latitude  { Faker::Address.latitude.to_f.round(6) }
+    longitude { Faker::Address.longitude.to_f.round(6) }
   end
 end
