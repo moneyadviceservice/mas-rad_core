@@ -50,7 +50,8 @@ RSpec.describe FirmResult do
             'address_postcode' => 'LA8 9BE',
             'email_address'    => 'postie@example.com',
             'telephone_number' => '5555 555 5555',
-            'disabled_access'  => true
+            'disabled_access'  => true,
+            'location' => { 'lat' => 51.428473, 'lon' => -0.943616 }
           }
         ]
       },

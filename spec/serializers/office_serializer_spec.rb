@@ -13,5 +13,7 @@ RSpec.describe OfficeSerializer do
     specify { expect(subject[:email_address]).to eq(office.email_address) }
     specify { expect(subject[:telephone_number]).to eq(office.telephone_number) }
     specify { expect(subject[:disabled_access]).to eq(office.disabled_access) }
+    specify { expect(subject[:location][:lat]).to eql(office.latitude) }
+    specify { expect(subject[:location][:lon]).to eql(office.longitude) }
   end
 end
