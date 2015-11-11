@@ -58,15 +58,13 @@ RSpec.describe Office do
       end
     end
 
-    described_class::ADDRESS_FIELDS.each do |field|
-      context "when the model #{field} field has changed" do
-        before do
-          subject.send("#{field}=", 'changed')
-        end
+    context "when the model address_postcode field has changed" do
+      before do
+        subject.address_postcode = 'changed'
+      end
 
-        it 'returns true' do
-          expect(subject.has_address_changes?).to be(true)
-        end
+      it 'returns true' do
+        expect(subject.has_address_changes?).to be(true)
       end
     end
   end
@@ -222,18 +220,6 @@ RSpec.describe Office do
   describe '#full_street_address' do
     subject { office.full_street_address }
 
-    it { is_expected.to eql "#{office.address_line_one}, #{office.address_line_two}, #{office.address_postcode}, United Kingdom"}
-
-    context 'when line two is nil' do
-      before { office.address_line_two = nil }
-
-      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
-    end
-
-    context 'when line two is an empty string' do
-      before { office.address_line_two = '' }
-
-      it { is_expected.to eql "#{office.address_line_one}, #{office.address_postcode}, United Kingdom"}
-    end
+    it { is_expected.to eql "#{office.address_postcode}, United Kingdom"}
   end
 end
