@@ -104,6 +104,14 @@ RSpec.describe FirmSerializer do
       it 'includes offices (main and additionally created one)' do
         expect(subject[:offices].count).to eq(2)
       end
+
+      context 'when there are offices that have not been geocoded' do
+        before { firm.offices.last.update!(latitude: nil, longitude: nil) }
+
+        it 'only includes geocoded records' do
+          expect(subject[:offices].count).to eq(1)
+        end
+      end
     end
   end
 end
