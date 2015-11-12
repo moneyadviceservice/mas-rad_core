@@ -107,16 +107,6 @@ class Firm < ActiveRecord::Base
     FirmIndexer.handle_firm_changed(self)
   end
 
-  # Maintains existing address interface
-  delegate :address_line_one,
-           :address_line_two,
-           :address_town,
-           :address_county,
-           :address_postcode,
-           :full_street_address,
-           to: :main_office,
-           allow_nil: true
-
   # A heuristic that allows us to infer validity
   #
   # This method is basically a cheap way to answer the question: has this
