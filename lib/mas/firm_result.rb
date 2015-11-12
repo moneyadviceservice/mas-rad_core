@@ -62,7 +62,9 @@ class FirmResult
   end
 
   def offices
-    @offices.map { |office_data| OfficeResult.new(office_data) }
+    @offices
+      .map  { |office_data| OfficeResult.new(office_data) }
+      .sort { |a, b| a.address_town <=> b.address_town }
   end
 
   def includes_advice_type?(advice_type)
