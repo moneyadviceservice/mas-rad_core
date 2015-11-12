@@ -42,6 +42,18 @@ RSpec.describe FirmResult do
         ],
         'offices' => [
           {
+            '_id'              => 456,
+            'address_line_one' => 'c/o Jess the Cat',
+            'address_line_two' => 'Maude St',
+            'address_town'     => 'Kendal',
+            'address_county'   => 'Cumbria',
+            'address_postcode' => 'LA9 4QD',
+            'email_address'    => 'postie@example.com',
+            'telephone_number' => '5555 555 5555',
+            'disabled_access'  => true,
+            'location' => { 'lat' => 51.428473, 'lon' => -0.943616 }
+          },
+          {
             '_id'              => 123,
             'address_line_one' => 'c/o Postman Pat',
             'address_line_two' => 'Forge Cottage',
@@ -127,7 +139,7 @@ RSpec.describe FirmResult do
     end
 
     it 'maps the total_offices' do
-      expect(subject.total_offices).to eq(1)
+      expect(subject.total_offices).to eq(2)
     end
 
     it 'maps the `types_of_advice` that are greater than 0 percent' do
@@ -170,11 +182,15 @@ RSpec.describe FirmResult do
     describe '#offices' do
       it 'returns an array containing the offices' do
         expect(subject.offices).to be_an(Array)
-        expect(subject.offices.length).to eq(1)
+        expect(subject.offices.length).to eq(2)
       end
 
       it 'returns OfficeResult objects' do
         expect(subject.offices.first).to be_an(OfficeResult)
+      end
+
+      it 'orders by the town name' do
+        expect(subject.offices.map(&:address_town)).to eq(['Greendale', 'Kendal'])
       end
     end
 
