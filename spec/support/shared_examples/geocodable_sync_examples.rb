@@ -94,7 +94,7 @@ RSpec.shared_examples 'synchronously geocodable' do
 
           it 'adds an error to subject.errors' do
             subject.geocode
-            expect(subject.errors).to have_key(:address)
+            expect(subject.errors).to have_key(:geocoding)
           end
 
           it 'returns false' do
