@@ -64,7 +64,7 @@ class Adviser < ActiveRecord::Base
   end
 
   def add_geocoding_failed_error
-    errors.add(:address, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
+    errors.add(:geocoding, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
 
   def field_order
