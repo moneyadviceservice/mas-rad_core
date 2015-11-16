@@ -1,9 +1,7 @@
 RSpec.describe ModelGeocoder do
   let(:model_class) do
     Class.new do
-      attr_accessor :address_line_one, :address_line_two, :address_postcode, :longitude, :latitude
-
-      def update_coordinates!(*args); end
+      attr_accessor :address_line_one, :address_line_two, :address_postcode
 
       def full_street_address
         [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
@@ -42,39 +40,6 @@ RSpec.describe ModelGeocoder do
         VCR.use_cassette('geocode-no-results') do
           expect(ModelGeocoder.geocode(model)).to be(nil)
         end
-      end
-    end
-  end
-
-  describe '#geocode!' do
-    context 'when the model address can be geocoded' do
-      before do
-        allow(ModelGeocoder).to receive(:geocode).and_return(expected_coordinates)
-      end
-
-      it 'calls model.update_coordinates! with the coordinates' do
-        expect(model).to receive(:update_coordinates!).with(expected_coordinates)
-        ModelGeocoder.geocode!(model)
-      end
-
-      it 'returns the true' do
-        expect(ModelGeocoder.geocode!(model)).to be(true)
-      end
-    end
-
-    context 'when model address cannot be geocoded' do
-      before do
-        allow(ModelGeocoder).to receive(:geocode).and_return(nil)
-      end
-
-      # This side effect is required while the geocoding is done on a background job
-      it 'calls model.update_coordinates! with nil' do
-        expect(model).to receive(:update_coordinates!).with(nil)
-        ModelGeocoder.geocode!(model)
-      end
-
-      it 'returns false' do
-        expect(ModelGeocoder.geocode!(model)).to be(false)
       end
     end
   end
