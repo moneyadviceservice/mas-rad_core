@@ -5,10 +5,6 @@ RSpec.describe Office do
   subject(:office) { firm.offices.first }
 
   it_should_behave_like 'geocodable' do
-    subject { office }
-  end
-
-  it_should_behave_like 'synchronously geocodable' do
     let(:invalid_geocodable) { Office.new }
     let(:valid_new_geocodable) { FactoryGirl.build(:office, firm: firm) }
     let(:saved_geocodable) { office }

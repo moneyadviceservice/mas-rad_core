@@ -1,6 +1,5 @@
 class Adviser < ActiveRecord::Base
   include Geocodable
-  include GeocodableSync
 
   attr_reader :old_firm_id
 
