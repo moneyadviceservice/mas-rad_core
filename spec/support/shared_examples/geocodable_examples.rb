@@ -35,41 +35,6 @@ RSpec.shared_examples 'geocodable' do
     end
   end
 
-  describe '#update_coordinates!' do
-    let(:coordinates) { [Faker::Address.latitude, Faker::Address.longitude] }
-
-    before do
-      subject.update_coordinates!(coordinates)
-      subject.reload
-    end
-
-    it 'the model is persisted' do
-      expect(subject).to be_persisted
-    end
-
-    context 'with valid coordinates' do
-      it 'the latitude is updated' do
-        expect(subject.latitude).to eql(coordinates.first.to_f.round(6))
-      end
-
-      it 'the longitude is updated' do
-        expect(subject.longitude).to eql(coordinates.last.to_f.round(6))
-      end
-    end
-
-    context 'with no coordinates' do
-      let(:coordinates) { nil }
-
-      it 'the latitude is updated' do
-        expect(subject.latitude).to be_nil
-      end
-
-      it 'the longitude is updated' do
-        expect(subject.longitude).to be_nil
-      end
-    end
-  end
-
   describe '#geocoded?' do
     context 'when the subject has lat/long' do
       before do

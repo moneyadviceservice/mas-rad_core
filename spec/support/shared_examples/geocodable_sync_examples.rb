@@ -139,7 +139,8 @@ RSpec.shared_examples 'synchronously geocodable' do
 
     context 'when the model has been geocoded' do
       before do
-        subject.update_coordinates!([1.0, 1.0])
+        subject.coordinates = [1.0, 1.0]
+        subject.save!
         expect(subject).to be_geocoded
       end
 
