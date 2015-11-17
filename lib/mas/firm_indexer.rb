@@ -2,7 +2,7 @@ module FirmIndexer
   class << self
     def index_firm(firm)
       if !firm.destroyed? && firm.publishable?
-        store_firm(firm)
+        store_firm_async(firm)
       else
         delete_firm(firm)
       end
@@ -26,8 +26,8 @@ module FirmIndexer
 
     private
 
-    def store_firm(firm)
-      FirmRepository.new.store(firm)
+    def store_firm_async(firm)
+      IndexFirmJob.perform_later(firm)
     end
 
     def delete_firm(firm)

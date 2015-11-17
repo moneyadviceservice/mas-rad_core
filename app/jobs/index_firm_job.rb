@@ -4,6 +4,6 @@ class IndexFirmJob < ActiveJob::Base
   end
 
   def perform(firm)
-    FirmIndexer.index_firm(firm)
+    FirmRepository.new.store(firm)
   end
 end

@@ -5,7 +5,7 @@ RSpec.describe FirmIndexer do
   end
 
   def expect_store
-    expect(firm_repo_instance).to receive(:store).with(firm)
+    expect(IndexFirmJob).to receive(:perform_later).with(firm)
   end
 
   def expect_delete
