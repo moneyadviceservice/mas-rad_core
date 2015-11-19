@@ -1,6 +1,5 @@
 class Office < ActiveRecord::Base
   include Geocodable
-  include GeocodableSync
 
   ADDRESS_FIELDS = [
     :address_line_one,

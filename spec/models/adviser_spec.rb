@@ -103,10 +103,6 @@ RSpec.describe Adviser do
   end
 
   it_should_behave_like 'geocodable' do
-    subject { create(:adviser) }
-  end
-
-  it_should_behave_like 'synchronously geocodable' do
     let(:invalid_geocodable) { Adviser.new }
     let(:valid_new_geocodable) { FactoryGirl.build(:adviser) }
     let(:saved_geocodable) { FactoryGirl.create(:adviser) }
