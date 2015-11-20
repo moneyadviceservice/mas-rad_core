@@ -8,7 +8,7 @@ RSpec.describe OfficeResult do
       'address_county'   => 'Cumbria',
       'address_postcode' => 'LA8 9BE',
       'email_address'    => 'postie@example.com',
-      'telephone_number' => '5555 555 5555',
+      'telephone_number' => '02085952346',
       'disabled_access'  => true,
       'location' => { 'lat' => 51.5180697, 'lon' => -0.1085203 }
     }
@@ -24,7 +24,7 @@ RSpec.describe OfficeResult do
     specify { expect(subject.address_county).to eq('Cumbria') }
     specify { expect(subject.address_postcode).to eq('LA8 9BE') }
     specify { expect(subject.email_address).to eq('postie@example.com') }
-    specify { expect(subject.telephone_number).to eq('5555 555 5555') }
+    specify { expect(subject.telephone_number).to eq('020 8595 2346') }
     specify { expect(subject.disabled_access).to eq(true) }
 
     it 'maps the location with latitude and longitude' do
