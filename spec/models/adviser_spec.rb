@@ -95,6 +95,33 @@ RSpec.describe Adviser do
     end
   end
 
+  describe '#create equity_release_adviser' do
+    context 'self service creation of adviser' do
+      let(:reference_number) { 'AAA12345' }
+      let(:equity_release_adviser) { false }
+
+      it 'must not be valid' do
+        Lookup::Adviser.create reference_number: reference_number, name: 'lookup'
+        adviser = Adviser.new FactoryGirl.attributes_for(:adviser).merge(reference_number: reference_number,
+                     equity_release_adviser: equity_release_adviser)
+        expect(adviser).to be_valid
+      end
+    end
+
+    context 'admin creation of adviser' do
+      let(:reference_number) { 'NOT_IN_FCA_DATA' }
+      let(:equity_release_adviser) { true }
+
+      it 'must not be valid' do
+        adviser = Adviser.new FactoryGirl.attributes_for(:adviser).merge(reference_number: reference_number,
+                     equity_release_adviser: equity_release_adviser)
+        expect(adviser).to be_valid
+
+        expect(adviser).to be_valid
+      end
+    end
+  end
+
   describe '#full_street_address' do
     let(:adviser) { create(:adviser) }
     subject { adviser.full_street_address }

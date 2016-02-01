@@ -11,7 +11,7 @@ class Adviser < ActiveRecord::Base
   has_and_belongs_to_many :professional_standings
   has_and_belongs_to_many :professional_bodies
 
-  before_validation :assign_name, if: :reference_number?
+  before_validation :assign_name, if: :lookup_reference_number?
 
   before_validation :upcase_postcode
 
@@ -25,10 +25,13 @@ class Adviser < ActiveRecord::Base
 
   validates :reference_number,
     presence: true,
-    uniqueness: true,
+    uniqueness: true
+
+  validates :reference_number,
     format: {
-      with: /\A[A-Z]{3}[0-9]{5}\z/
-    }
+    with: /\A[A-Z]{3}[0-9]{5}\z/
+  }, unless: :equity_release_adviser?
+
 
   validate :match_reference_number
 
@@ -100,11 +103,15 @@ class Adviser < ActiveRecord::Base
   end
 
   def match_reference_number
-    unless Lookup::Adviser.exists?(reference_number: reference_number)
+    if !equity_release_adviser? && !Lookup::Adviser.exists?(reference_number: reference_number)
       errors.add(
         :reference_number,
         I18n.t('adviser.reference_number_unmatched')
       )
     end
+  end
+
+  def lookup_reference_number?
+    reference_number.present? && !equity_release_adviser?
   end
 end
