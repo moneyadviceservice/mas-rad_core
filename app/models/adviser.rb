@@ -27,9 +27,9 @@ class Adviser < ActiveRecord::Base
     uniqueness: true,
     format: {
       with: /\A[A-Z]{3}[0-9]{5}\z/
-    }
+    }, unless: :bypass_reference_number_check?
 
-  validate :match_reference_number
+  validate :match_reference_number, unless: :bypass_reference_number_check?
 
   scope :sorted_by_name, -> { order(:name) }
 
