@@ -1,10 +1,4 @@
 RSpec.describe Adviser do
-  include QueueSpecHelper
-
-  before do
-    clear_job_queue
-  end
-
   describe 'before validation' do
     context 'when a reference number is present' do
       let(:attributes) { attributes_for(:adviser) }
