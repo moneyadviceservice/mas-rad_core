@@ -93,7 +93,7 @@ class Adviser < ActiveRecord::Base
   end
 
   def assign_name
-    self.name = Lookup::Adviser.find_by(
+    self.name = self.name || Lookup::Adviser.find_by(
       reference_number: reference_number
     ).try(:name)
   end

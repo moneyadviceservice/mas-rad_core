@@ -11,10 +11,24 @@ RSpec.describe Adviser do
         )
       end
 
-      it 'assigns #name from the lookup Adviser data' do
-        adviser.validate
+      context 'when a name is not present' do
+        before do
+          adviser.name = nil
+        end
 
-        expect(adviser.name).to eq('Mr. Welp')
+        it 'assigns #name from the lookup Adviser data' do
+          adviser.validate
+
+          expect(adviser.name).to eq('Mr. Welp')
+        end
+      end
+
+      context 'when a name is present' do
+        it 'does not override the existing name' do
+          adviser.validate
+
+          expect(adviser.name).not_to eq('Mr. Welp')
+        end
       end
     end
   end
