@@ -13,6 +13,7 @@ FactoryGirl.define do
     latitude  { Faker::Address.latitude.to_f.round(6) }
     longitude { Faker::Address.longitude.to_f.round(6) }
     firm factory: :firm_without_advisers
+    bypass_reference_number_check false
 
     after(:build) do |a, evaluator|
       if a.reference_number? && evaluator.create_linked_lookup_advisor

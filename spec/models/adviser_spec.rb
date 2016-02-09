@@ -1,10 +1,4 @@
 RSpec.describe Adviser do
-  include QueueSpecHelper
-
-  before do
-    clear_job_queue
-  end
-
   describe 'before validation' do
     context 'when a reference number is present' do
       let(:attributes) { attributes_for(:adviser) }
@@ -17,10 +11,24 @@ RSpec.describe Adviser do
         )
       end
 
-      it 'assigns #name from the lookup Adviser data' do
-        adviser.validate
+      context 'when a name is not present' do
+        before do
+          adviser.name = nil
+        end
 
-        expect(adviser.name).to eq('Mr. Welp')
+        it 'assigns #name from the lookup Adviser data' do
+          adviser.validate
+
+          expect(adviser.name).to eq('Mr. Welp')
+        end
+      end
+
+      context 'when a name is present' do
+        it 'does not override the existing name' do
+          adviser.validate
+
+          expect(adviser.name).not_to eq('Mr. Welp')
+        end
       end
     end
   end
@@ -57,39 +65,47 @@ RSpec.describe Adviser do
     end
 
     describe 'reference number' do
-      it 'is required' do
-        expect(build(:adviser, reference_number: nil)).to_not be_valid
-      end
-
-      it 'must be three characters and five digits exactly' do
-        %w(badtimes ABCDEFGH 8008135! 12345678).each do |bad|
-          Lookup::Adviser.create!(reference_number: bad, name: 'Mr. Derp')
-
-          expect(build(:adviser,
-                       reference_number: bad,
-                       create_linked_lookup_advisor: false)).to_not be_valid
+      context 'when `bypass_reference_number_check` is true' do
+        it 'is not required' do
+          expect(build(:adviser, bypass_reference_number_check: true, reference_number: nil)).to be_valid
         end
       end
 
-      it 'must be matched to the lookup data' do
-        build(:adviser, reference_number: 'ABC12345').tap do |a|
-          Lookup::Adviser.delete_all
-
-          expect(a).to_not be_valid
-        end
-      end
-
-      context 'when an adviser with the same reference number already exists' do
-        let(:reference_number) { 'ABC12345' }
-
-        before do
-          create(:adviser, reference_number: reference_number)
+      context 'when `bypass_reference_number_check` is false' do
+        it 'is required' do
+          expect(build(:adviser, reference_number: nil)).to_not be_valid
         end
 
-        it 'must not be valid' do
-          expect(build(:adviser,
-                       reference_number: reference_number,
-                       create_linked_lookup_advisor: false)).to_not be_valid
+        it 'must be three characters and five digits exactly' do
+          %w(badtimes ABCDEFGH 8008135! 12345678).each do |bad|
+            Lookup::Adviser.create!(reference_number: bad, name: 'Mr. Derp')
+
+            expect(build(:adviser,
+                         reference_number: bad,
+                         create_linked_lookup_advisor: false)).to_not be_valid
+          end
+        end
+
+        it 'must be matched to the lookup data' do
+          build(:adviser, reference_number: 'ABC12345').tap do |a|
+            Lookup::Adviser.delete_all
+
+            expect(a).to_not be_valid
+          end
+        end
+
+        context 'when an adviser with the same reference number already exists' do
+          let(:reference_number) { 'ABC12345' }
+
+          before do
+            create(:adviser, reference_number: reference_number)
+          end
+
+          it 'must not be valid' do
+            expect(build(:adviser,
+                         reference_number: reference_number,
+                         create_linked_lookup_advisor: false)).to_not be_valid
+          end
         end
       end
     end
