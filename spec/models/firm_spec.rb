@@ -179,12 +179,27 @@ RSpec.describe Firm do
           expect(build(:firm, website_address: "#{'a' * 100}.com")).not_to be_valid
         end
 
-        it 'must include the protocol segment' do
-          expect(build(:firm, website_address: 'www.google.com')).not_to be_valid
+        it 'must contain at least one .' do
+          expect(build(:firm, website_address: 'http://examplecom')).not_to be_valid
+          expect(build(:firm, website_address: 'http://example.com')).to be_valid
         end
 
-        it 'must be a reasonably valid URL' do
-          expect(build(:firm, website_address: 'http://a')).not_to be_valid
+        it 'must not contain spaces' do
+          expect(build(:firm, website_address: 'http://example site.com')).not_to be_valid
+        end
+
+        it 'does not require the protocol to be present' do
+          expect(build(:firm, website_address: 'www.example.com')).to be_valid
+        end
+
+        it 'must require the protocol to be http or https if provided' do
+          expect(build(:firm, website_address: 'http://www.example.com')).to be_valid
+          expect(build(:firm, website_address: 'https://www.example.com')).to be_valid
+          expect(build(:firm, website_address: 'ftp://www.example.com')).not_to be_valid
+        end
+
+        it 'allows paths to be in the address' do
+          expect(build(:firm, website_address: 'www.example.com/user')).to be_valid
         end
       end
     end
