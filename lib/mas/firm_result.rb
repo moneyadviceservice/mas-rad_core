@@ -21,7 +21,8 @@ class FirmResult
     :adviser_accreditation_ids,
     :adviser_qualification_ids,
     :ethical_investing_flag,
-    :sharia_investing_flag
+    :sharia_investing_flag,
+    :languages
   ]
 
   TYPES_OF_ADVICE_FIELDS = [

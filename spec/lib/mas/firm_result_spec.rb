@@ -32,6 +32,7 @@ RSpec.describe FirmResult do
         'adviser_qualification_ids' => [3],
         'ethical_investing_flag' => true,
         'sharia_investing_flag' => false,
+        'languages' => %w(spa por aae),
         'advisers' => [
           {
             '_id'      => 1,
@@ -120,6 +121,10 @@ RSpec.describe FirmResult do
 
     it 'maps the "sharia_investing_flag"' do
       expect(subject.sharia_investing_flag).to eq(false)
+    end
+
+    it 'maps the "languages"' do
+      expect(subject.languages).to eq(%w(spa por aae))
     end
 
     it 'maps the `minimum_fixed_fee`' do
