@@ -21,7 +21,8 @@ class FirmSerializer < ActiveModel::Serializer
     :adviser_qualification_ids,
     :adviser_accreditation_ids,
     :ethical_investing_flag,
-    :sharia_investing_flag
+    :sharia_investing_flag,
+    :languages
 
   has_many :advisers
   has_many :offices
