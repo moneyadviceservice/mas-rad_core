@@ -113,5 +113,21 @@ RSpec.describe FirmSerializer do
         end
       end
     end
+
+    describe 'languages' do
+      context 'when languages have been selected' do
+        before { firm.languages = ['fra', 'deu'] }
+
+        it 'serializes them' do
+          expect(subject[:languages]).to eq(['fra', 'deu'])
+        end
+      end
+
+      context 'when no languages have been selected' do
+        it 'serializes an empty list' do
+          expect(subject[:languages]).to eq([])
+        end
+      end
+    end
   end
 end
