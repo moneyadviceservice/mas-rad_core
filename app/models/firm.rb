@@ -46,7 +46,7 @@ class Firm < ActiveRecord::Base
   validates :website_address,
     allow_blank: true,
     length: { maximum: 100 },
-    format: { with: /\Ahttps?:\/\/\S+\.\S+/ }
+    format: { with: /\A(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+/ }
 
   validates :free_initial_meeting,
     inclusion: { in: FREE_INITIAL_MEETING_VALID_VALUES }
