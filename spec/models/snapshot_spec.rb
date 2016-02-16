@@ -4,6 +4,22 @@ RSpec.describe Snapshot do
   let(:wales_postcode) { 'CF14 4HY' }
   let(:northern_ireland_postcode) { 'BT1 6DP' }
 
+  describe 'creating a snapshot' do
+    it 'runs all queries and sets the count of their result' do
+      query_methods = subject.public_methods(false).select { |m| m.to_s.starts_with?('query_') }
+      query_methods.each_with_index do |m, i|
+        allow(subject).to receive(m).and_return(Array.new(i))
+      end
+
+      subject.save
+
+      query_methods.each_with_index do |m, i|
+        attr = m.to_s.sub('query_', '').to_sym
+        expect(subject.send(attr)).to eq(i)
+      end
+    end
+  end
+
   describe '#query_firms_with_no_minimum_fee' do
     before do
       FactoryGirl.create(:firm, minimum_fixed_fee: 0)

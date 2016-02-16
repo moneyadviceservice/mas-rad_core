@@ -1,21 +1,23 @@
 require 'net/http'
 
 class Snapshot < ActiveRecord::Base
+  before_create :run_queries
+
   def query_firms_with_no_minimum_fee
-    published_firms.select { |f| [0, nil].include?(f.minimum_fixed_fee) }
+    publishable_firms.select { |f| [0, nil].include?(f.minimum_fixed_fee) }
   end
 
   def query_firms_with_min_fee_between_1_500
-    published_firms.select { |f| (1..500).include?(f.minimum_fixed_fee) }
+    publishable_firms.select { |f| (1..500).include?(f.minimum_fixed_fee) }
   end
 
   def query_firms_with_min_fee_between_501_1000
-    published_firms.select { |f| (501..1000).include?(f.minimum_fixed_fee) }
+    publishable_firms.select { |f| (501..1000).include?(f.minimum_fixed_fee) }
   end
 
   def query_firms_any_pot_size
     under_50k_size = InvestmentSize.find_by(name: 'Under £50,000')
-    published_firms.select { |f| f.investment_sizes.exists?(under_50k_size.id) }
+    publishable_firms.select { |f| f.investment_sizes.exists?(under_50k_size.id) }
   end
 
   def query_firms_any_pot_size_min_fee_less_than_500
@@ -29,71 +31,71 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_published_firms
-    published_firms
+    publishable_firms
   end
 
   def query_firms_offering_face_to_face_advice
-    published_firms.select { |f| f.other_advice_methods.empty? }
+    publishable_firms.select { |f| f.other_advice_methods.empty? }
   end
 
   def query_firms_offering_remote_advice
-    published_firms.select { |f| f.in_person_advice_methods.empty? }
+    publishable_firms.select { |f| f.in_person_advice_methods.empty? }
   end
 
   def query_firms_in_england
-    firms_in_country(published_firms, 'England')
+    firms_in_country(publishable_firms, 'England')
   end
 
   def query_firms_in_scotland
-    firms_in_country(published_firms, 'Scotland')
+    firms_in_country(publishable_firms, 'Scotland')
   end
 
   def query_firms_in_wales
-    firms_in_country(published_firms, 'Wales')
+    firms_in_country(publishable_firms, 'Wales')
   end
 
   def query_firms_in_northern_ireland
-    firms_in_country(published_firms, 'Northern Ireland')
+    firms_in_country(publishable_firms, 'Northern Ireland')
   end
 
   def query_firms_providing_retirement_income_products
-    published_firms.select { |f| f.retirement_income_products_flag? }
+    publishable_firms.select { |f| f.retirement_income_products_flag? }
   end
 
   def query_firms_providing_pension_transfer
-    published_firms.select { |f| f.pension_transfer_flag? }
+    publishable_firms.select { |f| f.pension_transfer_flag? }
   end
 
   def query_firms_providing_long_term_care
-    published_firms.select { |f| f.long_term_care_flag? }
+    publishable_firms.select { |f| f.long_term_care_flag? }
   end
 
   def query_firms_providing_equity_release
-    published_firms.select { |f| f.equity_release_flag? }
+    publishable_firms.select { |f| f.equity_release_flag? }
   end
 
   def query_firms_providing_inheritance_tax_and_estate_planning
-    published_firms.select { |f| f.inheritance_tax_and_estate_planning_flag? }
+    publishable_firms.select { |f| f.inheritance_tax_and_estate_planning_flag? }
   end
 
   def query_firms_providing_wills_and_probate
-    published_firms.select { |f| f.wills_and_probate_flag? }
+    publishable_firms.select { |f| f.wills_and_probate_flag? }
   end
 
   def query_firms_providing_ethical_investing
-    published_firms.select { |f| f.ethical_investing_flag? }
+    publishable_firms.select { |f| f.ethical_investing_flag? }
   end
 
   def query_firms_providing_sharia_investing
-    published_firms.select { |f| f.sharia_investing_flag? }
+    publishable_firms.select { |f| f.sharia_investing_flag? }
   end
 
   def query_firms_offering_languages_other_than_english
-    published_firms.select { |f| f.languages.present? }
+    publishable_firms.select { |f| f.languages.present? }
   end
 
   def query_offices_with_disabled_access
-    firm_ids = published_firms.map(&:id)
+    firm_ids = publishable_firms.map(&:id)
     Office.includes(:firm).where(disabled_access: true, firms: { id: firm_ids })
   end
 
@@ -298,7 +300,17 @@ class Snapshot < ActiveRecord::Base
     end
   end
 
-  def published_firms
-    @_published_firms ||= Firm.registered.select(&:publishable?)
+  def publishable_firms
+    @_publishable_firms ||= Firm.registered.select(&:publishable?)
+  end
+
+  def run_queries
+    public_methods(false)
+      .select { |method| method.to_s.starts_with?('query_') }
+      .each do |query_method|
+        related_attribute = query_method.to_s.sub('query_', '')
+        result = send(query_method)
+        send("#{related_attribute}=", result.count)
+      end
   end
 end
