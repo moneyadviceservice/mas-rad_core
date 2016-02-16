@@ -102,19 +102,19 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_advisers_in_england
-    advisers_in_country('England')
+    advisers_in_country(Adviser.all, 'England')
   end
 
   def query_advisers_in_scotland
-    advisers_in_country('Scotland')
+    advisers_in_country(Adviser.all, 'Scotland')
   end
 
   def query_advisers_in_wales
-    advisers_in_country('Wales')
+    advisers_in_country(Adviser.all, 'Wales')
   end
 
   def query_advisers_in_northern_ireland
-    advisers_in_country('Northern Ireland')
+    advisers_in_country(Adviser.all, 'Northern Ireland')
   end
 
   def query_advisers_who_travel_5_miles
@@ -255,25 +255,26 @@ class Snapshot < ActiveRecord::Base
 
   private
 
-  def advisers_in_country(country)
-    postcodes = Adviser.all.map { |adviser| adviser.postcode }
+  def advisers_in_country(advisers, country)
+    postcodes = advisers.map { |adviser| adviser.postcode }
+    country_postcodes = country_postcodes(postcodes, country)
+    advisers.select { |adviser| country_postcodes.include?(adviser.postcode) }
+  end
 
-    request = Net::HTTP::Post.new('/postcodes')
-    request.set_form_data(postcodes: postcodes)
-
-    response = Net::HTTP.new('api.postcodes.io').request(request)
-
-    if response.code.to_i == 200
-      result = JSON.parse(response.read_body)['result'].map { |r| r['result'] }
-      result.select { |r| r['country'] == country }
-    else
-      []
-    end
+  def country_postcodes(postcodes, country)
+    map_postcodes_to_country(postcodes)
+      .select { |postcode, postcode_country| postcode_country == country }
+      .map { |postcode, postcode_country| postcode }
   end
 
   def firms_in_country(firms, country)
     postcodes = firms.map { |firm| firm.main_office.address_postcode }
+    country_postcodes = country_postcodes(postcodes, country)
+    firms.select { |firm| country_postcodes.include?(firm.main_office.address_postcode) }
+  end
 
+  # Make sure we only request 100 at a time
+  def map_postcodes_to_country(postcodes)
     request = Net::HTTP::Post.new('/postcodes')
     request.set_form_data(postcodes: postcodes)
 
@@ -281,9 +282,11 @@ class Snapshot < ActiveRecord::Base
 
     if response.code.to_i == 200
       result = JSON.parse(response.read_body)['result'].map { |r| r['result'] }
-      result.select { |r| r['country'] == country }
+      result.each_with_object({}) do |r, obj|
+        obj[r['postcode']] = r['country']
+      end
     else
-      []
+      {}
     end
   end
 

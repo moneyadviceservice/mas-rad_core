@@ -1,4 +1,9 @@
 RSpec.describe Snapshot do
+  let(:england_postcode) { 'EC1N 2TD' }
+  let(:scotland_postcode) { 'EH3 9DR' }
+  let(:wales_postcode) { 'CF14 4HY' }
+  let(:northern_ireland_postcode) { 'BT1 6DP' }
+
   describe '#query_firms_with_no_minimum_fee' do
     before do
       FactoryGirl.create(:firm, minimum_fixed_fee: 0)
@@ -97,69 +102,81 @@ RSpec.describe Snapshot do
   end
 
   describe '#query_firms_in_england' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      scotland_postcode = 'EH3 9DR'
+    let(:firm1) { FactoryGirl.create(:firm) }
+    let(:firm2) { FactoryGirl.create(:firm) }
+    let(:firm3) { FactoryGirl.create(:firm) }
 
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
+    before do
+      firm1.offices.first.update(address_postcode: england_postcode)
+      firm2.offices.first.update(address_postcode: england_postcode)
+      firm3.offices.first.update(address_postcode: scotland_postcode)
     end
 
     it do
       VCR.use_cassette("england_and_scotland_postcode") do
-        expect(subject.query_firms_in_england.count).to eq(2)
+        firms = subject.query_firms_in_england
+        expect(firms).to match([firm1, firm2])
+        expect(firms).not_to include(firm3)
       end
     end
   end
 
   describe '#query_firms_in_scotland' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      scotland_postcode = 'EH3 9DR'
+    let(:firm1) { FactoryGirl.create(:firm) }
+    let(:firm2) { FactoryGirl.create(:firm) }
+    let(:firm3) { FactoryGirl.create(:firm) }
 
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
+    before do
+      firm1.offices.first.update(address_postcode: scotland_postcode)
+      firm2.offices.first.update(address_postcode: scotland_postcode)
+      firm3.offices.first.update(address_postcode: england_postcode)
     end
 
     it do
       VCR.use_cassette("scotland_and_england_postcode") do
-        expect(subject.query_firms_in_scotland.count).to eq(2)
+        firms = subject.query_firms_in_scotland
+        expect(firms).to match([firm1, firm2])
+        expect(firms).not_to include(firm3)
       end
     end
   end
 
   describe '#query_firms_in_wales' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      wales_postcode = 'CF14 4HY'
+    let(:firm1) { FactoryGirl.create(:firm) }
+    let(:firm2) { FactoryGirl.create(:firm) }
+    let(:firm3) { FactoryGirl.create(:firm) }
 
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: wales_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: wales_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
+    before do
+      firm1.offices.first.update(address_postcode: wales_postcode)
+      firm2.offices.first.update(address_postcode: wales_postcode)
+      firm3.offices.first.update(address_postcode: england_postcode)
     end
 
     it do
       VCR.use_cassette("wales_and_england_postcode") do
-        expect(subject.query_firms_in_wales.count).to eq(2)
+        firms = subject.query_firms_in_wales
+        expect(firms).to match([firm1, firm2])
+        expect(firms).not_to include(firm3)
       end
     end
   end
 
   describe '#query_firms_in_northern_ireland' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      northern_ireland_postcode = 'BT1 6DP'
+    let(:firm1) { FactoryGirl.create(:firm) }
+    let(:firm2) { FactoryGirl.create(:firm) }
+    let(:firm3) { FactoryGirl.create(:firm) }
 
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: northern_ireland_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: northern_ireland_postcode)
-      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
+    before do
+      firm1.offices.first.update(address_postcode: northern_ireland_postcode)
+      firm2.offices.first.update(address_postcode: northern_ireland_postcode)
+      firm3.offices.first.update(address_postcode: england_postcode)
     end
 
     it do
       VCR.use_cassette("northern_ireland_and_england_postcode") do
-        expect(subject.query_firms_in_northern_ireland.count).to eq(2)
+        firms = subject.query_firms_in_northern_ireland
+        expect(firms).to match([firm1, firm2])
+        expect(firms).not_to include(firm3)
       end
     end
   end
@@ -279,69 +296,57 @@ RSpec.describe Snapshot do
   end
 
   describe '#query_advisers_in_england' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      scotland_postcode = 'EH3 9DR'
-
-      FactoryGirl.create(:adviser, postcode: england_postcode)
-      FactoryGirl.create(:adviser, postcode: england_postcode)
-      FactoryGirl.create(:adviser, postcode: scotland_postcode)
-    end
+    let!(:adviser1) { FactoryGirl.create(:adviser, postcode: england_postcode) }
+    let!(:adviser2) { FactoryGirl.create(:adviser, postcode: england_postcode) }
+    let!(:adviser3) { FactoryGirl.create(:adviser, postcode: scotland_postcode) }
 
     it do
       VCR.use_cassette("england_and_scotland_postcode") do
-        expect(subject.query_advisers_in_england.count).to eq(2)
+        advisers = subject.query_advisers_in_england
+        expect(advisers).to match([adviser1, adviser2])
+        expect(advisers).not_to include(adviser3)
       end
     end
   end
 
   describe '#query_advisers_in_scotland' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      scotland_postcode = 'EH3 9DR'
-
-      FactoryGirl.create(:adviser, postcode: scotland_postcode)
-      FactoryGirl.create(:adviser, postcode: scotland_postcode)
-      FactoryGirl.create(:adviser, postcode: england_postcode)
-    end
+    let!(:adviser1) { FactoryGirl.create(:adviser, postcode: scotland_postcode) }
+    let!(:adviser2) { FactoryGirl.create(:adviser, postcode: scotland_postcode) }
+    let!(:adviser3) { FactoryGirl.create(:adviser, postcode: england_postcode) }
 
     it do
       VCR.use_cassette("scotland_and_england_postcode") do
-        expect(subject.query_advisers_in_scotland.count).to eq(2)
+        advisers = subject.query_advisers_in_scotland
+        expect(advisers).to match([adviser1, adviser2])
+        expect(advisers).not_to include(adviser3)
       end
     end
   end
 
   describe '#query_advisers_in_wales' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      wales_postcode = 'CF14 4HY'
-
-      FactoryGirl.create(:adviser, postcode: wales_postcode)
-      FactoryGirl.create(:adviser, postcode: wales_postcode)
-      FactoryGirl.create(:adviser, postcode: england_postcode)
-    end
+    let!(:adviser1) { FactoryGirl.create(:adviser, postcode: wales_postcode) }
+    let!(:adviser2) { FactoryGirl.create(:adviser, postcode: wales_postcode) }
+    let!(:adviser3) { FactoryGirl.create(:adviser, postcode: england_postcode) }
 
     it do
       VCR.use_cassette("wales_and_england_postcode") do
-        expect(subject.query_advisers_in_wales.count).to eq(2)
+        advisers = subject.query_advisers_in_wales
+        expect(advisers).to match([adviser1, adviser2])
+        expect(advisers).not_to include(adviser3)
       end
     end
   end
 
   describe '#query_advisers_in_northern_ireland' do
-    before do
-      england_postcode = 'EC1N 2TD'
-      northern_ireland_postcode = 'BT1 6DP'
-
-      FactoryGirl.create(:adviser, postcode: northern_ireland_postcode)
-      FactoryGirl.create(:adviser, postcode: northern_ireland_postcode)
-      FactoryGirl.create(:adviser, postcode: england_postcode)
-    end
+    let!(:adviser1) { FactoryGirl.create(:adviser, postcode: northern_ireland_postcode) }
+    let!(:adviser2) { FactoryGirl.create(:adviser, postcode: northern_ireland_postcode) }
+    let!(:adviser3) { FactoryGirl.create(:adviser, postcode: england_postcode) }
 
     it do
       VCR.use_cassette("northern_ireland_and_england_postcode") do
-        expect(subject.query_advisers_in_northern_ireland.count).to eq(2)
+        advisers = subject.query_advisers_in_northern_ireland
+        expect(advisers).to match([adviser1, adviser2])
+        expect(advisers).not_to include(adviser3)
       end
     end
   end
