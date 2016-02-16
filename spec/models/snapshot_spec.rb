@@ -98,30 +98,70 @@ RSpec.describe Snapshot do
 
   describe '#query_firms_in_england' do
     before do
+      england_postcode = 'EC1N 2TD'
+      scotland_postcode = 'EH3 9DR'
+
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("england_and_scotland_postcode") do
+        expect(subject.query_firms_in_england.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_firms_in_scotland' do
     before do
+      england_postcode = 'EC1N 2TD'
+      scotland_postcode = 'EH3 9DR'
+
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: scotland_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("scotland_and_england_postcode") do
+        expect(subject.query_firms_in_scotland.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_firms_in_wales' do
     before do
+      england_postcode = 'EC1N 2TD'
+      wales_postcode = 'CF14 4HY'
+
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: wales_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: wales_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("wales_and_england_postcode") do
+        expect(subject.query_firms_in_wales.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_firms_in_northern_ireland' do
     before do
+      england_postcode = 'EC1N 2TD'
+      northern_ireland_postcode = 'BT1 6DP'
+
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: northern_ireland_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: northern_ireland_postcode)
+      FactoryGirl.create(:firm).offices.first.update(address_postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("northern_ireland_and_england_postcode") do
+        expect(subject.query_firms_in_northern_ireland.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_firms_providing_retirement_income_products' do
@@ -240,30 +280,70 @@ RSpec.describe Snapshot do
 
   describe '#query_advisers_in_england' do
     before do
+      england_postcode = 'EC1N 2TD'
+      scotland_postcode = 'EH3 9DR'
+
+      FactoryGirl.create(:adviser, postcode: england_postcode)
+      FactoryGirl.create(:adviser, postcode: england_postcode)
+      FactoryGirl.create(:adviser, postcode: scotland_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("england_and_scotland_postcode") do
+        expect(subject.query_advisers_in_england.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_advisers_in_scotland' do
     before do
+      england_postcode = 'EC1N 2TD'
+      scotland_postcode = 'EH3 9DR'
+
+      FactoryGirl.create(:adviser, postcode: scotland_postcode)
+      FactoryGirl.create(:adviser, postcode: scotland_postcode)
+      FactoryGirl.create(:adviser, postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("scotland_and_england_postcode") do
+        expect(subject.query_advisers_in_scotland.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_advisers_in_wales' do
     before do
+      england_postcode = 'EC1N 2TD'
+      wales_postcode = 'CF14 4HY'
+
+      FactoryGirl.create(:adviser, postcode: wales_postcode)
+      FactoryGirl.create(:adviser, postcode: wales_postcode)
+      FactoryGirl.create(:adviser, postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("wales_and_england_postcode") do
+        expect(subject.query_advisers_in_wales.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_advisers_in_northern_ireland' do
     before do
+      england_postcode = 'EC1N 2TD'
+      northern_ireland_postcode = 'BT1 6DP'
+
+      FactoryGirl.create(:adviser, postcode: northern_ireland_postcode)
+      FactoryGirl.create(:adviser, postcode: northern_ireland_postcode)
+      FactoryGirl.create(:adviser, postcode: england_postcode)
     end
 
-    xit { }
+    it do
+      VCR.use_cassette("northern_ireland_and_england_postcode") do
+        expect(subject.query_advisers_in_northern_ireland.count).to eq(2)
+      end
+    end
   end
 
   describe '#query_advisers_who_travel_5_miles' do

@@ -1,3 +1,5 @@
+require 'net/http'
+
 class Snapshot < ActiveRecord::Base
   def query_firms_with_no_minimum_fee
     published_firms.select { |f| [0, nil].include?(f.minimum_fixed_fee) }
@@ -39,15 +41,19 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_firms_in_england
+    firms_in_country(published_firms, 'England')
   end
 
   def query_firms_in_scotland
+    firms_in_country(published_firms, 'Scotland')
   end
 
   def query_firms_in_wales
+    firms_in_country(published_firms, 'Wales')
   end
 
   def query_firms_in_northern_ireland
+    firms_in_country(published_firms, 'Northern Ireland')
   end
 
   def query_firms_providing_retirement_income_products
@@ -96,15 +102,19 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_advisers_in_england
+    advisers_in_country('England')
   end
 
   def query_advisers_in_scotland
+    advisers_in_country('Scotland')
   end
 
   def query_advisers_in_wales
+    advisers_in_country('Wales')
   end
 
   def query_advisers_in_northern_ireland
+    advisers_in_country('Northern Ireland')
   end
 
   def query_advisers_who_travel_5_miles
@@ -244,6 +254,38 @@ class Snapshot < ActiveRecord::Base
   end
 
   private
+
+  def advisers_in_country(country)
+    postcodes = Adviser.all.map { |adviser| adviser.postcode }
+
+    request = Net::HTTP::Post.new('/postcodes')
+    request.set_form_data(postcodes: postcodes)
+
+    response = Net::HTTP.new('api.postcodes.io').request(request)
+
+    if response.code.to_i == 200
+      result = JSON.parse(response.read_body)['result'].map { |r| r['result'] }
+      result.select { |r| r['country'] == country }
+    else
+      []
+    end
+  end
+
+  def firms_in_country(firms, country)
+    postcodes = firms.map { |firm| firm.main_office.address_postcode }
+
+    request = Net::HTTP::Post.new('/postcodes')
+    request.set_form_data(postcodes: postcodes)
+
+    response = Net::HTTP.new('api.postcodes.io').request(request)
+
+    if response.code.to_i == 200
+      result = JSON.parse(response.read_body)['result'].map { |r| r['result'] }
+      result.select { |r| r['country'] == country }
+    else
+      []
+    end
+  end
 
   def published_firms
     @_published_firms ||= Firm.registered.select(&:publishable?)
