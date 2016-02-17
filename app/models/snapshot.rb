@@ -6,16 +6,16 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_firms_with_min_fee_between_1_500
-    publishable_firms.select { |f| (1..500).include?(f.minimum_fixed_fee) }
+    publishable_firms.select { |f| (1..500).cover?(f.minimum_fixed_fee) }
   end
 
   def query_firms_with_min_fee_between_501_1000
-    publishable_firms.select { |f| (501..1000).include?(f.minimum_fixed_fee) }
+    publishable_firms.select { |f| (501..1000).cover?(f.minimum_fixed_fee) }
   end
 
   def query_firms_any_pot_size
-    under_50k_size = InvestmentSize.find_by(name: 'Under £50,000')
-    publishable_firms.select { |f| f.investment_sizes.exists?(under_50k_size.id) }
+    id = InvestmentSize.find_by(name: 'Under £50,000').id
+    publishable_firms.select { |f| f.investment_sizes.exists?(id) }
   end
 
   def query_firms_any_pot_size_min_fee_less_than_500
@@ -57,35 +57,35 @@ class Snapshot < ActiveRecord::Base
   end
 
   def query_firms_providing_retirement_income_products
-    publishable_firms.select { |f| f.retirement_income_products_flag? }
+    publishable_firms.select(&:retirement_income_products_flag?)
   end
 
   def query_firms_providing_pension_transfer
-    publishable_firms.select { |f| f.pension_transfer_flag? }
+    publishable_firms.select(&:pension_transfer_flag?)
   end
 
   def query_firms_providing_long_term_care
-    publishable_firms.select { |f| f.long_term_care_flag? }
+    publishable_firms.select(&:long_term_care_flag?)
   end
 
   def query_firms_providing_equity_release
-    publishable_firms.select { |f| f.equity_release_flag? }
+    publishable_firms.select(&:equity_release_flag?)
   end
 
   def query_firms_providing_inheritance_tax_and_estate_planning
-    publishable_firms.select { |f| f.inheritance_tax_and_estate_planning_flag? }
+    publishable_firms.select(&:inheritance_tax_and_estate_planning_flag?)
   end
 
   def query_firms_providing_wills_and_probate
-    publishable_firms.select { |f| f.wills_and_probate_flag? }
+    publishable_firms.select(&:wills_and_probate_flag?)
   end
 
   def query_firms_providing_ethical_investing
-    publishable_firms.select { |f| f.ethical_investing_flag? }
+    publishable_firms.select(&:ethical_investing_flag?)
   end
 
   def query_firms_providing_sharia_investing
-    publishable_firms.select { |f| f.sharia_investing_flag? }
+    publishable_firms.select(&:sharia_investing_flag?)
   end
 
   def query_firms_offering_languages_other_than_english
@@ -118,7 +118,7 @@ class Snapshot < ActiveRecord::Base
   end
 
   TravelDistance.all.keys.each do |val|
-    method_name = val.downcase.gsub(' ', '_')
+    method_name = val.downcase.tr(' ', '_')
     define_method "query_advisers_who_travel_#{method_name}" do
       advisers_who_travel(val)
     end
@@ -212,13 +212,14 @@ class Snapshot < ActiveRecord::Base
   private
 
   def advisers_in_country(advisers, country)
-    postcodes = advisers.map { |adviser| adviser.postcode }
+    postcodes = advisers.map(&:postcode)
     country_postcodes = country_postcodes(postcodes, country)
     advisers.select { |adviser| country_postcodes.include?(adviser.postcode) }
   end
 
   def advisers_part_of(professional_body)
-    Adviser.includes(:professional_bodies).where(professional_bodies: { name: professional_body })
+    params = { name: professional_body }
+    Adviser.includes(:professional_bodies).where(professional_bodies: params)
   end
 
   def advisers_who_travel(distance)
@@ -226,23 +227,27 @@ class Snapshot < ActiveRecord::Base
   end
 
   def advisers_with_accreditation(accreditation)
-    Adviser.includes(:accreditations).where(accreditations: { name: accreditation })
+    params = { name: accreditation }
+    Adviser.includes(:accreditations).where(accreditations: params)
   end
 
   def advisers_with_qualification(qualification)
-    Adviser.includes(:qualifications).where(qualifications: { name: qualification })
+    params = { name: qualification }
+    Adviser.includes(:qualifications).where(qualifications: params)
   end
 
   def country_postcodes(postcodes, country)
     map_postcodes_to_country(postcodes)
-      .select { |postcode, postcode_country| postcode_country == country }
-      .map { |postcode, postcode_country| postcode }
+      .select { |_postcode, postcode_country| postcode_country == country }
+      .map { |postcode, _postcode_country| postcode }
   end
 
   def firms_in_country(firms, country)
     postcodes = firms.map { |firm| firm.main_office.address_postcode }
     country_postcodes = country_postcodes(postcodes, country)
-    firms.select { |firm| country_postcodes.include?(firm.main_office.address_postcode) }
+    firms.select do |firm|
+      country_postcodes.include?(firm.main_office.address_postcode)
+    end
   end
 
   # Make sure we only request 100 at a time
@@ -259,12 +264,16 @@ class Snapshot < ActiveRecord::Base
     request.set_form_data(postcodes: postcodes)
 
     response = Net::HTTP.new('api.postcodes.io').request(request)
+    postcode_result(response).each_with_object({}) do |r, obj|
+      obj[r['postcode']] = r['country']
+    end
+  end
 
+  def postcode_result(response)
     if response.code.to_i == 200
-      result = JSON.parse(response.read_body)['result'].map { |r| r['result'] }.compact
-      result.each_with_object({}) do |r, obj|
-        obj[r['postcode']] = r['country']
-      end
+      JSON.parse(response.read_body)['result']
+        .map { |r| r['result'] }
+        .compact
     else
       {}
     end
