@@ -1,8 +1,6 @@
 require 'net/http'
 
 class Snapshot < ActiveRecord::Base
-  before_create :run_queries
-
   def query_firms_with_no_minimum_fee
     publishable_firms.select { |f| [0, nil].include?(f.minimum_fixed_fee) }
   end
@@ -253,6 +251,11 @@ class Snapshot < ActiveRecord::Base
     Adviser.includes(:professional_bodies).where(professional_bodies: {
       name: 'Institute of Chartered Accountants for England and Wales'
     })
+  end
+
+  def run_queries_and_save
+    run_queries
+    save
   end
 
   private
