@@ -117,36 +117,11 @@ class Snapshot < ActiveRecord::Base
     advisers_in_country(Adviser.all, 'Northern Ireland')
   end
 
-  def query_advisers_who_travel_5_miles
-    advisers_who_travel('5 miles')
-  end
-
-  def query_advisers_who_travel_10_miles
-    advisers_who_travel('10 miles')
-  end
-
-  def query_advisers_who_travel_25_miles
-    advisers_who_travel('25 miles')
-  end
-
-  def query_advisers_who_travel_50_miles
-    advisers_who_travel('50 miles')
-  end
-
-  def query_advisers_who_travel_100_miles
-    advisers_who_travel('100 miles')
-  end
-
-  def query_advisers_who_travel_150_miles
-    advisers_who_travel('150 miles')
-  end
-
-  def query_advisers_who_travel_250_miles
-    advisers_who_travel('250 miles')
-  end
-
-  def query_advisers_who_travel_uk_wide
-    advisers_who_travel('UK wide')
+  TravelDistance.all.keys.each do |val|
+    method_name = val.downcase.gsub(' ', '_')
+    define_method "query_advisers_who_travel_#{method_name}" do
+      advisers_who_travel(val)
+    end
   end
 
   def query_advisers_accredited_in_solla

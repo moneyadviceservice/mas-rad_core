@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160212160126) do
+ActiveRecord::Schema.define(version: 20160217151659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,6 +320,7 @@ ActiveRecord::Schema.define(version: 20160212160126) do
     t.integer  "advisers_part_of_ci_securities_and_investments"
     t.integer  "advisers_part_of_cfa_institute"
     t.integer  "advisers_part_of_chartered_accountants"
+    t.integer  "advisers_who_travel_200_miles"
   end
 
 end

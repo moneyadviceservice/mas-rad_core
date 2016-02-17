@@ -427,6 +427,16 @@ RSpec.describe Snapshot do
     it { expect(subject.query_advisers_who_travel_150_miles.count).to eq(2) }
   end
 
+  describe '#query_advisers_who_travel_200_miles' do
+    before do
+      FactoryGirl.create(:adviser)
+      FactoryGirl.create(:adviser, travel_distance: TravelDistance.all['200 miles'])
+      FactoryGirl.create(:adviser, travel_distance: TravelDistance.all['200 miles'])
+    end
+
+    it { expect(subject.query_advisers_who_travel_200_miles.count).to eq(2) }
+  end
+
   describe '#query_advisers_who_travel_250_miles' do
     before do
       FactoryGirl.create(:adviser)
