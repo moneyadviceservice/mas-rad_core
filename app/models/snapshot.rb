@@ -20,7 +20,7 @@ class Snapshot < ActiveRecord::Base
   # 3. For each of those, find the related attribute (remove the 'query_' from the method name)
   # 4. Run the query method, count the return value, and set that to the related attribute
   def run_queries
-    public_methods(false)
+    public_methods
       .select { |method| method.to_s.starts_with?('query_') }
       .each do |query_method|
         related_attribute = query_method.to_s.sub('query_', '')
