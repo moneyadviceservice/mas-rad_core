@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://api.postcodes.io/postcodes
+    body:
+      encoding: US-ASCII
+      string: postcodes=EH3+9DR&postcodes=EH3+9DR&postcodes=EC1N+2TD
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.8.0
+      Date:
+      - Mon, 15 Feb 2016 16:53:40 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '2261'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Vary:
+      - Origin
+      Etag:
+      - W/"8d5-WxlA2olmHaAkEIQ7Jw6olg"
+    body:
+      encoding: UTF-8
+      string: '{"status":200,"result":[{"query":"EH3 9DR","result":{"postcode":"EH3
+        9DR","quality":1,"eastings":325045,"northings":673308,"country":"Scotland","nhs_ha":"Lothian","longitude":-3.20175224339705,"latitude":55.9469462655015,"parliamentary_constituency":"Edinburgh
+        East","european_electoral_region":"Scotland","primary_care_trust":"Edinburgh
+        Community Health Partnership","region":null,"lsoa":"Tollcross - 03","msoa":"Tollcross","incode":"9DR","outcode":"EH3","admin_district":"City
+        of Edinburgh","parish":null,"admin_county":null,"admin_ward":"City Centre","ccg":"Edinburgh
+        Community Health Partnership","nuts":"Edinburgh, City of","codes":{"admin_district":"S12000036","admin_county":"S99999999","admin_ward":"S13002593","parish":"S99999999","ccg":"S03000042","nuts":"UKM25"}}},{"query":"EH3
+        9DR","result":{"postcode":"EH3 9DR","quality":1,"eastings":325045,"northings":673308,"country":"Scotland","nhs_ha":"Lothian","longitude":-3.20175224339705,"latitude":55.9469462655015,"parliamentary_constituency":"Edinburgh
+        East","european_electoral_region":"Scotland","primary_care_trust":"Edinburgh
+        Community Health Partnership","region":null,"lsoa":"Tollcross - 03","msoa":"Tollcross","incode":"9DR","outcode":"EH3","admin_district":"City
+        of Edinburgh","parish":null,"admin_county":null,"admin_ward":"City Centre","ccg":"Edinburgh
+        Community Health Partnership","nuts":"Edinburgh, City of","codes":{"admin_district":"S12000036","admin_county":"S99999999","admin_ward":"S13002593","parish":"S99999999","ccg":"S03000042","nuts":"UKM25"}}},{"query":"EC1N
+        2TD","result":{"postcode":"EC1N 2TD","quality":1,"eastings":531336,"northings":181601,"country":"England","nhs_ha":"London","longitude":-0.108520296477884,"latitude":51.518069864138,"parliamentary_constituency":"Holborn
+        and St Pancras","european_electoral_region":"London","primary_care_trust":"Camden","region":"London","lsoa":"Camden
+        027C","msoa":"Camden 027","incode":"2TD","outcode":"EC1N","admin_district":"Camden","parish":"Camden,
+        unparished area","admin_county":null,"admin_ward":"Holborn and Covent Garden","ccg":"NHS
+        Camden","nuts":"Camden and City of London","codes":{"admin_district":"E09000007","admin_county":"E99999999","admin_ward":"E05000138","parish":"E43000197","ccg":"E38000027","nuts":"UKI31"}}}]}'
+    http_version: 
+  recorded_at: Mon, 15 Feb 2016 16:53:40 GMT
+recorded_with: VCR 2.9.3

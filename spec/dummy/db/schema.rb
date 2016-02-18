@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205150033) do
+ActiveRecord::Schema.define(version: 20160211161127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,6 +259,69 @@ ActiveRecord::Schema.define(version: 20160205150033) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "order",      default: 0, null: false
+  end
+
+  create_table "snapshots", force: :cascade do |t|
+    t.integer  "firms_with_no_minimum_fee"
+    t.integer  "integer"
+    t.integer  "firms_with_min_fee_between_1_500"
+    t.integer  "firms_with_min_fee_between_501_1000"
+    t.integer  "firms_any_pot_size"
+    t.integer  "firms_any_pot_size_min_fee_less_than_500"
+    t.integer  "registered_firms"
+    t.integer  "published_firms"
+    t.integer  "firms_offering_face_to_face_advice"
+    t.integer  "firms_offering_remote_advice"
+    t.integer  "firms_in_england"
+    t.integer  "firms_in_scotland"
+    t.integer  "firms_in_wales"
+    t.integer  "firms_in_northern_ireland"
+    t.integer  "firms_providing_retirement_income_products"
+    t.integer  "firms_providing_pension_transfer"
+    t.integer  "firms_providing_long_term_care"
+    t.integer  "firms_providing_equity_release"
+    t.integer  "firms_providing_inheritance_tax_and_estate_planning"
+    t.integer  "firms_providing_wills_and_probate"
+    t.integer  "firms_providing_ethical_investing"
+    t.integer  "firms_providing_sharia_investing"
+    t.integer  "firms_offering_languages_other_than_english"
+    t.integer  "offices_with_disabled_access"
+    t.integer  "registered_advisers"
+    t.integer  "advisers_in_england"
+    t.integer  "advisers_in_scotland"
+    t.integer  "advisers_in_wales"
+    t.integer  "advisers_in_northern_ireland"
+    t.integer  "advisers_who_travel_5_miles"
+    t.integer  "advisers_who_travel_10_miles"
+    t.integer  "advisers_who_travel_25_miles"
+    t.integer  "advisers_who_travel_50_miles"
+    t.integer  "advisers_who_travel_100_miles"
+    t.integer  "advisers_who_travel_150_miles"
+    t.integer  "advisers_who_travel_200_miles"
+    t.integer  "advisers_who_travel_250_miles"
+    t.integer  "advisers_who_travel_uk_wide"
+    t.integer  "advisers_accredited_in_solla"
+    t.integer  "advisers_accredited_in_later_life_academy"
+    t.integer  "advisers_accredited_in_iso22222"
+    t.integer  "advisers_accredited_in_bs8577"
+    t.integer  "advisers_with_qualification_in_level_4"
+    t.integer  "advisers_with_qualification_in_level_6"
+    t.integer  "advisers_with_qualification_in_chartered_financial_planner"
+    t.integer  "advisers_with_qualification_in_certified_financial_planner"
+    t.integer  "advisers_with_qualification_in_pension_transfer"
+    t.integer  "advisers_with_qualification_in_equity_release"
+    t.integer  "advisers_with_qualification_in_long_term_care_planning"
+    t.integer  "advisers_with_qualification_in_tep"
+    t.integer  "advisers_with_qualification_in_fcii"
+    t.integer  "advisers_part_of_personal_finance_society"
+    t.integer  "advisers_part_of_institute_financial_planning"
+    t.integer  "advisers_part_of_institute_financial_services"
+    t.integer  "advisers_part_of_ci_bankers_scotland"
+    t.integer  "advisers_part_of_ci_securities_and_investments"
+    t.integer  "advisers_part_of_cfa_institute"
+    t.integer  "advisers_part_of_chartered_accountants"
+    t.datetime "created_at",                                                 null: false
+    t.datetime "updated_at",                                                 null: false
   end
 
 end
