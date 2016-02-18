@@ -274,6 +274,10 @@ class Snapshot < ActiveRecord::Base
     @_publishable_firms ||= Firm.registered.select(&:publishable?)
   end
 
+  # 1. Gets all public methods
+  # 2. Filters those to only include methods beginning with 'query_'
+  # 3. For each of those, find the related attribute (remove the 'query_' from the method name)
+  # 4. Run the query method, count the return value, and set that to the related attribute
   def run_queries
     public_methods(false)
       .select { |method| method.to_s.starts_with?('query_') }
