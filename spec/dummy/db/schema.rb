@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160217151659) do
+ActiveRecord::Schema.define(version: 20160211161127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -263,8 +263,7 @@ ActiveRecord::Schema.define(version: 20160217151659) do
 
   create_table "snapshots", force: :cascade do |t|
     t.integer  "firms_with_no_minimum_fee"
-    t.datetime "created_at",                                                 null: false
-    t.datetime "updated_at",                                                 null: false
+    t.integer  "integer"
     t.integer  "firms_with_min_fee_between_1_500"
     t.integer  "firms_with_min_fee_between_501_1000"
     t.integer  "firms_any_pot_size"
@@ -298,6 +297,7 @@ ActiveRecord::Schema.define(version: 20160217151659) do
     t.integer  "advisers_who_travel_50_miles"
     t.integer  "advisers_who_travel_100_miles"
     t.integer  "advisers_who_travel_150_miles"
+    t.integer  "advisers_who_travel_200_miles"
     t.integer  "advisers_who_travel_250_miles"
     t.integer  "advisers_who_travel_uk_wide"
     t.integer  "advisers_accredited_in_solla"
@@ -320,7 +320,8 @@ ActiveRecord::Schema.define(version: 20160217151659) do
     t.integer  "advisers_part_of_ci_securities_and_investments"
     t.integer  "advisers_part_of_cfa_institute"
     t.integer  "advisers_part_of_chartered_accountants"
-    t.integer  "advisers_who_travel_200_miles"
+    t.datetime "created_at",                                                 null: false
+    t.datetime "updated_at",                                                 null: false
   end
 
 end
