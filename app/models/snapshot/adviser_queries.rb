@@ -110,7 +110,7 @@ module Snapshot::AdviserQueries
 
   def advisers_in_country(advisers, country)
     postcodes = advisers.map { |adviser| adviser.postcode }
-    country_postcodes = Snapshot::PostcodeFinder.new.country_postcodes(postcodes, country)
+    country_postcodes = Postcode.new.filter_postcodes_by_country(postcodes, country)
     advisers.select { |adviser| country_postcodes.include?(adviser.postcode) }
   end
 

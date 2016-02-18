@@ -94,7 +94,7 @@ module Snapshot::FirmQueries
 
   def firms_in_country(firms, country)
     postcodes = firms.map { |firm| firm.main_office.address_postcode }
-    country_postcodes = Snapshot::PostcodeFinder.new.country_postcodes(postcodes, country)
+    country_postcodes = Postcode.new.filter_postcodes_by_country(postcodes, country)
     firms.select { |firm| country_postcodes.include?(firm.main_office.address_postcode) }
   end
 end

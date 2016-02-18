@@ -1,7 +1,5 @@
-require 'net/http'
-
-class Snapshot::PostcodeFinder
-  def country_postcodes(postcodes, country)
+class Postcode
+  def filter_postcodes_by_country(postcodes, country)
     map_postcodes_to_country(postcodes)
       .select { |postcode, postcode_country| postcode_country == country }
       .map { |postcode, postcode_country| postcode }
