@@ -1,4 +1,5 @@
 require 'uk_postcode'
+require 'uk_phone_numbers'
 
 class Office < ActiveRecord::Base
   include Geocodable
@@ -18,10 +19,7 @@ class Office < ActiveRecord::Base
     length: { maximum: 50 },
     format: { with: /.+@.+\..+/ }
 
-  validates :telephone_number,
-    presence: false,
-    length: { maximum: 30 },
-    format: { with: /\A[0-9 ]+\z/ }
+  validate :telephone_number_is_valid
 
   validates :address_line_one,
     presence: true,
@@ -96,5 +94,10 @@ class Office < ActiveRecord::Base
       errors.add(:address_postcode, 'is invalid')
     end
   end
-end
 
+  def telephone_number_is_valid
+    if telephone_number.nil? || !UKPhoneNumbers.valid?(telephone_number.gsub(' ', ''))
+      errors.add(:telephone_number, I18n.t("#{model_name.i18n_key}.telephone_number.invalid_format"))
+    end
+  end
+end

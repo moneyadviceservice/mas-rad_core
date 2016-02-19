@@ -118,21 +118,71 @@ RSpec.describe Office do
     end
 
     describe 'telephone number' do
-      context 'when not present' do
-        before { office.telephone_number = nil }
+      # See http://www.area-codes.org.uk/formatting.php#programmers for background info
 
-        it { is_expected.to_not be_valid }
+      context 'invalid inputs' do
+        context 'when not present' do
+          before { office.telephone_number = nil }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the input characters other than spaces or numbers' do
+          before { office.telephone_number = 'not-numbers-or-spaces' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the area code is not specified' do
+          before { office.telephone_number = '917561' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the prefix is not a 0' do
+          before { office.telephone_number = '7816917560' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the prefix is not a real area code' do
+          # Currently 04 and 06 are not valid prefixes
+          before { office.telephone_number = '04816 917560' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the prefix is a +nn country code' do
+          before { office.telephone_number = '+44 7816917560' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the prefix is a 00nn international access code' do
+          before { office.telephone_number = '0044 7816917560' }
+
+          it { is_expected.to_not be_valid }
+        end
+
+        context 'when the prefix is a nn international access code' do
+          before { office.telephone_number = '447816917560' }
+
+          it { is_expected.to_not be_valid }
+        end
       end
 
-      context 'when badly formatted' do
-        before { office.telephone_number = 'not-valid' }
+      context 'valid inputs' do
+        context 'when it has no spaces' do
+          before { office.telephone_number = '07816917561' }
 
-        it { is_expected.to_not be_valid }
-      end
+          it { is_expected.to be_valid }
+        end
 
-      context 'length' do
-        specify { expect_length_of(office, :telephone_number, 30, fill_char: '0').to be_valid }
-        specify { expect_length_of(office, :telephone_number, 31, fill_char: '0').not_to be_valid }
+        context 'when it has spaces' do
+          before { office.telephone_number = '07816 917 561' }
+
+          it { is_expected.to be_valid }
+        end
       end
     end
 
