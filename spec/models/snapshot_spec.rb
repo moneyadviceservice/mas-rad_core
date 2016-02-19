@@ -6,16 +6,15 @@ RSpec.describe Snapshot do
 
   describe '#save_and_run' do
     it 'runs all queries and sets the count of their result' do
-      query_methods = subject.public_methods(false).select { |m| m.to_s.starts_with?('query_') }
-      query_methods.each_with_index do |m, i|
-        allow(subject).to receive(m).and_return(Array.new(i))
+      query_methods = subject.metrics_in_order.map { |metric| "query_#{metric}" }
+      query_methods.each_with_index do |query_method, index|
+        allow(subject).to receive(query_method).and_return(Array.new(index))
       end
 
       subject.run_queries_and_save
 
-      query_methods.each_with_index do |m, i|
-        attr = m.to_s.sub('query_', '').to_sym
-        expect(subject.send(attr)).to eq(i)
+      subject.metrics_in_order.each_with_index do |metric, index|
+        expect(subject.send(metric)).to eq(index)
       end
     end
   end
