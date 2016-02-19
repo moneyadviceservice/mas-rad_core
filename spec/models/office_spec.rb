@@ -9,7 +9,7 @@ RSpec.describe Office do
     let(:valid_new_geocodable) { FactoryGirl.build(:office, firm: firm) }
     let(:saved_geocodable) { office }
     let(:address_field_name) { :address_postcode }
-    let(:address_field_updated_value) { 'S032 2AY' }
+    let(:address_field_updated_value) { 'SO32 2AY' }
     let(:updated_address_params) { { address_line_one: 'A new place' } }
   end
 
@@ -185,11 +185,46 @@ RSpec.describe Office do
       end
 
       context 'when not all upper cased' do
-        before { office.address_postcode.downcase! }
+        before { office.address_postcode = 'eh3 9dr' }
 
-        it 'upcases it before validating' do
+        it 'upcases it before saving' do
           expect(office).to be_valid
-          expect(office.address_postcode).to eq(office.address_postcode.upcase)
+          office.save!
+          expect(office.address_postcode).to eq('EH3 9DR')
+        end
+      end
+
+      context 'when not in the correct format' do
+        it 'corrects the format before saving' do
+          office.address_postcode = 'EH39DR'
+          expect(office).to be_valid
+          office.save!
+          expect(office.address_postcode).to eq('EH3 9DR')
+        end
+      end
+
+      context 'format' do
+        it 'is invalid without a full postcode' do
+          office.address_postcode = 'W12'
+          expect(office).to be_invalid
+          expect(office.errors[:address_postcode]).to include('is invalid')
+        end
+
+        it 'is invalid with an invalid full postcode' do
+          office.address_postcode = '1234 567'
+          expect(office).to be_invalid
+          expect(office.errors[:address_postcode]).to include('is invalid')
+          expect(office.address_postcode).to eq('1234 567')
+        end
+
+        it 'is valid with a valid full postcode' do
+          office.address_postcode = 'EH3 9DR'
+          expect(office).to be_valid
+        end
+
+        it 'is valid with a valid full postcode even without spaces' do
+          office.address_postcode = 'EH39DR'
+          expect(office).to be_valid
         end
       end
     end

@@ -14,6 +14,7 @@ RSpec.shared_examples 'geocodable' do
 
   def modify_address(subject)
     subject.send("#{address_field_name}=", address_field_updated_value)
+    expect(subject).to have_address_changes
   end
 
   describe '#latitude=' do
