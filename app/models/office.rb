@@ -84,7 +84,7 @@ class Office < ActiveRecord::Base
 
     return super unless parsed_postcode.full_valid?
 
-    new_postcode = "#{parsed_postcode.outcode} #{parsed_postcode.incode}".upcase
+    new_postcode = "#{parsed_postcode.outcode} #{parsed_postcode.incode}"
     write_attribute(:address_postcode, new_postcode)
   end
 
