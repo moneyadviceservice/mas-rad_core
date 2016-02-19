@@ -61,8 +61,9 @@ class Office < ActiveRecord::Base
     ]
   end
 
-  def telephone_number
-    super.try { |x| x.gsub(' ', '') }
+  def telephone_number=(new_phone_number)
+    return super if new_phone_number.nil?
+    super new_phone_number.gsub(/\s+/, ' ').strip
   end
 
   def full_street_address

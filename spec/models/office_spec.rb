@@ -67,7 +67,7 @@ RSpec.describe Office do
     end
   end
 
-  describe '#telephone_number' do
+  describe '#telephone_number=' do
     context 'when `nil`' do
       before { office.telephone_number = nil }
 
@@ -77,10 +77,14 @@ RSpec.describe Office do
     end
 
     context 'when provided' do
-      before { office.telephone_number = ' 07715 930 457  ' }
+      it 'removes whitespace from the front and back' do
+        office.telephone_number = ' 07715 930 457  '
+        expect(office.telephone_number).to eq('07715 930 457')
+      end
 
-      it 'removes whitespace' do
-        expect(office.telephone_number).to eq('07715930457')
+      it 'removes extraneous whitespace' do
+        office.telephone_number = '07715    930    457'
+        expect(office.telephone_number).to eq('07715 930 457')
       end
     end
   end
