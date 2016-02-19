@@ -1,3 +1,5 @@
+require 'uk_postcode'
+
 class Office < ActiveRecord::Base
   include Geocodable
 
@@ -10,8 +12,6 @@ class Office < ActiveRecord::Base
   ].freeze
 
   belongs_to :firm
-
-  before_validation :upcase_postcode
 
   validates :email_address,
     presence: false,
@@ -30,9 +30,7 @@ class Office < ActiveRecord::Base
   validates :address_line_two,
     length: { maximum: 100 }
 
-  validates :address_postcode,
-    presence: true,
-    format: { with: /\A[A-Z\d]{1,4} [A-Z\d]{1,3}\z/ }
+  validate :postcode_is_valid
 
   validates :address_town,
     presence: true,
@@ -79,10 +77,23 @@ class Office < ActiveRecord::Base
     errors.add(:geocoding, I18n.t("#{model_name.i18n_key}.geocoding.failure_message"))
   end
 
+  def address_postcode=(postcode)
+    return super unless postcode.present?
+
+    parsed_postcode = UKPostcode.parse(postcode)
+
+    return super unless parsed_postcode.full_valid?
+
+    new_postcode = "#{parsed_postcode.outcode} #{parsed_postcode.incode}"
+    write_attribute(:address_postcode, new_postcode)
+  end
+
   private
 
-  def upcase_postcode
-    address_postcode.upcase! if address_postcode.present?
+  def postcode_is_valid
+    if address_postcode.nil? || !UKPostcode.parse(address_postcode).full_valid?
+      errors.add(:address_postcode, 'is invalid')
+    end
   end
 end
 
