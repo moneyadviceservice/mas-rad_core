@@ -60,8 +60,11 @@ class Office < ActiveRecord::Base
   end
 
   def telephone_number=(new_phone_number)
-    return super if new_phone_number.nil?
-    super new_phone_number.gsub(/\s+/, ' ').strip
+    super cleanup_telephone_number(new_phone_number)
+  end
+
+  def telephone_number
+    return format_telephone_number(cleanup_telephone_number(super))
   end
 
   def full_street_address
@@ -99,5 +102,13 @@ class Office < ActiveRecord::Base
     if telephone_number.nil? || !UKPhoneNumbers.valid?(telephone_number.gsub(' ', ''))
       errors.add(:telephone_number, I18n.t("#{model_name.i18n_key}.telephone_number.invalid_format"))
     end
+  end
+
+  def cleanup_telephone_number(telephone_number)
+    telephone_number.try { |t| t.gsub(/\s+/, ' ').strip }
+  end
+
+  def format_telephone_number(telephone_number)
+    telephone_number.try { |t| UKPhoneNumbers.format(t) || t }
   end
 end

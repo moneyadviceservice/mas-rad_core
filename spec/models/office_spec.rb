@@ -89,6 +89,33 @@ RSpec.describe Office do
     end
   end
 
+  describe '#telephone_number' do
+    context 'when `nil`' do
+      before { office.telephone_number = nil }
+
+      it 'returns `nil`' do
+        expect(office.telephone_number).to be_nil
+      end
+    end
+
+    context 'when provided' do
+      it 'removes whitespace from the front and back' do
+        office.update_column(:telephone_number, ' 07715 930 457  ')
+        expect(office.telephone_number).to eq('07715 930 457')
+      end
+
+      it 'removes extraneous whitespace' do
+        office.update_column(:telephone_number, '07715    930    457')
+        expect(office.telephone_number).to eq('07715 930 457')
+      end
+
+      it 'formats if there is no whitespace at all' do
+        office.update_column(:telephone_number, '07715930457')
+        expect(office.telephone_number).to eq('07715 930457')
+      end
+    end
+  end
+
   describe 'validation' do
     it 'is valid with valid attributes' do
       expect(office).to be_valid
