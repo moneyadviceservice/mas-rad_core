@@ -15,10 +15,4 @@ class OfficeResult
     @disabled_access  = data['disabled_access']
     @location = Location.new data['location']['lat'], data['location']['lon']
   end
-
-  def telephone_number
-    return nil unless @telephone_number
-
-    UKPhoneNumbers.format(@telephone_number)
-  end
 end
