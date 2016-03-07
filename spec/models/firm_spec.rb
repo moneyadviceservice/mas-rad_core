@@ -1,6 +1,35 @@
 RSpec.describe Firm do
   subject(:firm) { build(:firm) }
 
+  describe 'languages_used' do
+    context 'when there are no firms' do
+      it 'has no languages' do
+        expect(Firm.languages_used).to be_empty
+      end
+    end
+
+    context 'when there are firms with no languages set' do
+      it 'has no languages' do
+        create(:firm, languages: [])
+        expect(Firm.languages_used).to be_empty
+      end
+    end
+
+    context 'when there are a multiple languages on multiple firms' do
+      it 'has has multiple languages' do
+        create(:firm, languages: ['sco', 'swe'])
+        create(:firm, languages: ['nor', 'lat'])
+        expect(Firm.languages_used).to eq(['lat', 'nor', 'sco', 'swe'])
+      end
+
+      it 'has has duplicate languages' do
+        create(:firm, languages: ['sco', 'swe'])
+        create(:firm, languages: ['nor', 'swe'])
+        expect(Firm.languages_used).to eq(['nor', 'sco', 'swe'])
+      end
+    end
+  end
+
   describe 'default behaviour' do
     it 'sets ethical_investing_flag to false' do
       expect(Firm.new.ethical_investing_flag).to be_falsey
