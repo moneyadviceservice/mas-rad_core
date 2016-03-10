@@ -5,7 +5,9 @@ RSpec.describe AdviserResult do
       'name'     => 'Mandy Advici',
       'postcode' => 'EC1N 2TD',
       'range'    => 50,
-      'location' => { 'lat' => 51.5180697, 'lon' => -0.1085203 }
+      'location' => { 'lat' => 51.5180697, 'lon' => -0.1085203 },
+      'qualification_ids' => [1,2,3,4,5],
+      'accreditation_ids' => [2,3,4]
     }
   }
 
@@ -37,5 +39,14 @@ RSpec.describe AdviserResult do
       subject.distance = 15
       expect(subject.distance).to eql(15)
     end
+
+    it 'maps qualification_ids' do
+      expect(subject.qualification_ids).to eq([1,2,3,4,5])
+    end
+
+    it 'maps accreditation_ids' do
+      expect(subject.accreditation_ids).to eq([2,3,4])
+    end
+
   end
 end
