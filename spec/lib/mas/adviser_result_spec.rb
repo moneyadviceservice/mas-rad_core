@@ -32,5 +32,10 @@ RSpec.describe AdviserResult do
       expect(subject.location.latitude).to eq(51.5180697)
       expect(subject.location.longitude).to eq(-0.1085203)
     end
+
+    it 'is able to store distance during geosorting' do
+      subject.distance = 15
+      expect(subject.distance).to eql(15)
+    end
   end
 end
