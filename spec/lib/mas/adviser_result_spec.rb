@@ -3,6 +3,7 @@ RSpec.describe AdviserResult do
     {
       '_id'      => 123,
       'name'     => 'Mandy Advici',
+      'postcode' => 'EC1N 2TD',
       'range'    => 50,
       'location' => { 'lat' => 51.5180697, 'lon' => -0.1085203 }
     }
@@ -17,6 +18,10 @@ RSpec.describe AdviserResult do
 
     it 'maps the name' do
       expect(subject.name).to eq('Mandy Advici')
+    end
+
+    it 'maps the postcode' do
+      expect(subject.postcode).to eq('EC1N 2TD')
     end
 
     it 'maps the range' do
