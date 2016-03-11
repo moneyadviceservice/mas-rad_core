@@ -209,8 +209,8 @@ RSpec.describe FirmResult do
 
     describe '#telephone_number' do
       context 'when present' do
-        it 'correctly formatted' do
-          expect(subject.telephone_number).to eq('020 8595 2346')
+        it 'is returned' do
+          expect(subject.telephone_number).to eq('02085952346')
         end
       end
     end
