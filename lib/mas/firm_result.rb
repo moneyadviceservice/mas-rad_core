@@ -22,7 +22,8 @@ class FirmResult
     :adviser_qualification_ids,
     :ethical_investing_flag,
     :sharia_investing_flag,
-    :languages
+    :languages,
+    :telephone_number
   ]
 
   TYPES_OF_ADVICE_FIELDS = [
@@ -86,12 +87,6 @@ class FirmResult
 
   def minimum_pot_size?
     minimum_pot_size_id > LESS_THAN_FIFTY_K_ID
-  end
-
-  def telephone_number
-    return nil unless @telephone_number
-
-    UKPhoneNumbers.format(@telephone_number)
   end
 
   alias :free_initial_meeting? :free_initial_meeting
