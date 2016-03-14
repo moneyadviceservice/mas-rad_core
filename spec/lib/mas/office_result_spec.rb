@@ -33,4 +33,8 @@ RSpec.describe OfficeResult do
     end
   end
 
+  it 'is able to store distance during geosorting' do
+    subject.distance = 15
+    expect(subject.distance).to eql(15)
+  end
 end

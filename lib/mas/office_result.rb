@@ -3,6 +3,8 @@ class OfficeResult
               :address_county, :address_postcode, :email_address,
               :telephone_number, :disabled_access, :location
 
+  attr_accessor :distance
+
   def initialize(data)
     @id               = data['_id']
     @address_line_one = data['address_line_one']
