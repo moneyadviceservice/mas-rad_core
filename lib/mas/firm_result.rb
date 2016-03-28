@@ -22,6 +22,7 @@ class FirmResult
     :adviser_qualification_ids,
     :ethical_investing_flag,
     :sharia_investing_flag,
+    :workplace_financial_advice_flag,
     :languages,
     :telephone_number
   ]

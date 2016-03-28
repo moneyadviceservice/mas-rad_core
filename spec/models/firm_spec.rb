@@ -39,6 +39,10 @@ RSpec.describe Firm do
       expect(Firm.new.sharia_investing_flag).to be_falsey
     end
 
+    it 'sets workplace_financial_advice_flag to false' do
+      expect(Firm.new.workplace_financial_advice_flag).to be_falsey
+    end
+
     it 'sets languages to an array with empty set' do
       expect(Firm.new.languages).to eq []
     end
