@@ -82,6 +82,10 @@ module Snapshot::FirmQueries
     publishable_firms.select { |f| f.ethical_investing_flag? }
   end
 
+  def query_firms_providing_workplace_financial_advice
+    publishable_firms.select { |f| f.workplace_financial_advice_flag? }
+  end
+
   def query_firms_providing_sharia_investing
     publishable_firms.select { |f| f.sharia_investing_flag? }
   end
