@@ -94,6 +94,10 @@ RSpec.describe FirmSerializer do
       expect(subject[:workplace_financial_advice_flag]).to eql(firm.workplace_financial_advice_flag)
     end
 
+    it 'exposes "non_uk_residents_flag"' do
+      expect(subject[:non_uk_residents_flag]).to eql(firm.non_uk_residents_flag)
+    end
+
     describe 'advisers' do
       before { create(:adviser, firm: firm, latitude: nil, longitude: nil) }
 
