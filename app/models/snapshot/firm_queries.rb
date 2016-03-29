@@ -86,6 +86,10 @@ module Snapshot::FirmQueries
     publishable_firms.select { |f| f.workplace_financial_advice_flag? }
   end
 
+  def query_firms_providing_non_uk_residents
+    publishable_firms.select { |f| f.non_uk_residents_flag? }
+  end
+
   def query_firms_providing_sharia_investing
     publishable_firms.select { |f| f.sharia_investing_flag? }
   end

@@ -23,6 +23,7 @@ module Snapshot::MetricsInOrder
       :firms_providing_ethical_investing,
       :firms_providing_sharia_investing,
       :firms_providing_workplace_financial_advice,
+      :firms_providing_non_uk_residents,
       :firms_offering_languages_other_than_english,
       :offices_with_disabled_access,
       :registered_advisers,
