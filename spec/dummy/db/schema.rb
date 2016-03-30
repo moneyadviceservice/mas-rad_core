@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160328130032) do
+ActiveRecord::Schema.define(version: 20160329110348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20160328130032) do
     t.text     "languages",                                default: [],    null: false, array: true
     t.integer  "status"
     t.boolean  "workplace_financial_advice_flag",          default: false, null: false
+    t.boolean  "non_uk_residents_flag",                    default: false, null: false
   end
 
   add_index "firms", ["initial_meeting_duration_id"], name: "index_firms_on_initial_meeting_duration_id", using: :btree
@@ -334,6 +335,7 @@ ActiveRecord::Schema.define(version: 20160328130032) do
     t.datetime "created_at",                                                             null: false
     t.datetime "updated_at",                                                             null: false
     t.integer  "firms_providing_workplace_financial_advice",                 default: 0
+    t.integer  "firms_providing_non_uk_residents",                           default: 0
   end
 
 end

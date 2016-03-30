@@ -286,6 +286,16 @@ RSpec.describe Snapshot do
     it { expect(subject.query_firms_providing_workplace_financial_advice.count).to eq(2) }
   end
 
+  describe '#query_firms_providing_non_uk_residents' do
+    before do
+      FactoryGirl.create(:firm, non_uk_residents_flag: false)
+      FactoryGirl.create(:firm, non_uk_residents_flag: true)
+      FactoryGirl.create(:firm, non_uk_residents_flag: true)
+    end
+
+    it { expect(subject.query_firms_providing_non_uk_residents.count).to eq(2) }
+  end
+
   describe '#query_firms_offering_languages_other_than_english' do
     before do
       FactoryGirl.create(:firm, languages: [])
@@ -711,6 +721,7 @@ RSpec.describe Snapshot do
         :firms_providing_ethical_investing,
         :firms_providing_sharia_investing,
         :firms_providing_workplace_financial_advice,
+        :firms_providing_non_uk_residents,
         :firms_offering_languages_other_than_english,
         :offices_with_disabled_access,
         :registered_advisers,

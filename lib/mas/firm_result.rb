@@ -23,6 +23,7 @@ class FirmResult
     :ethical_investing_flag,
     :sharia_investing_flag,
     :workplace_financial_advice_flag,
+    :non_uk_residents_flag,
     :languages,
     :telephone_number
   ]
