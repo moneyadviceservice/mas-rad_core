@@ -67,8 +67,13 @@ class Office < ActiveRecord::Base
     return format_telephone_number(cleanup_telephone_number(super))
   end
 
+  # The Geocodable interface expect an object that responds to
+  # Geocodable#full_street_address. So, to respect the interface,
+  # we created internally the method postcode_only_address,
+  # to reflect what this object returns differently from the others.
+  #
   def full_street_address
-    [address_line_one, address_line_two, address_postcode, 'United Kingdom'].reject(&:blank?).join(', ')
+    postcode_only_address
   end
 
   def has_address_changes?
@@ -91,6 +96,10 @@ class Office < ActiveRecord::Base
   end
 
   private
+
+  def postcode_only_address
+    [address_postcode, 'United Kingdom'].join(', ')
+  end
 
   def postcode_is_valid
     if address_postcode.nil? || !UKPostcode.parse(address_postcode).full_valid?
