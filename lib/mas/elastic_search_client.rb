@@ -7,19 +7,27 @@ class ElasticSearchClient
   end
 
   def store(path, json)
+    log("PUT /#{path}\nRequest Body: #{json}")
+
     res = http.put(uri_for(path), JSON.generate(json))
     res.ok?
   end
 
   def search(path, json = '')
+    log("POST /#{path}\nRequest Body: #{json}")
+
     http.post(uri_for(path), json)
   end
 
   def find(path)
+    log("GET /#{path}")
+
     http.get(uri_for(path))
   end
 
   def delete(path)
+    log("DELETE /#{path}")
+
     res = http.delete(uri_for(path))
     res.ok?
   end
@@ -32,6 +40,10 @@ class ElasticSearchClient
         c.set_auth(server, username, password) if authenticate?
       end
     end
+  end
+
+  def log(message)
+    Rails.logger.debug("ElasticSearch Request: #{message}")
   end
 
   def authenticate?
