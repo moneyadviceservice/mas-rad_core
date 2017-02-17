@@ -45,13 +45,15 @@ class FirmResult
     *DIRECTLY_MAPPED_FIELDS,
     *TYPES_OF_ADVICE_FIELDS
 
+  attr_writer :closest_adviser
+
   def initialize(data)
     source = data['_source']
     @id    = source['_id']
     @name  = source['registered_name']
     @advisers         = source['advisers']
     @total_advisers   = source['advisers'].count
-    @closest_adviser  = data['sort'].first
+    @closest_adviser  = data['sort'] ? data['sort'].first : 0
     @telephone_number = source['telephone_number']
     @offices = source['offices']
     @total_offices = source['offices'].count
