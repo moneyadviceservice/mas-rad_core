@@ -226,10 +226,20 @@ RSpec.describe FirmResult do
     end
 
     describe '#closest_adviser' do
-      before { data['sort'] = [1.23456789, 2.34567890] }
+      context 'when has sort data' do
+        before { data['sort'] = [1.23456789, 2.34567890] }
 
-      it 'returns the first distance' do
-        expect(subject.closest_adviser).to eq(1.23456789)
+        it 'returns the first distance' do
+          expect(subject.closest_adviser).to be(1.23456789)
+        end
+      end
+
+      context 'when does NOT have sort data' do
+        before { data['sort'] = nil }
+
+        it 'returns zero as closest adviser' do
+          expect(subject.closest_adviser).to be(0)
+        end
       end
     end
 
