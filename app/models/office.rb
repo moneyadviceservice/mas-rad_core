@@ -55,7 +55,8 @@ class Office < ActiveRecord::Base
       :address_postcode,
       :email_address,
       :telephone_number,
-      :disabled_access
+      :disabled_access,
+      :website
     ]
   end
 
