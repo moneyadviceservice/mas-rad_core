@@ -1,5 +1,4 @@
 class FirmSerializer < ActiveModel::Serializer
-  self.root = false
 
   attributes :_id,
     :registered_name,
