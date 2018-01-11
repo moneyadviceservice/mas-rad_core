@@ -1,6 +1,6 @@
 RSpec.describe FirmSerializer do
   let(:firm) do
-    FactoryGirl.create(:firm_with_principal)
+    FactoryBot.create(:firm_with_principal)
   end
 
   describe 'the serialized json' do

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:registered_name) { |n| "Financial Advice #{n} Ltd." }
 
   factory :firm, aliases: [:publishable_firm, :onboarded_firm] do

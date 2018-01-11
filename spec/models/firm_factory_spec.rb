@@ -1,11 +1,11 @@
 RSpec.describe 'Firm factory' do
   subject do
     begin
-      FactoryGirl.create(factory)
+      FactoryBot.create(factory)
     rescue ActiveRecord::RecordInvalid
       # If create fails we fall back to a build. We can then explicitly test
       # what we expect to have happened using the `be_persisted` matcher.
-      FactoryGirl.build(factory)
+      FactoryBot.build(factory)
     end
   end
 

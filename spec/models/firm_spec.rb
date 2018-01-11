@@ -111,10 +111,10 @@ RSpec.describe Firm do
     let(:firm) { create(:firm, offices_count: 0) }
     let!(:unsorted_offices) do
       [
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'fourth', created_at: Time.zone.now),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'second', created_at: 2.days.ago),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'first',  created_at: 3.days.ago),
-        FactoryGirl.create(:office, firm: firm, address_line_one: 'third',  created_at: 1.day.ago)
+        FactoryBot.create(:office, firm: firm, address_line_one: 'fourth', created_at: Time.zone.now),
+        FactoryBot.create(:office, firm: firm, address_line_one: 'second', created_at: 2.days.ago),
+        FactoryBot.create(:office, firm: firm, address_line_one: 'first',  created_at: 3.days.ago),
+        FactoryBot.create(:office, firm: firm, address_line_one: 'third',  created_at: 1.day.ago)
       ]
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Firm do
     end
 
     context 'when the firm has offices' do
-      before { FactoryGirl.create_list(:office, 3, firm: firm) }
+      before { FactoryBot.create_list(:office, 3, firm: firm) }
       # We implement using #first (which runs one query) but test against
       # offices[0]. Both should return the same value or things are not
       # correct.
@@ -142,7 +142,7 @@ RSpec.describe Firm do
   end
 
   describe '#publishable?' do
-    let(:firm) { FactoryGirl.create(:firm) }
+    let(:firm) { FactoryBot.create(:firm) }
     subject { firm.publishable? }
 
     context 'when the firm is valid, has a main office and is not missing advisers' do
@@ -151,14 +151,14 @@ RSpec.describe Firm do
 
     context 'when the firm is not valid' do
       let(:firm) do
-        FactoryGirl.build(:invalid_firm).tap { |f| f.save(validate: false) }
+        FactoryBot.build(:invalid_firm).tap { |f| f.save(validate: false) }
       end
 
       it { is_expected.to be_falsey }
     end
 
     context 'when the firm has no main office' do
-      let(:firm) { FactoryGirl.create(:firm, offices_count: 0) }
+      let(:firm) { FactoryBot.create(:firm, offices_count: 0) }
 
       it { is_expected.to be_falsey }
     end
@@ -172,7 +172,7 @@ RSpec.describe Firm do
 
   describe '#missing_advisers?' do
     let(:factory) { :firm }
-    subject { FactoryGirl.create(factory, advisers_count: advisers_count).missing_advisers? }
+    subject { FactoryBot.create(factory, advisers_count: advisers_count).missing_advisers? }
 
     context 'when the firm offers face-to-face advice' do
       context 'when the firm has advisers' do
@@ -467,7 +467,7 @@ RSpec.describe Firm do
     before { expect(subject).to receive(:notify_indexer) }
 
     context 'when a new firm is saved' do
-      subject { FactoryGirl.build(:firm) }
+      subject { FactoryBot.build(:firm) }
 
       it 'calls notify_indexer' do
         subject.save
@@ -476,7 +476,7 @@ RSpec.describe Firm do
     end
 
     context 'when a firm is updated' do
-      subject { FactoryGirl.create(:firm) }
+      subject { FactoryBot.create(:firm) }
 
       it 'calls notify_indexer' do
         subject.update_attributes(registered_name: 'A new name')
@@ -485,7 +485,7 @@ RSpec.describe Firm do
     end
 
     context 'when a firm is destroyed' do
-      subject { FactoryGirl.create(:firm) }
+      subject { FactoryBot.create(:firm) }
 
       it 'calls notify_indexer' do
         firm.destroy
@@ -541,7 +541,7 @@ RSpec.describe Firm do
     let(:unsorted_names) { %w(F C G E D H A B) }
 
     before do
-      unsorted_names.each { |name| FactoryGirl.create(:firm, registered_name: name) }
+      unsorted_names.each { |name| FactoryBot.create(:firm, registered_name: name) }
     end
 
     it 'sorts the result set by the registered_name field' do
@@ -564,7 +564,7 @@ RSpec.describe Firm do
 
   describe '#remote_advice' do
     let(:firm) do
-      FactoryGirl.create(:firm,
+      FactoryBot.create(:firm,
                          in_person_advice_methods: in_person_advice_methods,
                          other_advice_methods: other_advice_methods)
     end
@@ -578,10 +578,10 @@ RSpec.describe Firm do
     end
 
     context 'when in-person advice methods are set' do
-      let(:in_person_advice_methods) { FactoryGirl.create_list :in_person_advice_method, 1 }
+      let(:in_person_advice_methods) { FactoryBot.create_list :in_person_advice_method, 1 }
 
       context 'when remote advice methods are set' do
-        let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
+        let(:other_advice_methods) { FactoryBot.create_list :other_advice_method, 1 }
         it { is_expected.to be :local }
       end
 
@@ -592,7 +592,7 @@ RSpec.describe Firm do
 
     context 'when in-person advice methods are not set' do
       context 'when remote advice methods are set' do
-        let(:other_advice_methods) { FactoryGirl.create_list :other_advice_method, 1 }
+        let(:other_advice_methods) { FactoryBot.create_list :other_advice_method, 1 }
         let(:in_person_advice_methods) { [] }
         it { is_expected.to be :remote }
       end

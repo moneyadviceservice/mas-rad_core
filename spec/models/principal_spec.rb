@@ -206,7 +206,7 @@ RSpec.describe Principal do
   describe '#onboarded?' do
     context 'when no firms are publishable' do
       before do
-        FactoryGirl.build(:invalid_firm,
+        FactoryBot.build(:invalid_firm,
                            fca_number: principal.fca_number,
                            parent: principal.firm).save(validate: false)
 
@@ -222,7 +222,7 @@ RSpec.describe Principal do
 
     context 'when one firm is publishable' do
       before do
-        FactoryGirl.create(:publishable_firm,
+        FactoryBot.create(:publishable_firm,
                            fca_number: principal.fca_number,
                            parent: principal.firm)
 

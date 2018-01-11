@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :office do
     address_line_one { Faker::Address.street_address }
     address_line_two { Faker::Address.secondary_address }

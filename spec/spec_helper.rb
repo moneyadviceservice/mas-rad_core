@@ -4,14 +4,14 @@ require_relative 'dummy/config/environment'
 
 require 'rspec/rails'
 require 'rspec/collection_matchers'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'faker'
 require 'pry'
 
 Dir[File.join(File.dirname(__FILE__), 'support', '**', '*.rb')].each { |f| require f }
 
 Faker::Config.locale = 'en-GB'
-FactoryGirl.allow_class_lookup = false
+FactoryBot.allow_class_lookup = false
 
 ActiveRecord::Migrator.migrations_paths.tap do |paths|
   paths << File.expand_path('../../spec/dummy/db/migrate', __FILE__)
@@ -24,5 +24,5 @@ RSpec.configure do |c|
   c.run_all_when_everything_filtered = true
   c.disable_monkey_patching!
 
-  c.include FactoryGirl::Syntax::Methods
+  c.include FactoryBot::Syntax::Methods
 end

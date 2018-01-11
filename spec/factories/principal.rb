@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:fca_number, 100000) { |n| n }
 
   factory :principal do

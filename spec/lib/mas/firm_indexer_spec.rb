@@ -19,7 +19,7 @@ RSpec.describe FirmIndexer do
 
   describe '#index_firm' do
     subject { described_class.index_firm(firm) }
-    let(:firm) { FactoryGirl.create(:publishable_firm) }
+    let(:firm) { FactoryBot.create(:publishable_firm) }
 
     context 'when the firm is publishable' do
       it 'stores the firm in the index' do
@@ -29,7 +29,7 @@ RSpec.describe FirmIndexer do
     end
 
     context 'when the firm is not publishable' do
-      let(:firm) { FactoryGirl.create(:firm_without_offices, :without_advisers) }
+      let(:firm) { FactoryBot.create(:firm_without_offices, :without_advisers) }
 
       it 'attempts to remove the firm from the index in case it was previously published' do
         expect_delete
@@ -56,7 +56,7 @@ RSpec.describe FirmIndexer do
   end
 
   describe '#handle_aggregate_changed' do
-    let(:firm) { FactoryGirl.create(:firm_with_offices) }
+    let(:firm) { FactoryBot.create(:firm_with_offices) }
     let!(:aggregate) { firm.offices.first }
     subject { described_class.handle_aggregate_changed(aggregate) }
 
@@ -86,7 +86,7 @@ RSpec.describe FirmIndexer do
   end
 
   describe '#associated_firm_destroyed?' do
-    let(:firm) { FactoryGirl.create(:firm_with_offices) }
+    let(:firm) { FactoryBot.create(:firm_with_offices) }
     let(:aggregate) { firm.offices.first }
     subject { described_class.associated_firm_destroyed?(aggregate) }
 

@@ -18,9 +18,9 @@ module MAS
         end
       end
 
-      initializer :factories, after: 'factory_girl.set_factory_paths' do
-        if defined?(FactoryGirl)
-          FactoryGirl.definition_file_paths << root.join('spec', 'factories')
+      initializer :factories, after: 'factory_bot.set_factory_paths' do
+        if defined?(FactoryBot)
+          FactoryBot.definition_file_paths << root.join('spec', 'factories')
         end
       end
 

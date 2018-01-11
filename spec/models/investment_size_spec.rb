@@ -12,7 +12,7 @@ RSpec.describe InvestmentSize do
       # order of creation and so hopefully prove we are not dependent on DB
       # allocated IDs in any way
       ordinals.reverse.each do |ordinal|
-        FactoryGirl.create(:investment_size, order: ordinal)
+        FactoryBot.create(:investment_size, order: ordinal)
       end
     end
 

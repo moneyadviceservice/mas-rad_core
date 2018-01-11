@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:reference_number, 10000) { |n| "ABC#{n}" }
 
   factory :adviser do

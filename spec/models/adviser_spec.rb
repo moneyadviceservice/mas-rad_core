@@ -120,15 +120,15 @@ RSpec.describe Adviser do
 
   it_should_behave_like 'geocodable' do
     let(:invalid_geocodable) { Adviser.new }
-    let(:valid_new_geocodable) { FactoryGirl.build(:adviser) }
-    let(:saved_geocodable) { FactoryGirl.create(:adviser) }
+    let(:valid_new_geocodable) { FactoryBot.build(:adviser) }
+    let(:saved_geocodable) { FactoryBot.create(:adviser) }
     let(:address_field_name) { :postcode }
     let(:address_field_updated_value) { 'S032 2AY' }
     let(:updated_address_params) { { address_field_name => address_field_updated_value } }
   end
 
   describe '#has_address_changes?' do
-    subject { FactoryGirl.create(:adviser) }
+    subject { FactoryBot.create(:adviser) }
 
     context 'when none of the address fields have changed' do
       it 'returns false' do
@@ -148,7 +148,7 @@ RSpec.describe Adviser do
   end
 
   describe '#notify_indexer' do
-    subject { FactoryGirl.create(:adviser) }
+    subject { FactoryBot.create(:adviser) }
 
     it 'notifies the indexer that the office has changed' do
       expect(FirmIndexer).to receive(:handle_aggregate_changed).with(subject)
@@ -249,8 +249,8 @@ RSpec.describe Adviser do
 
   describe '#on_firms_with_fca_number' do
     it 'returns advisers on firm and its trading names' do
-      firm = FactoryGirl.create(:firm_with_advisers, advisers_count: 1)
-      trading_name = FactoryGirl.create(:trading_name,
+      firm = FactoryBot.create(:firm_with_advisers, advisers_count: 1)
+      trading_name = FactoryBot.create(:trading_name,
                                         :with_advisers,
                                         advisers_count: 1,
                                         fca_number: firm.fca_number)
@@ -263,7 +263,7 @@ RSpec.describe Adviser do
     end
 
     it 'does not return advisers on other firms' do
-      firm = FactoryGirl.create(:firm_with_advisers, advisers_count: 1)
+      firm = FactoryBot.create(:firm_with_advisers, advisers_count: 1)
 
       returned_advisers = Adviser.on_firms_with_fca_number(firm.fca_number)
       expect(returned_advisers).to eq firm.advisers
@@ -275,7 +275,7 @@ RSpec.describe Adviser do
     let(:unsorted_names) { %w(F C G E D H A B) }
 
     before do
-      unsorted_names.each { |name| FactoryGirl.create(:adviser, name: name) }
+      unsorted_names.each { |name| FactoryBot.create(:adviser, name: name) }
     end
 
     it 'sorts the result set by the name field' do
