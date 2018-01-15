@@ -5,6 +5,6 @@ if Rails.env.production?
     lookup: :google,
     use_https: true,
     api_key: ENV['GOOGLE_GEOCODER_API_KEY'],
-    cache: Redis.connect(url: ENV['REDISTOGO_URL'])
+    cache: Redis.new(url: ENV['REDISTOGO_URL'])
   )
 end
