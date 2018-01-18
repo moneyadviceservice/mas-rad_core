@@ -438,7 +438,7 @@ RSpec.describe Firm do
 
       context 'with a garbage status' do
         it 'throws an exception' do
-          expect { build(:firm, status: :horse) }.to raise_error
+          expect { build(:firm, status: :horse) }.to raise_error(ArgumentError)
         end
       end
 

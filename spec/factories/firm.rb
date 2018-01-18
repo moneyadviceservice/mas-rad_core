@@ -38,7 +38,7 @@ FactoryGirl.define do
     end
 
     factory :trading_name, aliases: [:subsidiary] do
-      parent factory: Firm
+      parent factory: :firm
     end
 
     factory :firm_with_advisers, traits: [:with_advisers]
