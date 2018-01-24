@@ -7,7 +7,7 @@ class FirmRepository
   end
 
   def store(firm)
-    json = serializer.new(firm).as_json
+    json = serializer.new(firm).as_json(root: false)
     path = "#{firm.model_name.plural}/#{firm.to_param}"
 
     client.store(path, json)
